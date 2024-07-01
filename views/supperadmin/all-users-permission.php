@@ -310,99 +310,99 @@ if ($userData) {
                 </tr>
               </thead>
               <tbody>
-    <?php
-    // Assuming $getid contains the user ID
-    $sqlPermissions = "SELECT tblpermission.id AS permissionId, tblpermission.PermissionName,
+                <?php
+                // Assuming $getid contains the user ID
+                $sqlPermissions = "SELECT tblpermission.id AS permissionId, tblpermission.PermissionName,
                        IFNULL(FIND_IN_SET(tblpermission.id, tbluser.PermissionId), 0) AS selected
                        FROM tblpermission
                        LEFT JOIN tbluser ON FIND_IN_SET(tblpermission.id, tbluser.PermissionId) AND tbluser.id = :getid";
 
-    $queryPermissions = $dbh->prepare($sqlPermissions);
-    $queryPermissions->bindParam(':getid', $getid, PDO::PARAM_INT);
-    $queryPermissions->execute();
-    $permissions = $queryPermissions->fetchAll(PDO::FETCH_OBJ);
+                $queryPermissions = $dbh->prepare($sqlPermissions);
+                $queryPermissions->bindParam(':getid', $getid, PDO::PARAM_INT);
+                $queryPermissions->execute();
+                $permissions = $queryPermissions->fetchAll(PDO::FETCH_OBJ);
 
-    if ($queryPermissions->rowCount() > 0) {
-        $existingPermissions = [];
-        foreach ($permissions as $permission) {
-            $permissionId = $permission->permissionId;
-            $permissionName = $permission->PermissionName;
-            $selected = $permission->selected;
+                if ($queryPermissions->rowCount() > 0) {
+                  $existingPermissions = [];
+                  foreach ($permissions as $permission) {
+                    $permissionId = $permission->permissionId;
+                    $permissionName = $permission->PermissionName;
+                    $selected = $permission->selected;
 
-            // Store existing permissions in an array for later reference
-            $existingPermissions[$permissionId] = $selected;
+                    // Store existing permissions in an array for later reference
+                    $existingPermissions[$permissionId] = $selected;
 
-            ?>
-            <tr>
-                <td class="text-nowrap fw-medium">
-                    <?php echo $permissionName; ?>
-                </td>
-                <td class="d-flex flex-row justify-content-center">
-                    <label class="switch switch-primary">
-                        <input type="checkbox" name="pid[]" value="<?php echo $permissionId; ?>" <?php echo $selected ? 'checked' : ''; ?> class="switch-input permission-toggle">
-                        <span class="switch-toggle-slider">
+                ?>
+                    <tr>
+                      <td class="text-nowrap fw-medium">
+                        <?php echo $permissionName; ?>
+                      </td>
+                      <td class="d-flex flex-row justify-content-center">
+                        <label class="switch switch-primary">
+                          <input type="checkbox" name="pid[]" value="<?php echo $permissionId; ?>" <?php echo $selected ? 'checked' : ''; ?> class="switch-input permission-toggle">
+                          <span class="switch-toggle-slider">
                             <span class="switch-on">
-                                <i class="bx bx-check"></i>
+                              <i class="bx bx-check"></i>
                             </span>
                             <span class="switch-off">
-                                <i class="bx bx-x"></i>
+                              <i class="bx bx-x"></i>
                             </span>
-                        </span>
-                    </label>
-                </td>
-            </tr>
-            <?php
-        }
+                          </span>
+                        </label>
+                      </td>
+                    </tr>
+                    <?php
+                  }
 
-        // Fetch user-specific permissions from tbluser
-        $sqlUser = "SELECT iau, general, audit1, audit2 FROM tbluser WHERE id = :getid";
-        $queryUser = $dbh->prepare($sqlUser);
-        $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
-        $queryUser->execute();
-        $user = $queryUser->fetch(PDO::FETCH_ASSOC);
+                  // Fetch user-specific permissions from tbluser
+                  $sqlUser = "SELECT iau, general, audit1, audit2 FROM tbluser WHERE id = :getid";
+                  $queryUser = $dbh->prepare($sqlUser);
+                  $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
+                  $queryUser->execute();
+                  $user = $queryUser->fetch(PDO::FETCH_ASSOC);
 
-        if ($user) {
-            $userPermissions = ['iau', 'general', 'audit1', 'audit2'];
-            foreach ($userPermissions as $permissionName) {
-                ?>
-                <tr>
-                    <td class="text-nowrap fw-medium">
-                        <?php echo ucfirst($permissionName); ?> <!-- Display name however you prefer -->
-                    </td>
-                    <td class="d-flex flex-row justify-content-center">
-                        <label class="switch switch-primary">
+                  if ($user) {
+                    $userPermissions = ['iau', 'general', 'audit1', 'audit2'];
+                    foreach ($userPermissions as $permissionName) {
+                    ?>
+                      <tr>
+                        <td class="text-nowrap fw-medium">
+                          <?php echo ucfirst($permissionName); ?> <!-- Display name however you prefer -->
+                        </td>
+                        <td class="d-flex flex-row justify-content-center">
+                          <label class="switch switch-primary">
                             <input type="checkbox" name="pid[]" value="<?php echo $permissionName; ?>" <?php echo $user[$permissionName] ? 'checked' : ''; ?> class="switch-input permission-toggle">
                             <span class="switch-toggle-slider">
-                                <span class="switch-on">
-                                    <i class="bx bx-check"></i>
-                                </span>
-                                <span class="switch-off">
-                                    <i class="bx bx-x"></i>
-                                </span>
+                              <span class="switch-on">
+                                <i class="bx bx-check"></i>
+                              </span>
+                              <span class="switch-off">
+                                <i class="bx bx-x"></i>
+                              </span>
                             </span>
-                        </label>
-                    </td>
-                </tr>
+                          </label>
+                        </td>
+                      </tr>
+                    <?php
+                    }
+                  } else {
+                    // Handle case where user is not found
+                    ?>
+                    <tr>
+                      <td colspan="2">User not found.</td>
+                    </tr>
+                  <?php
+                  }
+                } else {
+                  // Handle case where no permissions are found
+                  ?>
+                  <tr>
+                    <td colspan="2">No permissions found.</td>
+                  </tr>
                 <?php
-            }
-        } else {
-            // Handle case where user is not found
-            ?>
-            <tr>
-                <td colspan="2">User not found.</td>
-            </tr>
-            <?php
-        }
-    } else {
-        // Handle case where no permissions are found
-        ?>
-        <tr>
-            <td colspan="2">No permissions found.</td>
-        </tr>
-        <?php
-    }
-    ?>
-</tbody>
+                }
+                ?>
+              </tbody>
 
 
 
