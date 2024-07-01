@@ -491,7 +491,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label class="form-label" for="permissionid">Permission
               <span class="text-danger fw-bolder">*</span>
             </label>
-            <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple required>
+            <!-- <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple required>
               <?php
               $sql = "SELECT * FROM tblpermission";
               $query = $dbh->prepare($sql);
@@ -503,6 +503,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
               }
               ?>
+            </select> -->
+            <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple required>
+              <option value="iau">IAU</option>
+              <option value="general">General</option>
+              <option value="audit1">Audit 1</option>
+              <option value="audit2">Audit 2</option>
             </select>
           </div>
 
