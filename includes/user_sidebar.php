@@ -59,16 +59,16 @@ if (empty($activePage)) {
           <div data-i18n="Dashboard"><?php echo translate('Dashboard'); ?></div>
         </a>
       </li>
-      <?php foreach ($menuItems as $item) : ?>
-        <li class="menu-item <?php echo ($item['NavigationUrl'] === $activePage) ? 'active' : ''; ?>">
+      <!-- <?php foreach ($menuItems as $item) : ?> -->
+        <!-- <li class="menu-item <?php echo ($item['NavigationUrl'] === $activePage) ? 'active' : ''; ?>">
           <a href="<?php echo $item['NavigationUrl']; ?>" class="menu-link">
             <i class="menu-icon tf-icons bx <?php echo $item['IconClass']; ?>"></i>
             <div data-i18n="<?php echo $item['EngName']; ?>"><?php echo translate($item['PermissionName']); ?></div>
           </a>
-        </li>
+        </li> -->
 
-      <?php endforeach;
-      ?>
+      <!-- <?php endforeach;
+      ?> -->
 
       <?php
       $userId = $_SESSION['userid'];
