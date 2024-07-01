@@ -403,9 +403,6 @@ if ($userData) {
                 }
                 ?>
               </tbody>
-
-
-
             </table>
           </div>
           <div>
