@@ -307,7 +307,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   } elseif ($loginType == 'update-permission') {
     try {
         // Assuming $getid contains the user ID
-        $userId = $_POST['upermission'];
+        $userId = $_POST['updateinout'];
 
         // Determine checkbox states
         $iauChecked = in_array('iau', $_POST['pid']) ? 1 : 0;

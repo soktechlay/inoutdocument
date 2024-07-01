@@ -300,7 +300,7 @@ if ($userData) {
         </div>
         <form id="formAuthentication" class="row g-3 mb-3" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="login_type" value="update-permission">
-          <input type="hidden" name="upermission" value="<?php echo $getid ?>">
+          <input type="hidden" name="updateinout" value="<?php echo $getid ?>">
           <div class="table-responsive">
             <table class="table border-top mb-1 table-striped">
               <thead>
@@ -309,37 +309,33 @@ if ($userData) {
                   <th class="text-nowrap text-center">Permission</th>
                 </tr>
               </thead>
+
               <tbody>
                 <?php
-                // Assuming $getid contains the user ID
-                $sqlPermissions = "SELECT tblpermission.id AS permissionId, tblpermission.PermissionName,
-                       IFNULL(FIND_IN_SET(tblpermission.id, tbluser.PermissionId), 0) AS selected
-                       FROM tblpermission
-                       LEFT JOIN tbluser ON FIND_IN_SET(tblpermission.id, tbluser.PermissionId) AND tbluser.id = :getid";
+                // Ensure $dbh (PDO instance) and $getid (user ID) are properly defined and initialized
 
-                $queryPermissions = $dbh->prepare($sqlPermissions);
-                $queryPermissions->bindParam(':getid', $getid, PDO::PARAM_INT);
-                $queryPermissions->execute();
-                $permissions = $queryPermissions->fetchAll(PDO::FETCH_OBJ);
+                // Query to fetch permissions from tblpermission for the user
+                // Assuming $dbh is your PDO instance
 
-                if ($queryPermissions->rowCount() > 0) {
-                  $existingPermissions = [];
-                  foreach ($permissions as $permission) {
-                    $permissionId = $permission->permissionId;
-                    $permissionName = $permission->PermissionName;
-                    $selected = $permission->selected;
+                // Fetch user-specific permissions from tbluser
+                $sqlUser = "SELECT iau, general, audit1, audit2 FROM tbluser WHERE id = :getid";
+                $queryUser = $dbh->prepare($sqlUser);
+                $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
+                $queryUser->execute();
+                $user = $queryUser->fetch(PDO::FETCH_ASSOC);
 
-                    // Store existing permissions in an array for later reference
-                    $existingPermissions[$permissionId] = $selected;
-
+                // Display user-specific permissions if user exists
+                if ($user) :
+                  $userPermissions = ['iau', 'general', 'audit1', 'audit2'];
+                  foreach ($userPermissions as $permissionName) :
                 ?>
                     <tr>
                       <td class="text-nowrap fw-medium">
-                        <?php echo $permissionName; ?>
+                        <?= ucfirst($permissionName); ?>
                       </td>
                       <td class="d-flex flex-row justify-content-center">
                         <label class="switch switch-primary">
-                          <input type="checkbox" name="pid[]" value="<?php echo $permissionId; ?>" <?php echo $selected ? 'checked' : ''; ?> class="switch-input permission-toggle">
+                          <input type="checkbox" name="pid[]" value="<?= $permissionName; ?>" <?= $user[$permissionName] ? 'checked' : ''; ?> class="switch-input permission-toggle">
                           <span class="switch-toggle-slider">
                             <span class="switch-on">
                               <i class="bx bx-check"></i>
@@ -351,58 +347,21 @@ if ($userData) {
                         </label>
                       </td>
                     </tr>
-                    <?php
-                  }
-
-                  // Fetch user-specific permissions from tbluser
-                  $sqlUser = "SELECT iau, general, audit1, audit2 FROM tbluser WHERE id = :getid";
-                  $queryUser = $dbh->prepare($sqlUser);
-                  $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
-                  $queryUser->execute();
-                  $user = $queryUser->fetch(PDO::FETCH_ASSOC);
-
-                  if ($user) {
-                    $userPermissions = ['iau', 'general', 'audit1', 'audit2'];
-                    foreach ($userPermissions as $permissionName) {
-                    ?>
-                      <tr>
-                        <td class="text-nowrap fw-medium">
-                          <?php echo ucfirst($permissionName); ?> <!-- Display name however you prefer -->
-                        </td>
-                        <td class="d-flex flex-row justify-content-center">
-                          <label class="switch switch-primary">
-                            <input type="checkbox" name="pid[]" value="<?php echo $permissionName; ?>" <?php echo $user[$permissionName] ? 'checked' : ''; ?> class="switch-input permission-toggle">
-                            <span class="switch-toggle-slider">
-                              <span class="switch-on">
-                                <i class="bx bx-check"></i>
-                              </span>
-                              <span class="switch-off">
-                                <i class="bx bx-x"></i>
-                              </span>
-                            </span>
-                          </label>
-                        </td>
-                      </tr>
-                    <?php
-                    }
-                  } else {
-                    // Handle case where user is not found
-                    ?>
-                    <tr>
-                      <td colspan="2">User not found.</td>
-                    </tr>
                   <?php
-                  }
-                } else {
-                  // Handle case where no permissions are found
+                  endforeach;
+                else :
+                  // Handle case where user is not found
                   ?>
                   <tr>
-                    <td colspan="2">No permissions found.</td>
+                    <td colspan="2">User not found.</td>
                   </tr>
                 <?php
-                }
+                endif;
                 ?>
               </tbody>
+
+
+
             </table>
           </div>
           <div>
