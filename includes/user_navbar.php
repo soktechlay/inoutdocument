@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 // Fetch notification count for the current user
 $sqlNotifications = "SELECT COUNT(*) AS notification_count
                      FROM tblrequest
-                     WHERE user_id = :userId AND status = 'approved'";
+                     WHERE user_id = :userId ";
 $stmtNotifications = $dbh->prepare($sqlNotifications);
 $stmtNotifications->bindParam(':userId', $userId, PDO::PARAM_INT);
 $stmtNotifications->execute();
@@ -131,169 +131,87 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
           </ul>
         </li>
         <!-- Notification Bell -->
+        <?php
+        // Check if session is not already started
+        if (session_status() == PHP_SESSION_NONE) {
+          session_start();
+        }
+        // Get the user ID from the session
+        $userId = $_SESSION['userid'];
+
+        $sql = "SELECT n.id, n.sendid, n.document, n.message, n.user_id, u.UserName, u.Profile
+        FROM tbluser u
+        INNER JOIN notifications n ON n.user_id = u.id 
+        WHERE n.sendid = :userid";
+
+        // Prepare and execute the query
+        $stmt = $dbh->prepare($sql);
+        if (!$stmt) {
+          die('PDO Error (prepare): ' . implode(" ", $dbh->errorInfo())); // Check for errors in preparing the statement
+        }
+
+        // Bind the user ID parameter and execute the query
+        if (!$stmt->execute([':userid' => $userId])) {
+          die('PDO Error (execute): ' . implode(" ", $stmt->errorInfo())); // Check for errors in executing the statement
+        }
+
+        // Fetch all notifications
+        $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Now you can use $notifications array to display notifications
+        ?>
+
+
+        <!-- HTML structure to display notifications -->
         <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
           <a class="nav-link dropdown-toggle hide-arrow show" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true">
             <i class="bx bx-bell bx-sm"></i>
             <span id="notification-badge-wrapper">
-              <span class="badge bg-danger rounded-pill badge-notifications" id="notification-count">0</span>
+              <span class="badge bg-danger rounded-pill badge-notifications" id="notification-count"><?php echo count($notifications); ?></span>
             </span>
           </a>
+
           <ul class="dropdown-menu dropdown-menu-end py-0" data-bs-popper="static">
             <li class="dropdown-menu-header border-bottom">
               <div class="dropdown-header d-flex align-items-center py-3">
-                <h5 class="text-body mb-0 me-auto">Notification</h5>
+                <h5 class="text-body mb-0 me-auto">Notifications</h5>
                 <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Mark all as read" data-bs-original-title="Mark all as read"><i class="bx fs-4 bx-envelope-open"></i></a>
               </div>
             </li>
             <li class="dropdown-notifications-list scrollable-container ps">
               <ul class="list-group list-group-flush" id="notification-list">
-                <li class="list-group-item list-group-item-action dropdown-notifications-item">
-                  <div class="d-flex">
-                    <div class="flex-shrink-0 me-3">
-                      <!-- Notifications will be dynamically populated here by JavaScript -->
+                <?php foreach ($notifications as $notification) : ?>
+                  <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                    <div class="d-flex me-1 mb-0 align-items-center">
+                      <!-- Display notification details -->
+                      <div class="avatar me-3 mb-0">
+                        <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
+                      </div>
+                      <div>
+                        <h5 class="text-primary text-uppercase mb-0"><?php echo htmlspecialchars($notification['UserName']); ?></h5>
+                        <p class="mb-0">ឯកសារភ្ជាប់ :
+                          <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($notification['document']); ?>" target="_blank" class="btn-sm btn-link text-primary">View Document <i class="bx bxs-file"></i></a>
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                </li>
+                  </li>
+                <?php endforeach; ?>
               </ul>
             </li>
-            <li class="dropdown-menu-footer border-top p-3">
+
+            <li class="dropdown-menu-footer border-top p-2">
               <button class="btn btn-primary text-uppercase w-100">View All Notifications</button>
             </li>
           </ul>
         </li>
 
+
+
+
         <!-- Add this part to your HTML to include the audio element -->
         <audio id="notification-sound" src="../../assets/notification/sound/notification.mp3" preload="auto"></audio>
-        <script>
-          document.addEventListener('DOMContentLoaded', function() {
-            let userInteracted = false;
-            const notificationSound = new Audio('../../assets/notification/sound/notification.mp3');
-            let previousUnreadCount = 0;
 
-            // Listen for user interaction
-            function handleUserInteraction() {
-              userInteracted = true;
-              document.removeEventListener('click', handleUserInteraction);
-              document.removeEventListener('keydown', handleUserInteraction);
-            }
 
-            document.addEventListener('click', handleUserInteraction);
-            document.addEventListener('keydown', handleUserInteraction);
-
-            // Request permission for browser notifications
-            function requestNotificationPermission() {
-              if (Notification.permission !== 'granted') {
-                Notification.requestPermission().then(permission => {
-                  if (permission === 'granted') {
-                    console.log('Notification permission granted');
-                  }
-                });
-              }
-            }
-
-            // Check if the browser supports notifications
-            function checkNotificationSupport() {
-              if (!('Notification' in window)) {
-                console.log('This browser does not support desktop notification');
-              } else {
-                requestNotificationPermission();
-              }
-            }
-
-            function fetchNotifications() {
-              fetch('../../includes/fetch_notifications.php')
-                .then(response => {
-                  if (!response.ok) {
-                    throw new Error('Network response was not ok ' + response.statusText);
-                  }
-                  return response.json();
-                })
-                .then(data => {
-                  console.log('Fetched data:', data); // Log fetched data
-                  if (userInteracted && data.unread_count > previousUnreadCount) {
-                    notificationSound.play();
-                    if (Notification.permission === 'granted') {
-                      const notification = new Notification('New Notification', {
-                        body: 'You have new notifications',
-                        icon: '../../assets/notification/icon/notification-alert.svg'
-                      });
-                      notification.onclick = function() {
-                        // Handle notification click event
-                        window.focus(); // Focus the window when the notification is clicked
-                      };
-                    }
-                  }
-                  previousUnreadCount = data.unread_count; // Update the previous unread count
-                  // Update the count badge
-                  const notificationBadgeWrapper = document.getElementById('notification-badge-wrapper');
-                  if (data.unread_count > 0) {
-                    notificationBadgeWrapper.innerHTML = `
-                        <span class="badge bg-danger rounded-pill badge-notifications" id="notification-count">${data.unread_count}</span>
-                    `;
-                  } else {
-                    notificationBadgeWrapper.innerHTML = ''; // Remove the badge
-                  }
-                  // Update the notification list as well
-                  updateNotificationList(data.notifications);
-                })
-                .catch(error => console.error('Error fetching notifications:', error));
-            }
-
-            function updateNotificationList(notifications) {
-              const notificationList = document.getElementById('notification-list');
-              notificationList.innerHTML = '';
-              console.log('Updating notification list...'); // Log when updating the list
-
-              if (notifications.length === 0) {
-                const noNotifications = document.createElement('div');
-                noNotifications.className = 'text-center my-5';
-                noNotifications.innerHTML = `
-                <i class='bx bx-bell-off' style='font-size: 50px; color: #ccc;'></i>
-                <p class='mt-3 mb-0 text-muted'>No Notifications</p>
-            `;
-                notificationList.appendChild(noNotifications);
-              } else {
-                notifications.forEach(notification => {
-                  console.log('Notification:', notification); // Log each notification
-                  const listItem = document.createElement('li');
-                  listItem.className = `list-group-item list-group-item-action dropdown-notifications-item ${notification.is_read == 1 ? 'mark-as-read' : ''}`;
-                  listItem.innerHTML = `
-                <a href="view_notification.php?id=${notification.id}" class="text-decoration-none d-flex justify-content-between text-reset">
-                    <div class="d-flex">
-                        <div class="flex-shrink-0 me-3">
-                            <div class="avatar">
-                                <img src="${notification.Profile}" alt="" class="w-px-40 rounded-circle" style="object-fit: cover">
-                            </div>
-                        </div>
-                        <div class="flex-grow-1">
-                            <p class="mb-0 text-primary"><strong>${notification.Honorific} ${notification.FirstName} ${notification.LastName}</strong> បានដាក់សំណើបង្កើត ${notification.request_name_1}</p>
-                            <small class="text-muted">${notification.created_at}</small>
-                        </div>
-                        <div class="flex-shrink-0 dropdown-notifications-actions">
-                            <a href="javascript:void(0)" class="dropdown-notifications-read">
-                                <span class="badge badge-dot ${notification.is_read == 1 ? 'bg-secondary' : 'bg-primary'}"></span>
-                            </a>
-                            <a href="javascript:void(0)" class="dropdown-notifications-archive">
-                                <span class="bx bx-x"></span>
-                            </a>
-                        </div>
-                    </div>
-                </a>
-                `;
-                  notificationList.appendChild(listItem);
-                });
-              }
-              console.log('Notification list updated.'); // Log after updating the list
-            }
-
-            // Check for notification support and request permission
-            checkNotificationSupport();
-
-            // Fetch notifications initially and then every 30 seconds
-            fetchNotifications();
-            setInterval(fetchNotifications, 30000); // Set interval to 30 seconds
-          });
-        </script>
         <!-- User Profile Dropdown -->
         <li class="nav-item navbar-dropdown dropdown-user dropdown">
           <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown">
