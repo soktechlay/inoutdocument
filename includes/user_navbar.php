@@ -209,11 +209,12 @@ ORDER BY n.id DESC";
               <ul class="list-group list-group-flush" id="notification-list">
                 <?php if (empty($notifications)) : ?>
                   <li class="list-group-item list-group-item-action dropdown-notifications-item">
-                    <div class="d-flex me-1 mb-0 align-items-center">
+                    <div class="d-flex me-1 mb-0 justify-content-center align-items-center" style="flex-direction: column;">
                       <img src="../../assets/img/illustrations/empty-box.png" alt="No Requests Found" style="max-width: 15%; height: auto;" />
                       <p class="text-muted mt-3">No Notifications</p>
                     </div>
                   </li>
+
                 <?php else : ?>
                   <?php foreach ($notifications as $notification) : ?>
                     <li class="list-group-item list-group-item-action dropdown-notifications-item <?php echo $notification['is_read'] ? 'read-notification' : 'unread-notification'; ?>">
@@ -325,47 +326,47 @@ ORDER BY n.id DESC";
   </div>
 </nav>
 <!-- Modal -->
-<div class="modal fade" id="modalScrollable" tabindex="-1" aria-hidden="true">
+<div class="modal animate__animated animate__bounceIn" id="modalScrollable" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="modalScrollableTitle">View All Notifications</h5>       
+        <h5 class="modal-title" id="modalScrollableTitle">View All Notifications</h5>
       </div>
       <div class="modal-body">
-      <ul class="list-group list-group-flush" id="notification-list">
-                <?php if (empty($notifications)) : ?>
-                  <li class="list-group-item list-group-item-action dropdown-notifications-item">
-                    <div class="d-flex me-1 mb-0 align-items-center">
-                      <img src="../../assets/img/illustrations/empty-box.png" alt="No Requests Found" style="max-width: 15%; height: auto;" />
-                      <p class="text-muted mt-3">No Notifications</p>
+        <ul class="list-group list-group-flush" id="notification-list">
+          <?php if (empty($notifications)) : ?>
+            <li class="list-group-item list-group-item-action dropdown-notifications-item">
+              <div class="d-flex me-1 mb-0 align-items-center">
+                <img src="../../assets/img/illustrations/empty-box.png" alt="No Requests Found" style="max-width: 15%; height: auto;" />
+                <p class="text-muted mt-3">No Notifications</p>
+              </div>
+            </li>
+          <?php else : ?>
+            <?php foreach ($notifications as $notification) : ?>
+              <li class="list-group-item list-group-item-action dropdown-notifications-item <?php echo $notification['is_read'] ? 'read-notification' : 'unread-notification'; ?>">
+                <a href="read_notifications.php?id=<?php echo $notification['id']; ?>">
+                  <div class="d-flex me-1 mb-0 align-items-center">
+                    <!-- Display notification details -->
+                    <div class="avatar me-3 mb-0">
+                      <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
                     </div>
-                  </li>
-                <?php else : ?>
-                  <?php foreach ($notifications as $notification) : ?>
-                    <li class="list-group-item list-group-item-action dropdown-notifications-item <?php echo $notification['is_read'] ? 'read-notification' : 'unread-notification'; ?>">
-                      <a href="read_notifications.php?id=<?php echo $notification['id']; ?>">
-                        <div class="d-flex me-1 mb-0 align-items-center">
-                          <!-- Display notification details -->
-                          <div class="avatar me-3 mb-0">
-                            <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
-                          </div>
-                          <div>
-                            <h5 class="text-black text-uppercase mb-0">
-                              <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['UserName']); ?></small>
-                            </h5>
-                            <p class="text-black mb-0">ឯកសារភ្ជាប់ :
-                              <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>
-                            </p>
-                          </div>
-                        </div>
-                      </a>
-                    </li>
-                  <?php endforeach; ?>
-                <?php endif; ?>
-              </ul>
+                    <div>
+                      <h5 class="text-black text-uppercase mb-0">
+                        <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['UserName']); ?></small>
+                      </h5>
+                      <p class="text-black mb-0">ឯកសារភ្ជាប់ :
+                        <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              </li>
+            <?php endforeach; ?>
+          <?php endif; ?>
+        </ul>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>        
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>

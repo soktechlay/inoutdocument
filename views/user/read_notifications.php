@@ -14,7 +14,7 @@ if (!isset($_GET['id'])) {
     header("Location: ../../index.php"); // Redirect to homepage or appropriate error page
     exit();
 }
-
+$pageTitle = "Notification";
 // Example: Fetch notification details from database based on id
 $notificationId = $_GET['id'];
 
@@ -26,7 +26,7 @@ $stmt->bindParam(':id', $notificationId, PDO::PARAM_INT);
 // Execute update query
 if ($stmt->execute()) {
     // Query to fetch notification details after update (if needed)
-    $sqlFetchNotification = "SELECT n.document, n.user_id, n.created_at, n.type, i.NameRecipient, i.DepartmentName, i.NameOfgive
+    $sqlFetchNotification = "SELECT n.document, n.user_id, n.created_at, i.NameRecipient, i.DepartmentName, i.NameOfgive
                              FROM indocument i 
                              LEFT JOIN notifications n ON n.user_id = i.user_id 
                              WHERE n.id = :id";
@@ -90,11 +90,14 @@ ob_start();
                     </li>
                    
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-                        <span><i class='bx bxs-file-pdf me-2'></i>ឯកសារភ្ជាប់ :</span>
-                        <span class="text-end"><a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="text-primary">
-                            <?php echo $document; ?>
-                        </a></span>
-                    </li>
+    <span><i class='bx bxs-file-pdf me-2'></i>ឯកសារភ្ជាប់ :</span>
+    <span class="text-end text-break col-8">
+        <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="text-primary">
+            <?php echo $document; ?>
+        </a>
+    </span>
+</li>
+
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><i class='bx bx-calendar me-2'></i>ថ្ងៃខែឆ្នាំផ្ញើរឯកសារ :</span>
                         <span class="text-end"><?php echo $created_at; ?></span>
