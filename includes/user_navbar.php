@@ -54,14 +54,40 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 }
 
-// Fetch notification count for the current user
-$sqlNotifications = "SELECT COUNT(*) AS notification_count
-                     FROM tblrequest
-                     WHERE user_id = :userId ";
-$stmtNotifications = $dbh->prepare($sqlNotifications);
-$stmtNotifications->bindParam(':userId', $userId, PDO::PARAM_INT);
-$stmtNotifications->execute();
-$notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_count'];
+try {
+  // Check if session is not already started
+  if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+  }
+
+  // Get the user ID from the session
+  $userId = $_SESSION['userid'];
+
+  // SQL query to count unread notifications for the current user
+  $sql = "SELECT COUNT(*) AS unread_count
+            FROM notifications
+            WHERE is_read = 0
+            AND sendid = :userId";  // Changed n.sendid to sendid
+
+  // Prepare the query
+  $stmt = $dbh->prepare($sql);
+  $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+  // Execute the query
+  $stmt->execute();
+
+  // Fetch the result
+  $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+  // Extract the count
+  $unreadCount = $result['unread_count'];
+
+  // Output the count
+  echo "Unread notifications for user " . $userId . ": " . $unreadCount;
+} catch (PDOException $e) {
+  // Handle database errors
+  die("PDO Error: " . $e->getMessage());
+}
 ?>
 <?php include('alert.php'); ?>
 <nav class="layout-navbar navbar navbar-expand-xl align-items-center bg-navbar-theme" id="layout-navbar">
@@ -138,11 +164,11 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
         }
         // Get the user ID from the session
         $userId = $_SESSION['userid'];
-
-        $sql = "SELECT n.id, n.sendid, n.document, n.message, n.user_id, u.UserName, u.Profile
-        FROM tbluser u
-        INNER JOIN notifications n ON n.user_id = u.id 
-        WHERE n.sendid = :userid";
+        $sql = "SELECT n.id, n.sendid, n.document, n.message, n.user_id, n.is_read, u.UserName, u.Profile, u.Honorific
+FROM tbluser u
+INNER JOIN notifications n ON n.user_id = u.id 
+WHERE n.sendid = :userid 
+ORDER BY n.id DESC";
 
         // Prepare and execute the query
         $stmt = $dbh->prepare($sql);
@@ -161,13 +187,12 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
         // Now you can use $notifications array to display notifications
         ?>
 
-
         <!-- HTML structure to display notifications -->
-        <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1">
-          <a class="nav-link dropdown-toggle hide-arrow show" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="true">
+        <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-1 ">
+          <a class="nav-link dropdown-toggle hide-arrow" href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">
             <i class="bx bx-bell bx-sm"></i>
             <span id="notification-badge-wrapper">
-              <span class="badge bg-danger rounded-pill badge-notifications" id="notification-count"><?php echo count($notifications); ?></span>
+              <span class="badge bg-danger rounded-pill badge-notifications"><?php echo $unreadCount; ?></span>
             </span>
           </a>
 
@@ -175,35 +200,60 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
             <li class="dropdown-menu-header border-bottom">
               <div class="dropdown-header d-flex align-items-center py-3">
                 <h5 class="text-body mb-0 me-auto">Notifications</h5>
-                <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Mark all as read" data-bs-original-title="Mark all as read"><i class="bx fs-4 bx-envelope-open"></i></a>
+                <a href="javascript:void(0)" class="dropdown-notifications-all text-body" data-bs-toggle="tooltip" data-bs-placement="top" aria-label="Mark all as read" data-bs-original-title="Mark all as read">
+                  <i class="bx fs-4 bx-envelope-open"></i>
+                </a>
               </div>
             </li>
             <li class="dropdown-notifications-list scrollable-container ps">
               <ul class="list-group list-group-flush" id="notification-list">
-                <?php foreach ($notifications as $notification) : ?>
+                <?php if (empty($notifications)) : ?>
                   <li class="list-group-item list-group-item-action dropdown-notifications-item">
                     <div class="d-flex me-1 mb-0 align-items-center">
-                      <!-- Display notification details -->
-                      <div class="avatar me-3 mb-0">
-                        <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
-                      </div>
-                      <div>
-                        <h5 class="text-primary text-uppercase mb-0"><?php echo htmlspecialchars($notification['UserName']); ?></h5>
-                        <p class="mb-0">ឯកសារភ្ជាប់ :
-                          <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($notification['document']); ?>" target="_blank" class="btn-sm btn-link text-primary">View Document <i class="bx bxs-file"></i></a>
-                        </p>
-                      </div>
+                      <img src="../../assets/img/illustrations/empty-box.png" alt="No Requests Found" style="max-width: 15%; height: auto;" />
+                      <p class="text-muted mt-3">No Notifications</p>
                     </div>
                   </li>
-                <?php endforeach; ?>
+                <?php else : ?>
+                  <?php foreach ($notifications as $notification) : ?>
+                    <li class="list-group-item list-group-item-action dropdown-notifications-item <?php echo $notification['is_read'] ? 'read-notification' : 'unread-notification'; ?>">
+                      <a href="read_notifications.php?id=<?php echo $notification['id']; ?>">
+                        <div class="d-flex me-1 mb-0 align-items-center">
+                          <!-- Display notification details -->
+                          <div class="avatar me-3 mb-0">
+                            <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
+                          </div>
+                          <div>
+                            <h5 class="text-black text-uppercase mb-0">
+                              <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['UserName']); ?></small>
+                            </h5>
+                            <p class="text-black mb-0">ឯកសារភ្ជាប់ :
+                              <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>
+                            </p>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                  <?php endforeach; ?>
+                <?php endif; ?>
               </ul>
             </li>
-
             <li class="dropdown-menu-footer border-top p-2">
-              <button class="btn btn-primary text-uppercase w-100">View All Notifications</button>
+              <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#modalScrollable">View All Notifications</button>
             </li>
           </ul>
         </li>
+
+        <style>
+          .read-notification {
+            background-color: #f0f0f0;
+          }
+
+          .unread-notification {
+            background-color: #fff;
+            font-weight: bold;
+          }
+        </style>
 
 
 
@@ -274,3 +324,49 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
     </div>
   </div>
 </nav>
+<!-- Modal -->
+<div class="modal fade" id="modalScrollable" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalScrollableTitle">View All Notifications</h5>       
+      </div>
+      <div class="modal-body">
+      <ul class="list-group list-group-flush" id="notification-list">
+                <?php if (empty($notifications)) : ?>
+                  <li class="list-group-item list-group-item-action dropdown-notifications-item">
+                    <div class="d-flex me-1 mb-0 align-items-center">
+                      <img src="../../assets/img/illustrations/empty-box.png" alt="No Requests Found" style="max-width: 15%; height: auto;" />
+                      <p class="text-muted mt-3">No Notifications</p>
+                    </div>
+                  </li>
+                <?php else : ?>
+                  <?php foreach ($notifications as $notification) : ?>
+                    <li class="list-group-item list-group-item-action dropdown-notifications-item <?php echo $notification['is_read'] ? 'read-notification' : 'unread-notification'; ?>">
+                      <a href="read_notifications.php?id=<?php echo $notification['id']; ?>">
+                        <div class="d-flex me-1 mb-0 align-items-center">
+                          <!-- Display notification details -->
+                          <div class="avatar me-3 mb-0">
+                            <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
+                          </div>
+                          <div>
+                            <h5 class="text-black text-uppercase mb-0">
+                              <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['UserName']); ?></small>
+                            </h5>
+                            <p class="text-black mb-0">ឯកសារភ្ជាប់ :
+                              <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>
+                            </p>
+                          </div>
+                        </div>
+                      </a>
+                    </li>
+                  <?php endforeach; ?>
+                <?php endif; ?>
+              </ul>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>        
+      </div>
+    </div>
+  </div>
+</div>
