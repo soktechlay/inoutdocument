@@ -6,23 +6,23 @@ include('../../includes/translate.php');
 
 // Fetch user permissions from tbluser
 $userId = $_SESSION['userid']; // Assuming you have the user's ID stored in the session
-$query = "SELECT PermissionId FROM tbluser WHERE id = :userId";
-$stmt = $dbh->prepare($query);
-$stmt->bindParam(':userId', $userId);
-$stmt->execute();
-$userPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
+// $query = "SELECT PermissionId FROM tbluser WHERE id = :userId";
+// $stmt = $dbh->prepare($query);
+// $stmt->bindParam(':userId', $userId);
+// $stmt->execute();
+// $userPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
-// Prepare a comma-separated string of permission IDs for the SQL query
-$permissionIds = implode(',', $userPermissions);
+// // Prepare a comma-separated string of permission IDs for the SQL query
+// $permissionIds = implode(',', $userPermissions);
 
-// Query to fetch sidebar menu details based on user permissions
-$query = "SELECT p.PermissionName, p.NavigationUrl, p.IconClass, p.EngName
-          FROM tblpermission p
-          WHERE p.id IN ($permissionIds)";
+// // Query to fetch sidebar menu details based on user permissions
+// $query = "SELECT p.PermissionName, p.NavigationUrl, p.IconClass, p.EngName
+//           FROM tblpermission p
+//           WHERE p.id IN ($permissionIds)";
 
-// Execute the query and fetch sidebar menu details
-$stmt = $dbh->query($query);
-$menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
+// // Execute the query and fetch sidebar menu details
+// $stmt = $dbh->query($query);
+// $menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 ?>
 
