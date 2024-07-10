@@ -88,22 +88,22 @@ ob_start();
                         <span><i class='bx bx-building'></i>ឈ្មោះស្ថាប័នឬក្រសួង :</span>
                         <span class="text-end"><?php echo $DepartmentName; ?></span>
                     </li>
-                   
+
                     <li class="list-group-item d-flex justify-content-between align-items-center">
-    <span><i class='bx bxs-file-pdf me-2'></i>ឯកសារភ្ជាប់ :</span>
-    <span class="text-end text-break col-8">
-        <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="text-primary">
-            <?php echo $document; ?>
-        </a>
-    </span>
-</li>
+                        <span><i class='bx bxs-file-pdf me-2'></i>ឯកសារភ្ជាប់ :</span>
+                        <span class="text-end text-break col-8">
+                            <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="text-primary">
+                                <?php echo $document; ?>
+                            </a>
+                        </span>
+                    </li>
 
                     <li class="list-group-item d-flex justify-content-between align-items-center">
                         <span><i class='bx bx-calendar me-2'></i>ថ្ងៃខែឆ្នាំផ្ញើរឯកសារ :</span>
                         <span class="text-end"><?php echo $created_at; ?></span>
                     </li>
                     <li class="list-group-item d-flex justify-content-center align-items-center">
-                    <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="btn-sm  text-primary h5 mb-0"><i class="bi bi-download"></i> Download</a>
+                        <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="btn-sm  text-primary h5 mb-0"><i class="bi bi-download"></i> Download</a>
                     </li>
                 </ul>
             </div>

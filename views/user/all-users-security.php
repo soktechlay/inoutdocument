@@ -194,7 +194,7 @@ if ($userData) {
       <ul class="nav nav-pills flex-column flex-sm-row mb-3">
         <!-- Profile Tab (Always Visible) -->
         <li class="nav-item">
-          <a class="nav-link <?php if ($sidebar == 'alluser') echo 'active'; ?>" href="all-users-detail.php?uid=<?php echo $getid; ?>">
+          <a class="nav-link <?php if ($sidebar == 'alluser') echo 'active'; ?>" href="pages-profile-user.php?uid=<?php echo $getid; ?>">
             <i class='bx bx-user-circle me-2'></i>
             <span data-i18n="profile.title">Profile</span>
           </a>
@@ -207,12 +207,12 @@ if ($userData) {
           </a>
         </li>
         <!-- Permission Tab -->
-        <li class="nav-item">
+        <!-- <li class="nav-item">
           <a class="nav-link <?php if ($sidebar == 'all-users-permission') echo 'active'; ?>" href="all-users-permission.php?uid=<?php echo $getid; ?>">
             <i class="bx bx-lock me-1"></i>
             <span data-i18n="permission">Permission</span>
           </a>
-        </li>
+        </li> -->
       </ul>
     </div>
   </div>

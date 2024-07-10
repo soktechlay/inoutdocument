@@ -1,74 +1,131 @@
 <?php
 include('../../config/dbconn.php');
 
-// Include translation function
-include('../../includes/translate.php');
-
 // Fetch user permissions from tbluser
 $userId = $_SESSION['userid']; // Assuming you have the user's ID stored in the session
-$query = "SELECT PermissionId FROM tbluser WHERE id = :userId";
+$query = "SELECT iau, general, audit1, audit2 FROM tbluser WHERE id = :userId";
 $stmt = $dbh->prepare($query);
-$stmt->bindParam(':userId', $userId);
+$stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 $stmt->execute();
-$userPermissions = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$userPermissions = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Prepare a comma-separated string of permission IDs for the SQL query
-$permissionIds = implode(',', $userPermissions);
-
-// Query to fetch sidebar menu details based on user permissions
-$query = "SELECT p.PermissionName, p.NavigationUrl, p.IconClass, p.EngName
-          FROM tblpermission p
-          WHERE p.id IN ($permissionIds)";
-
-// Execute the query and fetch sidebar menu details
-$stmt = $dbh->query($query);
-$menuItems = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
-
-<?php
-$currentUrl = basename($_SERVER['PHP_SELF']); // Get the current page filename
-
-$sidebarRelationships = array(
-  'dashboard' => array('dashboard.php', 'index.php'), // Add all pages related to the dashboard sidebar
-  'audits' => array('audits.php', 'create_report_page.php'), // Corrected 'create_report_page.php' instead of 'create_reports_page.php'
-  // Add more relationships as needed
-);
-
-// Determine the active page based on the sidebar variable
-$activePage = '';
-
-if (isset($sidebar) && array_key_exists($sidebar, $sidebarRelationships)) {
-  foreach ($sidebarRelationships[$sidebar] as $relatedPage) {
-    if ($currentUrl === $relatedPage) {
-      $activePage = $relatedPage;
-      break;
-    }
-  }
+// Check if user permissions are fetched properly
+if (!$userPermissions) {
+  die("Error fetching user permissions.");
 }
 
-// If no related pages match the current URL, use the current URL itself
-if (empty($activePage)) {
-  $activePage = $currentUrl;
-}
+// Active page determination (assuming $activePage is set somewhere in your script)
+$activePage = ''; // Replace with your logic to determine active page
+
 ?>
+
 <aside id="layout-menu" class="layout-menu-horizontal menu menu-horizontal container-fluid flex-grow-0 bg-menu-theme" data-bg-class="bg-menu-theme" style="touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
   <div class="container-xxl d-flex h-100">
     <ul class="menu-inner">
-      <!-- Add the dashboard menu item directly -->
+      <!-- Dashboard Menu Item -->
       <li class="menu-item <?php echo ($activePage === 'dashboard.php') ? 'active' : ''; ?>">
         <a href="dashboard.php" class="menu-link">
           <i class="menu-icon tf-icons bx bxs-dashboard"></i>
           <div data-i18n="Dashboard"><?php echo translate('Dashboard'); ?></div>
         </a>
       </li>
-      <?php foreach ($menuItems as $item) : ?>
-        <li class="menu-item <?php echo ($item['NavigationUrl'] === $activePage) ? 'active' : ''; ?>">
-          <a href="<?php echo $item['NavigationUrl']; ?>" class="menu-link">
-            <i class="menu-icon tf-icons bx <?php echo $item['IconClass']; ?>"></i>
-            <div data-i18n="<?php echo $item['EngName']; ?>"><?php echo translate($item['PermissionName']); ?></div>
+
+      <!-- Dynamic Menu Items based on User Permissions -->
+      <?php if ($userPermissions['iau'] == 1) : ?>
+        <li class="menu-item">
+          <a href="javascript:void(0)" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+            <div data-i18n="Tables">ឯកសារចេញចូលអង្គភាពសវនកម្មផ្ទៃក្នុង</div>
           </a>
+          <ul class="menu-sub">
+            <!-- Submenu Items for iau -->
+            <li class="menu-item <?php echo ($activePage === 'iniau.php') ? 'active' : ''; ?>">
+              <a href="iniau.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Login Documents">ឯកសារចូល</div>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($activePage === 'outiau.php') ? 'active' : ''; ?>">
+              <a href="outiau.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+              </a>
+            </li>
+          </ul>
         </li>
-      <?php endforeach; ?>
+      <?php endif; ?>
+
+      <?php if ($userPermissions['general'] == 1) : ?>
+        <li class="menu-item">
+          <a href="javascript:void(0)" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+            <div data-i18n="Tables">ឯកសារចេញចូលនាយកដ្ឋានកិច្ចការទូទៅ</div>
+          </a>
+          <ul class="menu-sub">
+            <!-- Submenu Items for general -->
+            <li class="menu-item <?php echo ($activePage === 'ingeneral.php') ? 'active' : ''; ?>">
+              <a href="ingeneral.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Login Documents">ឯកសារចូល</div>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($activePage === 'outgeneral.php') ? 'active' : ''; ?>">
+              <a href="outgeneral.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+      <?php endif; ?>
+
+      <?php if ($userPermissions['audit1'] == 1) : ?>
+        <li class="menu-item">
+          <a href="javascript:void(0)" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+            <div data-i18n="Tables">ឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី១</div>
+          </a>
+          <ul class="menu-sub">
+            <!-- Submenu Items for audit1 -->
+            <li class="menu-item <?php echo ($activePage === 'inaudit1.php') ? 'active' : ''; ?>">
+              <a href="inaudit1.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Login Documents">ឯកសារចូល</div>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($activePage === 'outaudit1.php') ? 'active' : ''; ?>">
+              <a href="outaudit1.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+      <?php endif; ?>
+
+      <?php if ($userPermissions['audit2'] == 1) : ?>
+        <li class="menu-item">
+          <a href="javascript:void(0)" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+            <div data-i18n="Tables">ឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី២</div>
+          </a>
+          <ul class="menu-sub">
+            <!-- Submenu Items for audit2 -->
+            <li class="menu-item <?php echo ($activePage === 'inaudit2.php') ? 'active' : ''; ?>">
+              <a href="inaudit2.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Login Documents">ឯកសារចូល</div>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($activePage === 'outaudit2.php') ? 'active' : ''; ?>">
+              <a href="outaudit2.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+      <?php endif; ?>
     </ul>
   </div>
 </aside>
