@@ -335,7 +335,7 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
               </a>
             </li>
             <li>
-              <a class="dropdown-item" href="pages-account-settings-account.php">
+              <a class="dropdown-item" href="all-users-security.php?uid=<?php echo $_SESSION['userid']; ?>">
                 <i class="bx bx-cog me-2"></i>
                 <span class="align-middle"><?php echo translate('Settings'); ?></span>
               </a>

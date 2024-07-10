@@ -391,7 +391,7 @@ if ($userData) {
 
                 </div>
               </div>
-              <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+              <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                 <div class="d-flex gap-2 align-items-center">
                   <i class="bx bx-message bx-md"></i>
                   <span class="d-flex flex-column custom-option-header">
@@ -404,7 +404,7 @@ if ($userData) {
                 <a href="javascript:;" class="btn btn-label-primary d-flex align-items-center me-3" data-bs-target="#twoFactorAuthTwo" data-bs-toggle="modal">
                   <i class="bx bx-user-plus me-1"></i>Connect
                 </a>
-              </div>
+              </div> -->
             </div>
           <?php } else { ?>
 
@@ -421,7 +421,7 @@ if ($userData) {
                 </a>
               </div>
 
-              <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+              <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                 <div class="d-flex gap-2 align-items-center">
                   <i class="bx bx-message bx-md"></i>
                   <span class="d-flex flex-column custom-option-header">
@@ -434,7 +434,7 @@ if ($userData) {
                 <a href="javascript:;" class="btn btn-label-primary d-flex align-items-center me-3" data-bs-target="#twoFactorAuthTwo" data-bs-toggle="modal">
                   <i class="bx bx-user-plus me-1"></i>Connect
                 </a>
-              </div>
+              </div> -->
             </div>
           <?php } ?>
           <p class="mb-0">Two-factor authentication adds an additional layer of security to your account by
@@ -493,7 +493,7 @@ if ($userData) {
   </div>
   <!-- end-modal-QR -->
   <!-- modal-SMS -->
-  <div class="modal fade" id="twoFactorAuthTwo" tabindex="-1" aria-modal="true" role="dialog">
+  <!-- <div class="modal fade" id="twoFactorAuthTwo" tabindex="-1" aria-modal="true" role="dialog">
     <div class="modal-dialog modal-lg modal-dialog-centered modal-simple">
       <div class="modal-content p-3 p-md-5">
         <div class="modal-body">
@@ -510,7 +510,7 @@ if ($userData) {
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
   <script>
     // Display selected profile image
