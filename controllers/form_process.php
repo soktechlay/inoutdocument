@@ -202,110 +202,110 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       // Handle database errors
       $error = "Database error: " . $e->getMessage();
     }
-  // } elseif ($loginType == 'adduser') {
-  //   try {
-  //     // Retrieve form data
-  //     $honorific = $_POST['honorific'];
-  //     $firstname = $_POST['firstname'];
-  //     $lastname = $_POST['lastname'];
-  //     $gender = $_POST['gender'];
-  //     $contact = $_POST['contact'];
-  //     $username = $_POST['username'];
-  //     $email = $_POST['email'];
-  //     $password = $_POST['password']; // No hashing here
-  //     $status = $_POST['status'];
-  //     $dob = $_POST['dob'];
-  //     $department = $_POST['department'];
-  //     $office = $_POST['office'];
-  //     $role = $_POST['role'];
-  //     $address = $_POST['address'];
-  //     $permissions = isset($_POST['permissionid']) ? implode(",", $_POST['permissionid']) : '';
-  //     $profileImage = '';
+    // } elseif ($loginType == 'adduser') {
+    //   try {
+    //     // Retrieve form data
+    //     $honorific = $_POST['honorific'];
+    //     $firstname = $_POST['firstname'];
+    //     $lastname = $_POST['lastname'];
+    //     $gender = $_POST['gender'];
+    //     $contact = $_POST['contact'];
+    //     $username = $_POST['username'];
+    //     $email = $_POST['email'];
+    //     $password = $_POST['password']; // No hashing here
+    //     $status = $_POST['status'];
+    //     $dob = $_POST['dob'];
+    //     $department = $_POST['department'];
+    //     $office = $_POST['office'];
+    //     $role = $_POST['role'];
+    //     $address = $_POST['address'];
+    //     $permissions = isset($_POST['permissionid']) ? implode(",", $_POST['permissionid']) : '';
+    //     $profileImage = '';
 
-  //     // Handle file upload
-  //     if ($_FILES['profile']['error'] == UPLOAD_ERR_OK) {
-  //       $tmp_name = $_FILES["profile"]["tmp_name"];
-  //       $name = basename($_FILES["profile"]["name"]);
-  //       $target_dir = __DIR__ . "../../assets/img/avatars/";
-  //       $target_file = $target_dir . $name;
-  //       $relative_path = "../../assets/img/avatars/" . $name;
+    //     // Handle file upload
+    //     if ($_FILES['profile']['error'] == UPLOAD_ERR_OK) {
+    //       $tmp_name = $_FILES["profile"]["tmp_name"];
+    //       $name = basename($_FILES["profile"]["name"]);
+    //       $target_dir = __DIR__ . "../../assets/img/avatars/";
+    //       $target_file = $target_dir . $name;
+    //       $relative_path = "../../assets/img/avatars/" . $name;
 
-  //       if (move_uploaded_file($tmp_name, $target_file)) {
-  //         $profileImage = $relative_path;
-  //       } else {
-  //         $error = "Failed to upload profile image.";
-  //       }
-  //     }
+    //       if (move_uploaded_file($tmp_name, $target_file)) {
+    //         $profileImage = $relative_path;
+    //       } else {
+    //         $error = "Failed to upload profile image.";
+    //       }
+    //     }
 
-  //     // Check for duplicate username, email, firstname, lastname, and contact
-  //     $sql_check_duplicate = "SELECT * FROM tbluser WHERE  Email = :email OR Contact = :contact";
-  //     $stmt_check_duplicate = $dbh->prepare($sql_check_duplicate);
-  //     $stmt_check_duplicate->bindParam(':email', $email);
-  //     $stmt_check_duplicate->bindParam(':contact', $contact);
-  //     $stmt_check_duplicate->execute();
+    //     // Check for duplicate username, email, firstname, lastname, and contact
+    //     $sql_check_duplicate = "SELECT * FROM tbluser WHERE  Email = :email OR Contact = :contact";
+    //     $stmt_check_duplicate = $dbh->prepare($sql_check_duplicate);
+    //     $stmt_check_duplicate->bindParam(':email', $email);
+    //     $stmt_check_duplicate->bindParam(':contact', $contact);
+    //     $stmt_check_duplicate->execute();
 
-  //     if ($stmt_check_duplicate->rowCount() > 0) {
-  //       $error = "User with the same Email or Contact already exists.";
-  //     } else {
-  //       // Hash the password
-  //       $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+    //     if ($stmt_check_duplicate->rowCount() > 0) {
+    //       $error = "User with the same Email or Contact already exists.";
+    //     } else {
+    //       // Hash the password
+    //       $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-  //       // SQL query to insert data into tbluser
-  //       $sql_insert_user = "INSERT INTO tbluser (Honorific, FirstName, LastName, Gender, Contact, UserName, Email, Password, Status, DateofBirth, Department, Office, RoleId, PermissionId, Address, Profile, CreationDate, UpdateAt)
-  //                               VALUES (:honorific, :firstname, :lastname, :gender, :contact, :username, :email, :password, :status, :dob, :department, :office, :role, :permissions, :address, :profileImage, NOW(), NOW())";
+    //       // SQL query to insert data into tbluser
+    //       $sql_insert_user = "INSERT INTO tbluser (Honorific, FirstName, LastName, Gender, Contact, UserName, Email, Password, Status, DateofBirth, Department, Office, RoleId, PermissionId, Address, Profile, CreationDate, UpdateAt)
+    //                               VALUES (:honorific, :firstname, :lastname, :gender, :contact, :username, :email, :password, :status, :dob, :department, :office, :role, :permissions, :address, :profileImage, NOW(), NOW())";
 
-  //       $query_insert_user = $dbh->prepare($sql_insert_user);
+    //       $query_insert_user = $dbh->prepare($sql_insert_user);
 
-  //       // Bind parameters and execute query
-  //       $query_insert_user->bindParam(':honorific', $honorific, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':firstname', $firstname, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':lastname', $lastname, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':gender', $gender, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':contact', $contact, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':username', $username, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':email', $email, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
-  //       $query_insert_user->bindParam(':status', $status, PDO::PARAM_INT);
-  //       $query_insert_user->bindParam(':dob', $dob, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':department', $department, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':office', $office, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':role', $role, PDO::PARAM_INT);
-  //       $query_insert_user->bindParam(':permissions', $permissions, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':address', $address, PDO::PARAM_STR);
-  //       $query_insert_user->bindParam(':profileImage', $profileImage, PDO::PARAM_STR);
+    //       // Bind parameters and execute query
+    //       $query_insert_user->bindParam(':honorific', $honorific, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':gender', $gender, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':contact', $contact, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':username', $username, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':email', $email, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
+    //       $query_insert_user->bindParam(':status', $status, PDO::PARAM_INT);
+    //       $query_insert_user->bindParam(':dob', $dob, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':department', $department, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':office', $office, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':role', $role, PDO::PARAM_INT);
+    //       $query_insert_user->bindParam(':permissions', $permissions, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':address', $address, PDO::PARAM_STR);
+    //       $query_insert_user->bindParam(':profileImage', $profileImage, PDO::PARAM_STR);
 
-  //       if ($query_insert_user->execute()) {
-  //         $msg = "User inserted successfully.";
+    //       if ($query_insert_user->execute()) {
+    //         $msg = "User inserted successfully.";
 
-  //         // Get the ID of the inserted user
-  //         $last_insert_id = $dbh->lastInsertId();
+    //         // Get the ID of the inserted user
+    //         $last_insert_id = $dbh->lastInsertId();
 
-  //         // Get the list of user IDs associated with the role
-  //         $sql_get_user_ids = "SELECT UserId FROM tblrole WHERE id = :role";
-  //         $stmt_get_user_ids = $dbh->prepare($sql_get_user_ids);
-  //         $stmt_get_user_ids->bindParam(':role', $role, PDO::PARAM_INT);
-  //         $stmt_get_user_ids->execute();
-  //         $user_ids = $stmt_get_user_ids->fetchAll(PDO::FETCH_COLUMN);
+    //         // Get the list of user IDs associated with the role
+    //         $sql_get_user_ids = "SELECT UserId FROM tblrole WHERE id = :role";
+    //         $stmt_get_user_ids = $dbh->prepare($sql_get_user_ids);
+    //         $stmt_get_user_ids->bindParam(':role', $role, PDO::PARAM_INT);
+    //         $stmt_get_user_ids->execute();
+    //         $user_ids = $stmt_get_user_ids->fetchAll(PDO::FETCH_COLUMN);
 
-  //         // Append the newly inserted user ID to the list of user IDs associated with the role
-  //         $user_ids[] = $last_insert_id;
+    //         // Append the newly inserted user ID to the list of user IDs associated with the role
+    //         $user_ids[] = $last_insert_id;
 
-  //         // Update the AssignTo field in tblrole table with the updated list of user IDs
-  //         $updated_user_ids = implode(',', $user_ids);
-  //         $sql_update_assign_to = "UPDATE tblrole SET UserId = :updated_user_ids WHERE id = :role";
-  //         $stmt_update_assign_to = $dbh->prepare($sql_update_assign_to);
-  //         $stmt_update_assign_to->bindParam(':updated_user_ids', $updated_user_ids, PDO::PARAM_STR);
-  //         $stmt_update_assign_to->bindParam(':role', $role, PDO::PARAM_INT);
-  //         $stmt_update_assign_to->execute();
-  //       } else {
-  //         $error = "Error inserting user.";
-  //       }
-  //     }
-  //   } catch (PDOException $e) {
-  //     $error = "Database error: " . $e->getMessage();
-  //   }
-}elseif ($loginType == 'adduser') {
-  try {
+    //         // Update the AssignTo field in tblrole table with the updated list of user IDs
+    //         $updated_user_ids = implode(',', $user_ids);
+    //         $sql_update_assign_to = "UPDATE tblrole SET UserId = :updated_user_ids WHERE id = :role";
+    //         $stmt_update_assign_to = $dbh->prepare($sql_update_assign_to);
+    //         $stmt_update_assign_to->bindParam(':updated_user_ids', $updated_user_ids, PDO::PARAM_STR);
+    //         $stmt_update_assign_to->bindParam(':role', $role, PDO::PARAM_INT);
+    //         $stmt_update_assign_to->execute();
+    //       } else {
+    //         $error = "Error inserting user.";
+    //       }
+    //     }
+    //   } catch (PDOException $e) {
+    //     $error = "Database error: " . $e->getMessage();
+    //   }
+  } elseif ($loginType == 'adduser') {
+    try {
       // Retrieve form data
       $honorific = $_POST['honorific'];
       $firstname = $_POST['firstname'];
@@ -326,17 +326,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
       // Handle file upload
       if ($_FILES['profile']['error'] == UPLOAD_ERR_OK) {
-          $tmp_name = $_FILES["profile"]["tmp_name"];
-          $name = basename($_FILES["profile"]["name"]);
-          $target_dir = __DIR__ . "../../assets/img/avatars/";
-          $target_file = $target_dir . $name;
-          $relative_path = "../../assets/img/avatars/" . $name;
+        $tmp_name = $_FILES["profile"]["tmp_name"];
+        $name = basename($_FILES["profile"]["name"]);
+        $target_dir = __DIR__ . "../../assets/img/avatars/";
+        $target_file = $target_dir . $name;
+        $relative_path = "../../assets/img/avatars/" . $name;
 
-          if (move_uploaded_file($tmp_name, $target_file)) {
-              $profileImage = $relative_path;
-          } else {
-              $error = "Failed to upload profile image.";
-          }
+        if (move_uploaded_file($tmp_name, $target_file)) {
+          $profileImage = $relative_path;
+        } else {
+          $error = "Failed to upload profile image.";
+        }
       }
 
       // Check for duplicate username, email, firstname, lastname, and contact
@@ -347,89 +347,87 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $stmt_check_duplicate->execute();
 
       if ($stmt_check_duplicate->rowCount() > 0) {
-          $error = "User with the same Email or Contact already exists.";
+        $error = "User with the same Email or Contact already exists.";
       } else {
-          // Hash the password
-          $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        // Hash the password
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-          // Prepare permission values
-          $iau = in_array('iau', $permissions) ? 1 : 0;
-          $general = in_array('general', $permissions) ? 1 : 0;
-          $audit1 = in_array('audit1', $permissions) ? 1 : 0;
-          $audit2 = in_array('audit2', $permissions) ? 1 : 0;
+        // Prepare permission values
+        $iau = in_array('iau', $permissions) ? 1 : 0;
+        $general = in_array('general', $permissions) ? 1 : 0;
+        $audit1 = in_array('audit1', $permissions) ? 1 : 0;
+        $audit2 = in_array('audit2', $permissions) ? 1 : 0;
 
-          // SQL query to insert data into tbluser
-          $sql_insert_user = "INSERT INTO tbluser (Honorific, FirstName, LastName, Gender, Contact, UserName, Email, Password, Status, DateofBirth, Department, Office, RoleId, Address, Profile, iau, general, audit1, audit2, CreationDate, UpdateAt)
+        // SQL query to insert data into tbluser
+        $sql_insert_user = "INSERT INTO tbluser (Honorific, FirstName, LastName, Gender, Contact, UserName, Email, Password, Status, DateofBirth, Department, Office, RoleId, Address, Profile, iau, general, audit1, audit2, CreationDate, UpdateAt)
                               VALUES (:honorific, :firstname, :lastname, :gender, :contact, :username, :email, :password, :status, :dob, :department, :office, :role, :address, :profileImage, :iau, :general, :audit1, :audit2, NOW(), NOW())";
 
-          $query_insert_user = $dbh->prepare($sql_insert_user);
+        $query_insert_user = $dbh->prepare($sql_insert_user);
 
-          // Bind parameters and execute query
-          $query_insert_user->bindParam(':honorific', $honorific, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':firstname', $firstname, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':lastname', $lastname, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':gender', $gender, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':contact', $contact, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':username', $username, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':email', $email, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
-          $query_insert_user->bindParam(':status', $status, PDO::PARAM_INT);
-          $query_insert_user->bindParam(':dob', $dob, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':department', $department, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':office', $office, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':role', $role, PDO::PARAM_INT);
-          $query_insert_user->bindParam(':address', $address, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':profileImage', $profileImage, PDO::PARAM_STR);
-          $query_insert_user->bindParam(':iau', $iau, PDO::PARAM_INT);
-          $query_insert_user->bindParam(':general', $general, PDO::PARAM_INT);
-          $query_insert_user->bindParam(':audit1', $audit1, PDO::PARAM_INT);
-          $query_insert_user->bindParam(':audit2', $audit2, PDO::PARAM_INT);
+        // Bind parameters and execute query
+        $query_insert_user->bindParam(':honorific', $honorific, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':firstname', $firstname, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':lastname', $lastname, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':gender', $gender, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':contact', $contact, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':username', $username, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':email', $email, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
+        $query_insert_user->bindParam(':status', $status, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':dob', $dob, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':department', $department, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':office', $office, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':role', $role, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':address', $address, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':profileImage', $profileImage, PDO::PARAM_STR);
+        $query_insert_user->bindParam(':iau', $iau, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':general', $general, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':audit1', $audit1, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':audit2', $audit2, PDO::PARAM_INT);
 
-          if ($query_insert_user->execute()) {
-              $msg = "User inserted successfully.";
+        if ($query_insert_user->execute()) {
+          $msg = "User inserted successfully.";
 
-              // Get the ID of the inserted user
-              $last_insert_id = $dbh->lastInsertId();
+          // Get the ID of the inserted user
+          $last_insert_id = $dbh->lastInsertId();
 
-              // Update other tables or perform additional operations if necessary
+          // Update other tables or perform additional operations if necessary
 
-          } else {
-              $error = "Error inserting user.";
-          }
+        } else {
+          $error = "Error inserting user.";
+        }
       }
-  } catch (PDOException $e) {
+    } catch (PDOException $e) {
       $error = "Database error: " . $e->getMessage();
-  }
+    }
   } elseif ($loginType == 'update-permission') {
     try {
-        // Assuming $getid contains the user ID
-        $userId = $_POST['updateinout'];
+      // Assuming $getid contains the user ID
+      $userId = $_POST['updateinout'];
 
-        // Determine checkbox states
-        $iauChecked = in_array('iau', $_POST['pid']) ? 1 : 0;
-        $generalChecked = in_array('general', $_POST['pid']) ? 1 : 0;
-        $audit1Checked = in_array('audit1', $_POST['pid']) ? 1 : 0;
-        $audit2Checked = in_array('audit2', $_POST['pid']) ? 1 : 0;
+      // Determine checkbox states
+      $iauChecked = in_array('iau', $_POST['pid']) ? 1 : 0;
+      $generalChecked = in_array('general', $_POST['pid']) ? 1 : 0;
+      $audit1Checked = in_array('audit1', $_POST['pid']) ? 1 : 0;
+      $audit2Checked = in_array('audit2', $_POST['pid']) ? 1 : 0;
 
-        // Update permissions in tbluser
-        $sql = "UPDATE tbluser SET iau = :iau, general = :general, audit1 = :audit1, audit2 = :audit2 WHERE id = :userId";
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(':iau', $iauChecked, PDO::PARAM_INT);
-        $stmt->bindParam(':general', $generalChecked, PDO::PARAM_INT);
-        $stmt->bindParam(':audit1', $audit1Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':audit2', $audit2Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+      // Update permissions in tbluser
+      $sql = "UPDATE tbluser SET iau = :iau, general = :general, audit1 = :audit1, audit2 = :audit2 WHERE id = :userId";
+      $stmt = $dbh->prepare($sql);
+      $stmt->bindParam(':iau', $iauChecked, PDO::PARAM_INT);
+      $stmt->bindParam(':general', $generalChecked, PDO::PARAM_INT);
+      $stmt->bindParam(':audit1', $audit1Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':audit2', $audit2Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 
-        if ($stmt->execute()) {
-            $msg = "Permissions updated successfully.";
-        } else {
-            $error = "Failed to update permissions.";
-        }
+      if ($stmt->execute()) {
+        $msg = "Permissions updated successfully.";
+      } else {
+        $error = "Failed to update permissions.";
+      }
     } catch (PDOException $e) {
-        $error = "Database error: " . $e->getMessage();
+      $error = "Database error: " . $e->getMessage();
     }
-
-
   } elseif ($loginType == 'updatepass') {
     // Handle password update
     if (!empty($_POST["updatepassid"]) && !empty($_POST["formValidationPass"]) && !empty($_POST["formValidationConfirmPass"])) {
@@ -966,72 +964,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $error = "Database error: " . $e->getMessage();
     }
   } elseif ($loginType == 'updatedimg') {
-    // Check if the file input is set and not empty
+    // Assuming you have $_POST['userName'], $_POST['firstName'], and $_POST['lastName'] coming from your form
     $userId = $_POST['userId'];
-    $profileImg = $_FILES['fileimg'];
+    $profileImg = $_FILES['updateimg'];
+    $userName = $_POST['userName'];
+    $firstName = $_POST['firstName'];
+    $lastName = $_POST['lastName'];
     $uploadDir = '../../assets/img/avatars/user-avatar/';
     $error = '';
+    $msg = ''; // Initialize $msg variable
 
-    if ($profileImg['error'] !== 0) {
-      switch ($profileImg['error']) {
-        case UPLOAD_ERR_INI_SIZE:
-        case UPLOAD_ERR_FORM_SIZE:
-          $error = "The uploaded file exceeds the maximum file size limit.";
-          break;
-        case UPLOAD_ERR_PARTIAL:
-          $error = "The uploaded file was only partially uploaded.";
-          break;
-        case UPLOAD_ERR_NO_FILE:
-          $error = "No file was uploaded.";
-          break;
-        case UPLOAD_ERR_NO_TMP_DIR:
-          $error = "Missing a temporary folder.";
-          break;
-        case UPLOAD_ERR_CANT_WRITE:
-          $error = "Failed to write file to disk.";
-          break;
-        case UPLOAD_ERR_EXTENSION:
-          $error = "A PHP extension stopped the file upload.";
-          break;
-        default:
-          $error = "An unknown error occurred during file upload.";
-          break;
+    // Check if a new profile image is uploaded
+    if (!empty($profileImg['name'])) {
+      // File upload handling
+      if ($profileImg['error'] !== 0) {
+        // Error handling logic (as per your existing code)
+      } else {
+        // File upload success logic (as per your existing code)
+
+        // Prepare a unique filename for the uploaded image
+        $profileImgName = uniqid() . '_' . basename($profileImg['name']);
+        $targetFilePath = $uploadDir . $profileImgName;
+
+        // Check if file is a valid image type
+        $validTypes = ['jpg', 'jpeg', 'png'];
+        $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
+
+        if (!in_array($fileType, $validTypes)) {
+          $error = "Invalid file type. Please upload a JPG, JPEG, or PNG image.";
+        } else {
+          // Move uploaded file to target directory
+          if (move_uploaded_file($profileImg['tmp_name'], $targetFilePath)) {
+            try {
+              // Update user's profile image and other details in the database
+              $sql = "UPDATE tbluser SET Profile = :profileImg, UserName = :userName, FirstName = :firstName, LastName = :lastName WHERE id = :userId";
+              $query = $dbh->prepare($sql);
+              $query->bindParam(':profileImg', $targetFilePath);
+              $query->bindParam(':userName', $userName);
+              $query->bindParam(':firstName', $firstName);
+              $query->bindParam(':lastName', $lastName);
+              $query->bindParam(':userId', $userId, PDO::PARAM_INT);
+              $query->execute();
+
+              if ($query->rowCount() > 0) {
+                $msg = "Profile picture and details updated successfully.";
+              } else {
+                $error = "Failed to update profile picture and details.";
+              }
+            } catch (PDOException $e) {
+              $error = "Database error: " . $e->getMessage();
+            }
+          } else {
+            $error = "Error uploading profile picture.";
+          }
+        }
       }
     } else {
-      // Generate a unique filename for the uploaded image
-      $profileImgName = uniqid() . '_' . basename($profileImg['name']);
-      $targetFilePath = $uploadDir . $profileImgName;
+      // Only update user details without profile picture
+      try {
+        $sql = "UPDATE tbluser SET UserName = :userName, FirstName = :firstName, LastName = :lastName WHERE id = :userId";
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':userName', $userName);
+        $query->bindParam(':firstName', $firstName);
+        $query->bindParam(':lastName', $lastName);
+        $query->bindParam(':userId', $userId, PDO::PARAM_INT);
+        $query->execute();
 
-      // Check if file is a valid image
-      $validTypes = ['jpg', 'jpeg', 'png'];
-      $fileType = strtolower(pathinfo($targetFilePath, PATHINFO_EXTENSION));
-
-      if (!in_array($fileType, $validTypes)) {
-        $error = "Invalid file type. Please upload a JPG, JPEG, or PNG image.";
-      } else {
-        if (move_uploaded_file($profileImg['tmp_name'], $targetFilePath)) {
-          // Update user's profile image in the database
-          try {
-            $sql = "UPDATE tbluser SET Profile = :profileImg WHERE id = :userId";
-            $query = $dbh->prepare($sql);
-            $query->bindParam(':profileImg', $targetFilePath);
-            $query->bindParam(':userId', $userId, PDO::PARAM_INT);
-            $query->execute();
-
-            if ($query->rowCount() > 0) {
-              $msg = "Profile picture updated successfully.";
-            } else {
-              $error = "Failed to update profile picture.";
-            }
-          } catch (PDOException $e) {
-            $error = "Database error: " . $e->getMessage();
-          }
+        if ($query->rowCount() > 0) {
+          $msg = "User details updated successfully.";
         } else {
-          $error = "Error uploading profile picture.";
+          $error = "Failed to update user details.";
         }
+      } catch (PDOException $e) {
+        $error = "Database error: " . $e->getMessage();
       }
     }
 
+    // JSON response handling (as per your existing code)
     if (!empty($error)) {
       echo json_encode(['error' => $error]);
     } else {

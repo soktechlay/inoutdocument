@@ -70,11 +70,11 @@ if ($userData) {
           </div>
         </div>
         <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-          <form id="formAuthentication" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="login_type" value="updatedimg">
+          <!-- <form id="formAuthentication" method="POST" enctype="multipart/form-data"> -->
+            <!-- <input type="hidden" name="login_type" value="updatedimg"> -->
             <div class="flex-shrink-0 mt-n5 mx-sm-0 mx-auto">
               <!-- Clickable profile picture to change profile image -->
-              <label for="profileInput" class="profile-image">
+              <!-- <label for="profileInput" class="profile-image"> -->
                 <?php if (!empty($userData['Profile'])) : ?>
                   <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img" height="150" width="150" style="object-fit: cover;">
                 <?php else : ?>
@@ -83,10 +83,10 @@ if ($userData) {
                     <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
                   </span>
                 <?php endif; ?>
-              </label>
-              <input type="file" name="updateimg" class="d-none" accept="image/*">
+              <!-- </label> -->
+              <!-- <input type="file" name="updateimg" class="d-none" accept="image/*"> -->
             </div>
-          </form>
+          <!-- </form> -->
           <div class="flex-grow-1 mt-3 mt-sm-5">
             <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
               <div class="user-profile-info">
@@ -296,14 +296,12 @@ if ($userData) {
       <div class="card mb-4">
         <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
         <div class="card-body">
-          <form id="formValidationExamples" onsubmit="submitForm()" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST">
+          <form id="formValidationExamples" onsubmit="submitForm()" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST" enctype="multipart/form-data">
             <input type="hidden" name="login_type" value="updatepass">
             <input type="hidden" name="updatepassid" value="<?php echo $getid ?>">
             <div class="alert alert-warning" role="alert">
-              <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that
-                these requirements are met</h6>
-              <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp;
-                symbol</span>
+              <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that these requirements are met</h6>
+              <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp; symbol</span>
             </div>
             <div class="row">
               <div class="col-md-6 fv-plugins-icon-container">
@@ -321,10 +319,12 @@ if ($userData) {
               </div>
               <div class="col-md-6 fv-plugins-icon-container">
                 <div class="form-password-toggle">
-                  <label class="form-label" for="formValidationConfirmPass" data-i18n="onfirm_password_label">Confirm Password</label>
+                  <label class="form-label" for="formValidationConfirmPass" data-i18n="confirm_password_label">Confirm Password</label>
                   <div class="input-group input-group-merge has-validation">
                     <input class="form-control" type="password" id="formValidationConfirmPass" name="formValidationConfirmPass" placeholder="············" aria-describedby="multicol-confirm-password2">
-                    <span class="input-group-text cursor-pointer" id="multicol-confirm-password2"><i class="bx bx-hide"></i></span>
+                    <span class="input-group-text cursor-pointer" id="multicol-confirm-password2">
+                      <i class="bx bx-hide"></i>
+                    </span>
                   </div>
                   <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
                   </div>
@@ -332,13 +332,14 @@ if ($userData) {
               </div>
               <div class="mt-3">
                 <button class="btn btn-primary me-2" data-i18n="save_button">
-                  Save Changed
+                  Save Changes
                 </button>
               </div>
             </div>
           </form>
         </div>
       </div>
+
 
       <!--end change password -->
       <!-- <div class="card mb-4">
