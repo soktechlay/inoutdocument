@@ -341,7 +341,7 @@ if ($userData) {
       </div>
 
       <!--end change password -->
-      <div class="card mb-4">
+      <!-- <div class="card mb-4">
         <div class="card-header">
           <h5 class="card-title mb-2">Two-steps verification</h5>
           <span class="card-subtitle">Keep your account secure with an additional authentication step.</span>
@@ -360,12 +360,12 @@ if ($userData) {
                   <a href="javascript:;" class="btn btn-primary d-flex align-items-center me-3" data-bs-toggle="modal" data-bs-target="#disconnectModal">
                     <i class="bx bx-user-check me-1"></i>Connected
                   </a>
-                  <!-- Disconnect Button -->
+                  Disconnect Button
                   <button type="button" class="btn btn-label-danger d-flex align-items-center me-3" data-bs-toggle="modal" data-bs-target="#disconnectModal">
                     <i class="bx bx-user-x me-1"></i>Disconnect
-                  </button>
-                  <!-- Disconnect Modal -->
-                  <div class="modal fade" id="disconnectModal" tabindex="-1" aria-labelledby="disconnectModalLabel" aria-hidden="true">
+                  </button> -->
+      <!-- Disconnect Modal -->
+      <!-- <div class="modal fade" id="disconnectModal" tabindex="-1" aria-labelledby="disconnectModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -380,9 +380,9 @@ if ($userData) {
                             Are you sure you want to disconnect the authenticator app?
                           </div>
                           <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <!-- Use JavaScript to submit the form -->
-                            <button class="btn btn-danger">Disconnect</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
+      <!-- Use JavaScript to submit the form -->
+      <!-- <button class="btn btn-danger">Disconnect</button>
                           </div>
                         </form>
                       </div>
@@ -391,7 +391,7 @@ if ($userData) {
 
                 </div>
               </div>
-              <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+              <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                 <div class="d-flex gap-2 align-items-center">
                   <i class="bx bx-message bx-md"></i>
                   <span class="d-flex flex-column custom-option-header">
@@ -404,9 +404,9 @@ if ($userData) {
                 <a href="javascript:;" class="btn btn-label-primary d-flex align-items-center me-3" data-bs-target="#twoFactorAuthTwo" data-bs-toggle="modal">
                   <i class="bx bx-user-plus me-1"></i>Connect
                 </a>
-              </div> -->
-            </div>
-          <?php } else { ?>
+              </div>
+            </div> -->
+      <!-- <?php } else { ?>
 
             <div class="row">
               <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
@@ -419,9 +419,9 @@ if ($userData) {
                 <a href="javascript:;" class="btn btn-label-primary d-flex align-items-center me-3" data-bs-target="#twoFactorAuthOne" data-bs-toggle="modal">
                   <i class="bx bx-user-plus me-1"></i>Connect
                 </a>
-              </div>
+              </div> -->
 
-              <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
+      <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
                 <div class="d-flex gap-2 align-items-center">
                   <i class="bx bx-message bx-md"></i>
                   <span class="d-flex flex-column custom-option-header">
@@ -435,21 +435,21 @@ if ($userData) {
                   <i class="bx bx-user-plus me-1"></i>Connect
                 </a>
               </div> -->
-            </div>
+      <!-- </div>
           <?php } ?>
           <p class="mb-0">Two-factor authentication adds an additional layer of security to your account by
             requiring more than just a password to log in.
             <a href="javascript:void(0);" class="text-body">Learn more.</a>
           </p>
         </div>
-      </div>
+      </div> -->
     </div>
     <!-- end-user-security -->
   </div>
 
 
   <!-- modal QR-->
-  <div class="modal fade" id="twoFactorAuthOne" tabindex="-1" aria-labelledby="twoFactorAuthOneLabel" aria-hidden="true">
+  <!-- <div class="modal fade" id="twoFactorAuthOne" tabindex="-1" aria-labelledby="twoFactorAuthOneLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
@@ -490,7 +490,7 @@ if ($userData) {
         </form>
       </div>
     </div>
-  </div>
+  </div> -->
   <!-- end-modal-QR -->
   <!-- modal-SMS -->
   <!-- <div class="modal fade" id="twoFactorAuthTwo" tabindex="-1" aria-modal="true" role="dialog">
