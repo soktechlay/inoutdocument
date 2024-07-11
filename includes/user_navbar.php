@@ -164,7 +164,7 @@ try {
         }
         // Get the user ID from the session
         $userId = $_SESSION['userid'];
-        $sql = "SELECT n.id, n.sendid, n.document, n.message, n.user_id, n.is_read, u.UserName, u.Profile, u.Honorific
+        $sql = "SELECT n.id, n.sendid, n.document, n.message, n.user_id, n.is_read, u.UserName, u.Profile, u.Honorific, u.FirstName, u.LastName
 FROM tbluser u
 INNER JOIN notifications n ON n.user_id = u.id 
 WHERE n.sendid = :userid 
@@ -219,14 +219,14 @@ ORDER BY n.id DESC";
                   <?php foreach ($notifications as $notification) : ?>
                     <li class="list-group-item list-group-item-action dropdown-notifications-item <?php echo $notification['is_read'] ? 'read-notification' : 'unread-notification'; ?>">
                       <a href="read_notifications.php?id=<?php echo $notification['id']; ?>">
-                        <div class="d-flex me-1 mb-0 align-items-center">
+                        <div class="d-flex me-1 mb-0 align-items-center ">
                           <!-- Display notification details -->
                           <div class="avatar me-3 mb-0">
                             <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
                           </div>
                           <div>
                             <h5 class="text-black text-uppercase mb-0">
-                              <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['UserName']); ?></small>
+                            <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['FirstName']). " " . htmlentities($notification['LastName']); ?></small>
                             </h5>
                             <p class="text-black mb-0">ឯកសារភ្ជាប់ :
                               <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>
@@ -352,7 +352,7 @@ ORDER BY n.id DESC";
                     </div>
                     <div>
                       <h5 class="text-black text-uppercase mb-0">
-                        <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['UserName']); ?></small>
+                        <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['FirstName']). " " . htmlentities($notification['LastName']); ?></small>
                       </h5>
                       <p class="text-black mb-0">ឯកសារភ្ជាប់ :
                         <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>
