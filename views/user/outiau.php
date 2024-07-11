@@ -130,7 +130,7 @@ ob_start();
                     <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">អង្គភាពសវនកម្មផ្ទៃក្នុង/</span>ឯកសារចេញ</h4>
                 </div>
                 <div class="dt-action-buttons pt-md-0">
-                    <div class="dt-buttons btn-group flex-wrap pe-3">
+                    <div class="dt-buttons btn-group flex-wrap ">
                         <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>បញ្ជូលឯកសារចេញ</span></button>
                     </div>
                     <div class="row row-bordered g-0">
