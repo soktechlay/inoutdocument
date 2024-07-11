@@ -280,7 +280,7 @@ ORDER BY n.id DESC";
           </a>
           <ul class="dropdown-menu dropdown-menu-end">
             <li>
-              <a class="dropdown-item" href="pages-account-settings-account.html">
+              <a class="dropdown-item" href="pages-profile-user.php?uid=<?php echo $_SESSION['userid']; ?>">
                 <div class="d-flex">
                   <div class="flex-shrink-0 me-3">
                     <div class="avatar avatar-online">
