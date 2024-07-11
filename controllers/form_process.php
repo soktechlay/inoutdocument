@@ -429,45 +429,45 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $error = "Database error: " . $e->getMessage();
     }
   } elseif ($loginType == 'updatepass') {
-    // Handle password update
-    if (!empty($_POST["updatepassid"]) && !empty($_POST["formValidationPass"]) && !empty($_POST["formValidationConfirmPass"])) {
-      $getid = $_POST['updatepassid'];
-      $password = $_POST['formValidationPass'];
-      $confirmPassword = $_POST['formValidationConfirmPass'];
+    $msg = $error = '';
+if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_type"]) && $_POST["login_type"] == "updatepass") {
+  if (!empty($_POST["updatepassid"]) && !empty($_POST["formValidationPass"]) && !empty($_POST["formValidationConfirmPass"])) {
+    $getid = $_POST['updatepassid'];
+    $password = $_POST['formValidationPass'];
+    $confirmPassword = $_POST['formValidationConfirmPass'];
 
-      // Check if passwords match
-      if ($password === $confirmPassword) {
-        // Check if password meets requirements
-        if (preg_match('/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/', $password)) {
-          // Hash the password using MD5
-          $hashedPassword = md5($password);
+    if ($password === $confirmPassword) {
+      if (preg_match('/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/', $password)) {
+        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-          // Update password in tbluser table
-          try {
-            $query = "UPDATE tbluser SET Password = :password WHERE id = :id";
-            $stmt = $dbh->prepare($query);
-            $stmt->bindParam(':password', $hashedPassword);
-            $stmt->bindParam(':id', $getid);
-            $stmt->execute();
-            sleep(1);
-            $msg = 'ពាក្យសម្ងាត់បានធ្វើឲ្យប្រសើរប្រាស់ប្រាក់ទទួលបានដោយជោគជ័យ។';
-          } catch (PDOException $e) {
-            // Handle database errors
-            sleep(1);
-            $error = "កំហុស​ក្នុង​ទិន្នន័យ​ម៉ោងរបស់បញ្ហាទិញជាំទទួល: " . $e->getMessage();
-          }
-        } else {
-          sleep(1);
-          $error = 'ពាក្យសម្ងាត់ត្រូវតែធំជាងមួយ ៨ តួ មាន​តួ​អក្សរ​ធំមួយតួ និង​មាន​និមិត្ត​ទឹកប្រាក់មួយតួ។';
+        try {
+          $query = "UPDATE tbluser SET Password = :password WHERE id = :id";
+          $stmt = $dbh->prepare($query);
+          $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
+          $stmt->bindParam(':id', $getid);
+          $stmt->execute();
+          $msg = 'Password has been successfully updated.';
+          $_SESSION['msg'] = $msg;
+        } catch (PDOException $e) {
+          $error = "Database error: " . $e->getMessage();
+          $_SESSION['error'] = $error;
         }
       } else {
-        sleep(1);
-        $error = 'ពាក្យសម្ងាត់មិនត្រូវដល់។';
+        $error = 'Password must be at least 8 characters long, contain an uppercase letter, and a special symbol.';
+        $_SESSION['error'] = $error;
       }
     } else {
-      sleep(1);
-      $error = 'សូម​ផ្ដល់​ពាក្យសម្ងាត់​ដើម្បី​ធ្វើ​ឲ្យបាន​ប៉ុន្មាន។';
+      $error = 'Passwords do not match.';
+      $_SESSION['error'] = $error;
     }
+  } else {
+    $error = 'Please provide all required fields.';
+    $_SESSION['error'] = $error;
+  }
+
+ 
+}
+
   } elseif ($loginType == 'twofacode') {
     // Handle 2FA secret update
     if (!empty($_POST['twofacodeid']) && !empty($_POST['modalEnableOTPPhone']) && !empty($_POST['secret'])) {
