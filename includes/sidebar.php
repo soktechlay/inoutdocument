@@ -35,20 +35,20 @@ $activePage = ''; // Replace with your logic to determine active page
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">ឯកសារចេញចូលអង្គភាពសវនកម្មផ្ទៃក្នុង</div>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលអង្គភាព</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for iau -->
             <li class="menu-item <?php echo ($activePage === 'iniau.php') ? 'active' : ''; ?>">
               <a href="iniau.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">ឯកសារចូល</div>
+                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
               </a>
             </li>
             <li class="menu-item <?php echo ($activePage === 'outiau.php') ? 'active' : ''; ?>">
               <a href="outiau.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>
             </li>
           </ul>
@@ -59,20 +59,20 @@ $activePage = ''; // Replace with your logic to determine active page
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">ឯកសារចេញចូលនាយកដ្ឋានកិច្ចការទូទៅ</div>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានកិច្ចការទូទៅ</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for general -->
             <li class="menu-item <?php echo ($activePage === 'ingeneral.php') ? 'active' : ''; ?>">
               <a href="ingeneral.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">ឯកសារចូល</div>
+                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
               </a>
             </li>
             <li class="menu-item <?php echo ($activePage === 'outgeneral.php') ? 'active' : ''; ?>">
               <a href="outgeneral.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>
             </li>
           </ul>
@@ -83,20 +83,20 @@ $activePage = ''; // Replace with your logic to determine active page
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">ឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី១</div>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី១</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for audit1 -->
             <li class="menu-item <?php echo ($activePage === 'inaudit1.php') ? 'active' : ''; ?>">
               <a href="inaudit1.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">ឯកសារចូល</div>
+                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
               </a>
             </li>
             <li class="menu-item <?php echo ($activePage === 'outaudit1.php') ? 'active' : ''; ?>">
               <a href="outaudit1.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>
             </li>
           </ul>
@@ -107,20 +107,20 @@ $activePage = ''; // Replace with your logic to determine active page
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">ឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី២</div>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី២</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for audit2 -->
             <li class="menu-item <?php echo ($activePage === 'inaudit2.php') ? 'active' : ''; ?>">
               <a href="inaudit2.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">ឯកសារចូល</div>
+                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
               </a>
             </li>
             <li class="menu-item <?php echo ($activePage === 'outaudit2.php') ? 'active' : ''; ?>">
               <a href="outaudit2.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">ឯកសារចេញ</div>
+                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>
             </li>
           </ul>

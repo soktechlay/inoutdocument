@@ -171,8 +171,8 @@ ob_start();
                       $stmt2->execute([$id]);
                       while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) { ?>
                         <div class="d-flex  justify-content-between  p-2 rounded-3">
-                          <a href="../../uploads/file/in-doc/<?php echo $row2['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
-                            <?php echo $row2['Typedocument']; ?>
+                          <a href="../../uploads/file/in-doc/<?php echo $row2['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0  ">
+                          <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
                           </a>
                         </div>
                       <?php } ?>
@@ -188,9 +188,9 @@ ob_start();
                       $stmt2 = $dbh->prepare($sql2);
                       $stmt2->execute([$id]);
                       while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) { ?>
-                        <div class="d-flex  justify-content-between  p-2 rounded-3">
-                          <a href="../../uploads/file/note-doc/<?php echo $row2['document']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
-                            <?php echo $row2['document']; ?>
+                        <div class="d-flex justify-content-between  p-2 rounded-3">
+                          <a href="../../uploads/file/note-doc/<?php echo $row2['document']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 ">
+                          <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
                           </a>
                         </div>
                       <?php } ?>

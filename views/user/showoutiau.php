@@ -114,8 +114,8 @@ ob_start();
                       $stmt2->execute([$id]);
                       while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) { ?>
                         <div class="d-flex justify-content-between p-2 rounded-3">
-                          <a href="../../uploads/file/out-doc/<?php echo $row2['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary">
-                            <?php echo $row2['Typedocument']; ?>
+                          <a href="../../uploads/file/out-doc/<?php echo $row2['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 ">
+                          <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
                           </a>
                         </div>
                       <?php } ?>
