@@ -154,11 +154,11 @@ ob_start();
                   <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="give" class="form-label">ឈ្មោះអ្នក​ប្រគល់</label>
+                  <label for="give" class="form-label">ឈ្មោះមន្រ្ទី​ប្រគល់</label>
                   <input class="form-control" type="text" id="give" name="give" value="<?php echo htmlentities($row['NameOfgive']) ?>" disabled>
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="recrived" class="form-label">ឈ្មោះអ្នកទទួល</label>
+                  <label for="recrived" class="form-label">ឈ្មោះមន្រ្ទីទទួល</label>
                   <input class="form-control" type="text" id="recrived" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
                 </div>
                 <div class="mb-3 col-md-6">
@@ -202,7 +202,7 @@ ob_start();
                   <input class="form-control" type="text" id="department" name="department" value="<?php echo htmlentities($row['DepartmentReceive']) ?>" disabled>
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="burden" class="form-label">ឈ្មោះអ្នកទទួលបន្ទុក</label>
+                  <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
                   <input class="form-control" type="text" id="burden" name="burden" value="<?php echo htmlentities($row['NameRecipient']) ?>" disabled>
                 </div>
               <?php
@@ -213,9 +213,9 @@ ob_start();
               <!-- Button trigger modal -->
               <div class="col-md-12 text-end">
                 <!-- Buttons for editing and deleting -->
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">កែសម្រួល</button>
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">កែប្រែ</button>
                 <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">លុប</button>
-                <a href="iniau.php" class="btn btn-secondary">ត្រឡប់ក្រោយ</a>
+                <a href="iniau.php" class="btn btn-secondary">បោះបង់</a>
               </div>
 
             </div>
@@ -291,14 +291,14 @@ ob_start();
                 </div>
               </div>
               <div class="mb-3 col-md-6">
-                <label for="give" class="form-label">ឈ្មោះអ្នក​ប្រគល់</label>
+                <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                 <div class="input-group input-group-merge">
                   <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                   <input class="form-control" type="text" id="give" name="give" value="<?php echo htmlentities($row['NameOfgive']); ?>">
                 </div>
               </div>
               <div class="mb-3 col-md-6">
-                <label for="recrived" class="form-label">ឈ្មោះអ្នកទទួល</label>
+                <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                 <div class="input-group input-group-merge">
                   <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                   <select name="recrived" id="recrived" class="form-select form-control">
@@ -345,7 +345,7 @@ ob_start();
                 </div>
               </div>
               <div class="mb-3 col-md-6">
-                <label for="burden" class="form-label">ឈ្មោះអ្នកទទួលបន្ទុក</label>
+                <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
                 <div class="input-group input-group-merge">
                   <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                   <select name="burden" id="burden" class="form-select form-control">

@@ -15,29 +15,29 @@ if (is_null($id)) {
 }
 
 // File upload directories
-$targetDir = "../../uploads/file/in-doc/";
+// $targetDir = "../../uploads/file/in-doc/";
 $targetDir1 = "../../uploads/file/note-doc/";
 
-if (isset($_POST["submited"])) {
-    if (!empty($_FILES["file1"]["name"])) {
-        $fileName = basename($_FILES["file1"]["name"]);
-        $targetFilePath = $targetDir . $fileName;
-        $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
+// if (isset($_POST["submited"])) {
+//     if (!empty($_FILES["file1"]["name"])) {
+//         $fileName = basename($_FILES["file1"]["name"]);
+//         $targetFilePath = $targetDir . $fileName;
+//         $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
 
-        // Allow certain file formats 
-        $allowTypes = array('docx', 'pdf', 'pptx');
-        if (in_array($fileType, $allowTypes)) {
-            if (move_uploaded_file($_FILES["file1"]["tmp_name"], $targetFilePath)) {
-                $sql1 = "UPDATE indocument SET Typedocument = ? WHERE ID = ?";
-                $stmt1 = $dbh->prepare($sql1);
-                $stmt1->execute([$fileName, $id]);
-                $success1 = $fileName . " បានរក្សាទុករួចរាល់។";
-            } else {
-                $error1 = "សូមអភ័យទោស, មានបញ្ហាកើតឡើងកំលុងពេលរក្សាទុកឯកសារ។";
-            }
-        }
-    }
-}
+//         // Allow certain file formats 
+//         $allowTypes = array('docx', 'pdf', 'pptx');
+//         if (in_array($fileType, $allowTypes)) {
+//             if (move_uploaded_file($_FILES["file1"]["tmp_name"], $targetFilePath)) {
+//                 $sql1 = "UPDATE indocument SET Typedocument = ? WHERE ID = ?";
+//                 $stmt1 = $dbh->prepare($sql1);
+//                 $stmt1->execute([$fileName, $id]);
+//                 $success1 = $fileName . " បានរក្សាទុករួចរាល់។";
+//             } else {
+//                 $error1 = "សូមអភ័យទោស, មានបញ្ហាកើតឡើងកំលុងពេលរក្សាទុកឯកសារ។";
+//             }
+//         }
+//     }
+// }
 
 if (isset($_POST["submit"])) {
     if (!empty($_FILES["file2"]["name"])) {
@@ -115,7 +115,7 @@ ob_start();
 ?>
 
 
-<div class="app-card-body shadow-sm align-items-center rounded-4 bg-white p-3 mb-3">
+<!-- <div class="app-card-body shadow-sm align-items-center rounded-4 bg-white p-3 mb-3">
     <div class="row col-md-12 d-flex justify-content-between align-items-center">
         <div class="title-form d-flex align-items-center justify-content-start p-0">
             <i class='bx bxs-file-doc p-3 rounded-circle bg-label-primary'></i>
@@ -157,7 +157,7 @@ ob_start();
             <a href="../../uploads/file/in-doc/<?php echo htmlspecialchars($row1['Typedocument']); ?>" target="_blank" class="btn-sm bg-gradient-success text-white h6 mb-0"><i class="bi bi-download"></i> Download</a>
         </div>
     <?php } ?>
-</div>
+</div> -->
 
 <div class="app-card-body shadow-sm align-items-center rounded-4 bg-white p-3 mb-3">
     <div class="row col-md-12 d-flex justify-content-between align-items-center">
@@ -171,7 +171,7 @@ ob_start();
         
         <div class="row mt-2">
             <div class="mb-3 col-md-6">
-                <label for="burden" class="form-label">ឈ្មោះអ្នកទទួលបន្ទុក</label>
+                <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
                 <div class="input-group input-group-merge">
                     <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                     <select name="burden" id="burden" class="form-select form-control" required>

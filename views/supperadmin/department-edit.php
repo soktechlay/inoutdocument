@@ -115,7 +115,12 @@ if (isset($_POST['delete'])) {
         ?>
         <form id="formAuthentication"  class="mb-3" method="POST">
           <input type="hidden" name="login_type" value="edepartment">
-          <input type="hidden" name="edepid" value="<?php echo $getid ?>">
+          <input type="hidden" name="edepid" value="<?php echo $getid ?>">          
+          <input type="hidden" name="edepname" value="<?php echo $departmentname ?>">
+          <input type="hidden" name="eheadofunit" value="<?php echo $unitHeadFullName ?>">
+          <input type="hidden" name="edepheadofunit[]" value="<?php echo $depUnitHeadFullName ?>">
+          <input type="hidden" name="eheaddep" value="<?php echo $headFullName ?>">
+          <input type="hidden" name="edeheaddep" value="<?php echo $depHeadFullName ?>">     
           <div class="mb-3">
             <label for="edepname" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
             <span class="text-danger fw-bold">*</span>

@@ -162,14 +162,14 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="give" class="form-label">ឈ្មោះអ្នក​ប្រគល់</label>
+                          <label for="give" class="form-label">ឈ្មោះមន្រ្តីប្រគល់</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                            <input type="text" class="form-control" id="give" name="give" placeholder="បំពេញឈ្មោះអ្នក​ប្រគល់..." required>
+                            <input type="text" class="form-control" id="give" name="give" placeholder="បំពេញឈ្មោះមន្រ្តី​ប្រគល់..." required>
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="recrived" class="form-label">ឈ្មោះអ្នកទទួល</label>
+                          <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                             <select name="recrived" id="recrived" class="form-select form-control" required>
@@ -265,7 +265,7 @@ ob_start();
                       <th>លេខឯកសារ</th>
                       <th>កម្មវត្តុ</th>
                       <th>មកពីស្ថាប័នឬក្រសួង</th>
-                      <th>ឈ្មោះអ្នក​ប្រគល់</th>
+                      <th>ឈ្មោះមន្រ្តីប្រគល់</th>
                       <th>ប្រភេទឯកសារចូល/ចំណារ</th>
                       <th>កាលបរិច្ឆេទ</th>
                       <th>សកម្មភាព</th>

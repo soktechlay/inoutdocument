@@ -93,11 +93,11 @@ ob_start();
                   <input class="form-control" type="text" id="outdepartment" name="outdepartment" value="<?php echo htmlentities($row['OutDepartment']); ?>" disabled>
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="nameofreceive" class="form-label">ឈ្មោះអ្នកទទួល</label>
+                  <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                   <input class="form-control" type="text" id="nameofreceive" name="nameofreceive" value="<?php echo htmlentities($row['NameOFReceive']); ?>" disabled>
                 </div>
                 <div class="mb-3 col-md-6">
-                  <label for="nameofgive" class="form-label">ឈ្មោះអ្នក​ប្រគល់</label>
+                  <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                   <input class="form-control" type="text" id="nameofgive" name="nameofgive" value="<?php echo htmlentities($row['NameOfgive']); ?>" disabled>
                 </div>
                 <div class="mb-3 col-md-6">
@@ -127,11 +127,11 @@ ob_start();
               ?>
             </div>
             <div class="col-md-12 text-end">
-              <!-- Buttons for editing and deleting -->
-              <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">កែសម្រួល</button>
-              <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">លុប</button>
-              <a href="outaudit2.php" class="btn btn-secondary">ត្រឡប់ក្រោយ</a>
-            </div>
+                <!-- Buttons for editing and deleting -->
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#editModal">កែប្រែ</button>
+                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal">លុប</button>
+                <a href="iniau.php" class="btn btn-secondary">បោះបង់</a>
+              </div>
           </form>
         </div>
       </div>
@@ -202,14 +202,14 @@ ob_start();
                 </div>
               </div>
               <div class="mb-3 col-md-6">
-                <label for="nameofreceive" class="form-label">ឈ្មោះអ្នកទទួល</label>
+                <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                 <div class="input-group input-group-merge">
                   <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                   <input class="form-control" type="text" id="nameofreceive" name="nameofreceive" value="<?php echo htmlentities($row['NameOFReceive']); ?>">
                 </div>
               </div>
               <div class="mb-3 col-md-6">
-                <label for="nameofgive" class="form-label">ឈ្មោះអ្នក​ប្រគល់</label>
+                <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                 <div class="input-group input-group-merge">
                   <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                   <select name="nameofgive" id="nameofgive" class="form-select form-control">
