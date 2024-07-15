@@ -247,7 +247,7 @@ ob_start();
             $toDate = isset($_POST['toDate']) ? $_POST['toDate'] : ''; // Example, replace with your actual value
             ?>
             <div class="col-md-4 mb-1 text-end">
-              <form method="POST" action="export_scriptin.php" id="filterIndocument">
+              <form method="POST" action="export_script.php" id="filterIndocument">
                 <input type="hidden" name="documentType" value="indocument">
                 <input type="hidden" name="fromDate" value="<?php echo $fromDate; ?>">
                 <input type="hidden" name="toDate" value="<?php echo $toDate; ?>">
