@@ -292,9 +292,7 @@ ob_start();
                                 </td>
                                 <td><?php echo $row['DepartmentName'] ?></td>
                                 <td><?php echo $row['NameOfgive'] ?></td>
-                                <td><a href="../../uploads/file/in-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
-                                    ពិនិត្យមើលឯកសារ
-                                  </a></td>
+                                <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ពិនិត្យមើលឯកសារ</a></td>
                                 <td><?php echo $row['Date'] ?></td>
                                 <td>
                                   <div class="d-flex align-items-center justify-content-center">

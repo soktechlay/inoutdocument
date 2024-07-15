@@ -123,7 +123,7 @@ ob_start();
                                     }
                                 } else {
                                     echo "<tr><td colspan='3'><div class='text-center'>
-                                        <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 18%; height: auto;' />
+                                        <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
                                         <h5 class='text-muted mt-3'>No recent activities found.</h5>
                                     </div></td></tr>";
                                 }

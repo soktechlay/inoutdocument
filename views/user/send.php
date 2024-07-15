@@ -71,7 +71,8 @@ if (isset($_POST["submit"])) {
 
                         // Insert into notifications table
                         $userId = $_SESSION['userid']; // Assuming you have the user ID stored in session
-                        $notificationMessage = "New request submitted by user ID: $userId with send ID: $sendid";
+                        // $notificationMessage = "New submitted by user ID: $userId with send ID: $sendid";
+                        $notificationMessage = "ឯកសារចូលនាយកដ្ឋាន";
 
                         $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document)";
                         $queryNotification = $dbh->prepare($sqlNotification);

@@ -225,8 +225,9 @@ try {
                             <img src="<?php echo htmlspecialchars($notification['Profile']); ?>" alt="Profile" class="avatar avatar-sm rounded-circle" style="object-fit: cover">
                           </div>
                           <div>
+                            <small class="text-dark p"><?php echo htmlentities($notification['message']); ?></small>
                             <h5 class="text-black text-uppercase mb-0">
-                            <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['FirstName']). " " . htmlentities($notification['LastName']); ?></small>
+                              <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['FirstName']) . " " . htmlentities($notification['LastName']); ?></small>
                             </h5>
                             <p class="text-black mb-0">ឯកសារភ្ជាប់ :
                               <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>
@@ -352,7 +353,7 @@ try {
                     </div>
                     <div>
                       <h5 class="text-black text-uppercase mb-0">
-                      <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['FirstName']). " " . htmlentities($notification['LastName']); ?></small>
+                        <small class="text-primary p">ឯកសារមកពី : <?php echo htmlentities($notification['Honorific']) . " " . htmlentities($notification['FirstName']) . " " . htmlentities($notification['LastName']); ?></small>
                       </h5>
                       <p class="text-black mb-0">ឯកសារភ្ជាប់ :
                         <a href="read_notifications.php?id=<?php echo $notification['id']; ?>" class="text-decoration-none">View Document <i class="bx bxs-file"></i></a>

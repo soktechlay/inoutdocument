@@ -311,54 +311,64 @@ if ($userData) {
               </thead>
 
               <tbody>
-                <?php
-                // Ensure $dbh (PDO instance) and $getid (user ID) are properly defined and initialized
+    <?php
+    // Ensure $dbh (PDO instance) and $getid (user ID) are properly defined and initialized
 
-                // Query to fetch permissions from tblpermission for the user
-                // Assuming $dbh is your PDO instance
+    // Query to fetch permissions from tbluser for the user
+    $sqlUser = "SELECT iau, general, audit1, audit2, hr, traning, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :getid";
+    $queryUser = $dbh->prepare($sqlUser);
+    $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
+    $queryUser->execute();
+    $user = $queryUser->fetch(PDO::FETCH_ASSOC);
 
-                // Fetch user-specific permissions from tbluser
-                $sqlUser = "SELECT iau, general, audit1, audit2 FROM tbluser WHERE id = :getid";
-                $queryUser = $dbh->prepare($sqlUser);
-                $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
-                $queryUser->execute();
-                $user = $queryUser->fetch(PDO::FETCH_ASSOC);
-
-                // Display user-specific permissions if user exists
-                if ($user) :
-                  $userPermissions = ['iau', 'general', 'audit1', 'audit2'];
-                  foreach ($userPermissions as $permissionName) :
-                ?>
-                    <tr>
-                      <td class="text-nowrap fw-medium">
-                        <?= ucfirst($permissionName); ?>
-                      </td>
-                      <td class="d-flex flex-row justify-content-center">
-                        <label class="switch switch-primary">
-                          <input type="checkbox" name="pid[]" value="<?= $permissionName; ?>" <?= $user[$permissionName] ? 'checked' : ''; ?> class="switch-input permission-toggle">
-                          <span class="switch-toggle-slider">
+    // Display user-specific permissions if user exists
+    if ($user) :
+        $userPermissions = [
+            'iau' => 'អង្គភាពសវនកម្មការផ្ទៃក្នុង', // Internal Audit Unit
+            'general' => 'នាយកដ្ឋានកិច្ចការទូទៅ', // General
+            'audit1' => 'នាយកដ្ឋានសវនកម្មទី១', // Audit 1
+            'audit2' => 'នាយកដ្ឋានសវនកម្មទី២', // Audit 2
+            'hr' => 'ការិយាល័យធនធានមនុស្ស', // Human Resources
+            'traning' => 'ការិយាល័យបណ្តុះបណ្តាល', // Training
+            'it' => 'ការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា', // Information Technology
+            'ofaudit1' => 'ការិយាល័យសវនកម្មទី១', // Office Audit 1
+            'ofaudit2' => 'ការិយាល័យសវនកម្មទី២', // Office Audit 2
+            'ofaudit3' => 'ការិយាល័យសវនកម្មកាទី៣', // Office Audit 3
+            'ofaudit4' => 'ការិយាល័យសវនកម្មទី៤'  // Office Audit 4
+        ];
+        foreach ($userPermissions as $key => $permissionName) :
+    ?>
+            <tr>
+                <td class="text-nowrap fw-medium">
+                    <?= ucfirst($permissionName); ?>
+                </td>
+                <td class="d-flex flex-row justify-content-center">
+                    <label class="switch switch-primary">
+                        <input type="checkbox" name="pid[]" value="<?= $key; ?>" <?= $user[$key] ? 'checked' : ''; ?> class="switch-input permission-toggle">
+                        <span class="switch-toggle-slider">
                             <span class="switch-on">
-                              <i class="bx bx-check"></i>
+                                <i class="bx bx-check"></i>
                             </span>
                             <span class="switch-off">
-                              <i class="bx bx-x"></i>
+                                <i class="bx bx-x"></i>
                             </span>
-                          </span>
-                        </label>
-                      </td>
-                    </tr>
-                  <?php
-                  endforeach;
-                else :
-                  // Handle case where user is not found
-                  ?>
-                  <tr>
-                    <td colspan="2">User not found.</td>
-                  </tr>
-                <?php
-                endif;
-                ?>
-              </tbody>
+                        </span>
+                    </label>
+                </td>
+            </tr>
+    <?php
+        endforeach;
+    else :
+        // Handle case where user is not found
+    ?>
+        <tr>
+            <td colspan="2">User not found.</td>
+        </tr>
+    <?php
+    endif;
+    ?>
+</tbody>
+
 
 
 

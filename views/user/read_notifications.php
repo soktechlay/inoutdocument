@@ -50,6 +50,7 @@ if ($stmt->execute()) {
             $nameRecipient = htmlspecialchars($row["NameRecipient"]);
             $DepartmentName = htmlspecialchars($row["DepartmentName"]);
             $NameOfgive = htmlspecialchars($row["NameOfgive"]);
+            
         } else {
             // Handle case where notification with given id is not found
             $error_message = "Notification not found.";
@@ -105,6 +106,7 @@ ob_start();
                     <li class="list-group-item d-flex justify-content-center align-items-center">
                         <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="btn-sm  text-primary h5 mb-0"><i class="bi bi-download"></i> Download</a>
                     </li>
+                   
                 </ul>
             </div>
         </div>
