@@ -38,7 +38,8 @@ if ($documentType === 'indocument') {
     $sql = "SELECT * FROM indocument 
             INNER JOIN tbluser ON indocument.user_id = tbluser.id 
             WHERE tbluser.id = :userid 
-            AND indocument.isdelete = 0 
+            AND indocument.isdelete = 0
+            AND indocument.office = 1 
             AND indocument.Date BETWEEN :fromDate AND :toDate 
             ORDER BY indocument.id DESC";
 
@@ -72,7 +73,7 @@ if ($documentType === 'indocument') {
         if (count($data) > 0) {
             array_unshift($data, $header); // Add header to the beginning of data
             $xlsx = SimpleXLSXGen::fromArray($data);
-            $fileName = 'indocument_export.xlsx';
+            $fileName = 'officeindocument_export.xlsx';
 
             header('Content-Disposition: attachment; filename="' . $fileName . '"');
             header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -87,6 +88,52 @@ if ($documentType === 'indocument') {
     }
 } else {
     echo "Invalid document type.";
+}if ($documentType === 'outdocument') {
+    $sql = "SELECT * FROM outdocument 
+            INNER JOIN tbluser ON outdocument.user_id = tbluser.id 
+            WHERE tbluser.id = :userid
+            AND outdocument.isdelete = 0 
+            AND outdocument.office = 1
+            AND outdocument.Date BETWEEN :fromDate AND :toDate 
+            ORDER BY outdocument.id DESC";
+
+    $query = $dbh->prepare($sql);
+    $query->execute($params);
+    $searchResults = $query->fetchAll(PDO::FETCH_ASSOC);
+
+    // Check if any non-empty row exists
+    if (!empty($searchResults)) {
+        $header = ['**ល.រ**', '**លេខឯកសារ**', '**កម្មវត្តុ**', '**ចេញទៅស្ថាប័នឬក្រសួង**', '**ឈ្មោះមន្រ្តីទទួល**', '**ឈ្មោះមន្រ្តីប្រគល់**', '**ចេញពីការិល័យ**', '**ប្រភេទឯកសារចេញ**', '**កាលបរិច្ឆេទ**'];
+
+        $data = [];
+        $cnt = 1;
+        foreach ($searchResults as $row) {
+            $data[] = [
+                $cnt,
+                $row['CodeId'],
+                $row['Type'],
+                $row['OutDepartment'],
+                $row['NameOFReceive'],
+                $row['NameOfgive'],
+                $row['FromDepartment'],
+                $row['Typedocument'],
+                $row['Date']
+            ];
+            $cnt++;
+        }
+
+        array_unshift($data, $header); // Add header to the beginning of data
+        $xlsx = SimpleXLSXGen::fromArray($data);
+        $fileName = 'officeoutdocument_export.xlsx';
+
+        header('Content-Disposition: attachment; filename="' . $fileName . '"');
+        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+        header('Cache-Control: max-age=0');
+        $xlsx->downloadAs($fileName);
+        exit;
+    } else {
+        echo "No data found in outdocument.";
+    }
 }
 
 ?>

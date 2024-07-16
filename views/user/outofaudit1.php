@@ -12,8 +12,8 @@ if (!isset($_SESSION['userid'])) {
 include('../../includes/translate.php');
 
 // Page variables
-$pageTitle = "ឯកសារចេញការិយាល័យធនធានមនុស្ស";
-$sidebar = "outhr";
+$pageTitle = "ឯកសារចេញការិយាល័យសវនកម្មទី១";
+$sidebar = "outofaudit1";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
@@ -48,16 +48,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         try {
             $query->execute($data);
             $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-            header("Location: outhr.php?msg=" . urlencode($msg) . "&status=success");
+            header("Location: outofaudit1.php?msg=" . urlencode($msg) . "&status=success");
             exit();
         } catch (PDOException $e) {
             $error = "Error: " . $e->getMessage();
-            header("Location: outhr.php?msg=" . urlencode($error) . "&status=error");
+            header("Location: outofaudit1.php?msg=" . urlencode($error) . "&status=error");
             exit();
         }
     } else {
         $error = "Error uploading file.";
-        header("Location: outhr.php?msg=" . urlencode($error) . "&status=error");
+        header("Location: outofaudit1.php?msg=" . urlencode($error) . "&status=error");
         exit();
     }
 }
@@ -73,16 +73,16 @@ if (isset($_GET['delete'])) {
         $query->execute();
         if ($query->rowCount()) {
             $msg = "Document deleted successfully!";
-            header("Location: outhr.php?msg=" . urlencode($msg) . "&status=success");
+            header("Location: outofaudit1.php?msg=" . urlencode($msg) . "&status=success");
             exit();
         } else {
             $error = "Failed to delete document.";
-            header("Location: outhr.php?msg=" . urlencode($error) . "&status=error");
+            header("Location: outofaudit1.php?msg=" . urlencode($error) . "&status=error");
             exit();
         }
     } catch (PDOException $e) {
         $error = "Error: " . $e->getMessage();
-        header("Location: outhr.php?msg=" . urlencode($error) . "&status=error");
+        header("Location: outofaudit1.php?msg=" . urlencode($error) . "&status=error");
         exit();
     }
 }
@@ -149,10 +149,10 @@ if (isset($_POST['edit'])) {
         $_POST['outdepartment'], $_POST['nameofreceive'], $uploadedFile, $update, $id
     ]);
     if ($query->rowCount() > 0) {
-        header("Location: outhr.php?ID=" . urlencode($id) . "&msg=Successfully+Edited&status=success");
+        header("Location: outofaudit1.php?ID=" . urlencode($id) . "&msg=Successfully+Edited&status=success");
         exit();
     } else {
-        header("Location: outhr.php?ID=" . urlencode($id) . "&msg=Error+Edited&status=failed");
+        header("Location: outofaudit1.php?ID=" . urlencode($id) . "&msg=Error+Edited&status=failed");
         exit();
     }
 }
@@ -174,7 +174,7 @@ ob_start();
         <div class="container-xl flex-grow-1">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="card-header">
-                    <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">ការិយាល័យធនធានមនុស្ស/</span>ឯកសារចេញ</h4>
+                    <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">ការិយាល័យសវនកម្មទី១/</span>ឯកសារចេញ</h4>
                 </div>
                 <div class="dt-action-buttons pt-md-0">
                     <div class="dt-buttons btn-group flex-wrap ">

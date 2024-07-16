@@ -37,6 +37,7 @@ if ($documentType === 'outdocument') {
             INNER JOIN tbluser ON outdocument.user_id = tbluser.id 
             WHERE tbluser.id = :userid
             AND outdocument.isdelete = 0 
+            AND outdocument.Department = 1 
             AND outdocument.Date BETWEEN :fromDate AND :toDate 
             ORDER BY outdocument.id DESC";
 
@@ -46,7 +47,7 @@ if ($documentType === 'outdocument') {
 
     // Check if any non-empty row exists
     if (!empty($searchResults)) {
-        $header = ['**ល.រ**', '**លេខឯកសារ**', '**កម្មវត្តុ**', '**ចេញទៅស្ថាប័នឬក្រសួង**', '**ឈ្មោះមន្រ្តីទទួល**', '**ឈ្មោះមន្រ្តីប្រគល់**', '**មកពីនាយកដ្ឋាន**', '**ប្រភេទឯកសារចេញ**', '**កាលបរិច្ឆេទ**'];
+        $header = ['**ល.រ**', '**លេខឯកសារ**', '**កម្មវត្តុ**', '**ចេញទៅស្ថាប័នឬក្រសួង**', '**ឈ្មោះមន្រ្តីទទួល**', '**ឈ្មោះមន្រ្តីប្រគល់**', '**ចេញពីនាយកដ្ឋាន**', '**ប្រភេទឯកសារចេញ**', '**កាលបរិច្ឆេទ**'];
 
         $data = [];
         $cnt = 1;
@@ -67,7 +68,7 @@ if ($documentType === 'outdocument') {
 
         array_unshift($data, $header); // Add header to the beginning of data
         $xlsx = SimpleXLSXGen::fromArray($data);
-        $fileName = 'outdocument_export.xlsx';
+        $fileName = 'departmentoutdocument_export.xlsx';
 
         header('Content-Disposition: attachment; filename="' . $fileName . '"');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
@@ -82,6 +83,7 @@ if ($documentType === 'outdocument') {
             INNER JOIN tbluser ON indocument.user_id = tbluser.id 
             WHERE tbluser.id = :userid
             AND indocument.isdelete = 0 
+            AND indocument.Department = 1 
             AND indocument.Date BETWEEN :fromDate AND :toDate 
             ORDER BY indocument.id DESC";
 
@@ -91,7 +93,7 @@ if ($documentType === 'outdocument') {
 
     // Check if any non-empty row exists
     if (!empty($searchResults)) {
-        $header = ['**ល.រ**', '**លេខឯកសារ**', '**កម្មវត្តុ**', '**មកពីស្ថាប័នឬក្រសួង**', '**ឈ្មោះមន្រ្តីប្រគល់**', '**ឈ្មោះមន្រ្តីទទួល**', '**ប្រភេទឯកសារចូល**', '**ប្រភេទឯកសារចំណារ**', '**ឈ្មោះនាយកដ្ឋានទទួលបន្ទុក**', '**ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត**', '**កាលបរិច្ឆេទ**'];
+        $header = ['**ល.រ**', '**លេខឯកសារ**', '**កម្មវត្តុ**', '**មកពីស្ថាប័នឬក្រសួង**', '**ឈ្មោះមន្រ្តីប្រគល់**', '**ឈ្មោះមន្រ្តីទទួល**', '**ប្រភេទឯកសារចូល**', '**ប្រភេទឯកសារចំណារ**', '**ឈ្មោះនាយកដ្ឋានទទួលបន្ទុកឬការិយាល័យទទួលបន្ទុក**', '**ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត**', '**កាលបរិច្ឆេទ**'];
 
         $data = [];
         $cnt = 1;
@@ -114,7 +116,7 @@ if ($documentType === 'outdocument') {
 
         array_unshift($data, $header); // Add header to the beginning of data
         $xlsx = SimpleXLSXGen::fromArray($data);
-        $fileName = 'indocument_export.xlsx';
+        $fileName = 'departmentindocument_export.xlsx';
 
         header('Content-Disposition: attachment; filename="' . $fileName . '"');
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

@@ -12,7 +12,7 @@ if (!isset($_SESSION['userid'])) {
 include('../../includes/translate.php');
 
 $pageTitle = "ឯកសារចូលការិយាល័យធនធានមនុស្ស";
-$sidebar = "hr";
+$sidebar = "inhr";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
@@ -374,8 +374,6 @@ ob_start();
                                                                 <i class='bx bx-trash' style='color:#fd0606'></i>
                                                             </a>
                                                         </div>
-
-
                                                     </td>
                                                 </tr>
                                         <?php
@@ -515,7 +513,7 @@ ob_start();
                             <input class="form-control " type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']) ?>" disabled>
                         </div>
                         <div class="mb-3 col-md-6">
-                            <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
+                            <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
                             <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
                         </div>
                         <div class="mb-3 col-md-6">

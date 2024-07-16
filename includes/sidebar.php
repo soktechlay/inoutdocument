@@ -14,9 +14,8 @@ if (!$userPermissions) {
   die("Error fetching user permissions.");
 }
 
-// Active page determination (assuming $activePage is set somewhere in your script)
-$activePage = ''; // Replace with your logic to determine active page
-
+// Active page determination
+$activePage = basename($_SERVER['PHP_SELF']);
 ?>
 
 <aside id="layout-menu" class="layout-menu-horizontal menu menu-horizontal container-fluid flex-grow-0 bg-menu-theme" data-bg-class="bg-menu-theme" style="touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
@@ -134,7 +133,7 @@ $activePage = ''; // Replace with your logic to determine active page
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យធនធានមនុស្ស</div>
           </a>
           <ul class="menu-sub">
-            <!-- Submenu Items for audit2 -->
+            <!-- Submenu Items for hr -->
             <li class="menu-item <?php echo ($activePage === 'inhr.php') ? 'active' : ''; ?>">
               <a href="inhr.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
@@ -151,7 +150,6 @@ $activePage = ''; // Replace with your logic to determine active page
         </li>
       <?php endif; ?>
 
-
       <?php if ($userPermissions['traning'] == 1) : ?>
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
@@ -159,15 +157,15 @@ $activePage = ''; // Replace with your logic to determine active page
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យបណ្តុះបណ្តាល</div>
           </a>
           <ul class="menu-sub">
-            <!-- Submenu Items for audit2 -->
+            <!-- Submenu Items for traning -->
             <li class="menu-item <?php echo ($activePage === 'intraning.php') ? 'active' : ''; ?>">
-              <a href="inaudit2.php" class="menu-link">
+              <a href="intraning.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
               </a>
             </li>
             <li class="menu-item <?php echo ($activePage === 'outtraning.php') ? 'active' : ''; ?>">
-              <a href="outaudit2.php" class="menu-link">
+              <a href="outtraning.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>
@@ -176,127 +174,8 @@ $activePage = ''; // Replace with your logic to determine active page
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['it'] == 1) : ?>
-        <li class="menu-item">
-          <a href="javascript:void(0)" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា</div>
-          </a>
-          <ul class="menu-sub">
-            <!-- Submenu Items for audit2 -->
-            <li class="menu-item <?php echo ($activePage === 'init.php') ? 'active' : ''; ?>">
-              <a href="inaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
-              </a>
-            </li>
-            <li class="menu-item <?php echo ($activePage === 'outit.php') ? 'active' : ''; ?>">
-              <a href="outaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
-              </a>
-            </li>
-          </ul>
-        </li>
-      <?php endif; ?>
+      <!-- Add other menu items similarly based on user permissions -->
 
-      <?php if ($userPermissions['ofaudit1'] == 1) : ?>
-        <li class="menu-item">
-          <a href="javascript:void(0)" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី១</div>
-          </a>
-          <ul class="menu-sub">
-            <!-- Submenu Items for audit2 -->
-            <li class="menu-item <?php echo ($activePage === 'inofaudit.php') ? 'active' : ''; ?>">
-              <a href="inaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
-              </a>
-            </li>
-            <li class="menu-item <?php echo ($activePage === 'outofaudit1.php') ? 'active' : ''; ?>">
-              <a href="outaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
-              </a>
-            </li>
-          </ul>
-        </li>
-      <?php endif; ?>
-
-      <?php if ($userPermissions['ofaudit2'] == 1) : ?>
-        <li class="menu-item">
-          <a href="javascript:void(0)" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី២</div>
-          </a>
-          <ul class="menu-sub">
-            <!-- Submenu Items for audit2 -->
-            <li class="menu-item <?php echo ($activePage === 'inofaudit2.php') ? 'active' : ''; ?>">
-              <a href="inaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
-              </a>
-            </li>
-            <li class="menu-item <?php echo ($activePage === 'outofaudit2.php') ? 'active' : ''; ?>">
-              <a href="outaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
-              </a>
-            </li>
-          </ul>
-        </li>
-      <?php endif; ?>
-
-      <?php if ($userPermissions['ofaudit3'] == 1) : ?>
-        <li class="menu-item">
-          <a href="javascript:void(0)" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី៣</div>
-          </a>
-          <ul class="menu-sub">
-            <!-- Submenu Items for audit2 -->
-            <li class="menu-item <?php echo ($activePage === 'inofaudit.php') ? 'active' : ''; ?>">
-              <a href="inaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
-              </a>
-            </li>
-            <li class="menu-item <?php echo ($activePage === 'outofaudit3.php') ? 'active' : ''; ?>">
-              <a href="outaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
-              </a>
-            </li>
-          </ul>
-        </li>
-      <?php endif; ?>
-
-      <?php if ($userPermissions['ofaudit4'] == 1) : ?>
-        <li class="menu-item">
-          <a href="javascript:void(0)" class="menu-link menu-toggle">
-            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី៤</div>
-          </a>
-          <ul class="menu-sub">
-            <!-- Submenu Items for audit2 -->
-            <li class="menu-item <?php echo ($activePage === 'inofaudit4.php') ? 'active' : ''; ?>">
-              <a href="inaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
-              </a>
-            </li>
-            <li class="menu-item <?php echo ($activePage === 'outofaudit4.php') ? 'active' : ''; ?>">
-              <a href="outaudit2.php" class="menu-link">
-                <i class="menu-icon tf-icons bx bx-table"></i>
-                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
-              </a>
-            </li>
-          </ul>
-        </li>
-      <?php endif; ?>
-
-      
     </ul>
   </div>
 </aside>
