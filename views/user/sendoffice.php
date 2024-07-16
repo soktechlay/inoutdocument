@@ -166,9 +166,9 @@ ob_start();
             <h4 class="mt-2">ឯកសារចំណារ</h4>
         </div>
     </div>
-    <form method="POST" enctype="multipart/form-data">        
-        <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">       
-        
+    <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">
+
         <div class="row mt-2">
             <div class="mb-3 col-md-6">
                 <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>

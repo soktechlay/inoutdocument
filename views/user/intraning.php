@@ -11,8 +11,8 @@ if (!isset($_SESSION['userid'])) {
 // Include translation functionality
 include('../../includes/translate.php');
 
-$pageTitle = "ឯកសារចូលអង្គភាពសវនកម្មផ្ទៃក្នុង";
-$sidebar = "iau";
+$pageTitle = "ឯកសារចូលការិយាល័យបណ្តុះបណ្តាល";
+$sidebar = "traning";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
@@ -28,7 +28,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     ':recrived' => $_POST['recrived'],
     ':file_name' => $_FILES['files']['name'],
     ':date' => $date,
-    ':department' => 1  // Adding offices value
   ];
 
   // Destination path for uploaded file
@@ -38,26 +37,26 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
   // Upload file and insert data into database
   if (move_uploaded_file($file_tmp, $destination)) {
     // Database insertion query
-    $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
-                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid , :department)";
+    $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id)
+                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid)";
     $query = $dbh->prepare($sql);
 
     try {
       $query->execute($data);
       $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
       // Redirect with success message
-      header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
+      header("Location: ingeneral.php?msg=" . urlencode($msg) . "&status=success");
       exit();
     } catch (PDOException $e) {
       $error = "Error: " . $e->getMessage();
       // Redirect with error message
-      header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+      header("Location: inaudit1.php?msg=" . urlencode($error) . "&status=error");
       exit();
     }
   } else {
     $error = "Error uploading file.";
     // Redirect with error message
-    header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+    header("Location: inaudit1.php?msg=" . urlencode($error) . "&status=error");
     exit();
   }
 }
@@ -71,12 +70,12 @@ if (isset($_GET['delete'])) {
   if ($query->rowCount()) {
     $msg = "Document deleted successfully!";
     // Redirect with success message
-    header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
+    header("Location: inaudit1.php?msg=" . urlencode($msg) . "&status=success");
     exit();
   } else {
     $error = "Failed to delete document.";
     // Redirect with error message
-    header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+    header("Location: inaudit1.php?msg=" . urlencode($error) . "&status=error");
     exit();
   }
 }
@@ -85,8 +84,7 @@ if (isset($_GET['delete'])) {
 $sql = "SELECT * FROM indocument 
         JOIN tbluser ON indocument.user_id = tbluser.id 
         WHERE tbluser.id = :userid 
-        AND indocument.isdelete = 0
-         AND indocument.Department = 1";
+        AND indocument.isdelete = 0";
 
 $params = [':userid' => $userId];
 
@@ -126,7 +124,7 @@ ob_start();
     <div class="container-xl flex-grow-1">
       <div class="d-flex align-items-center justify-content-between">
         <div class="card-header">
-          <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">អង្គភាពសវនកម្មផ្ទៃក្នុង/</span>ឯកសារចូល</h4>
+          <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">ការិយាល័យបណ្តុះបណ្តាល/</span>ឯកសារចូល</h4>
         </div>
         <div class="dt-action-buttons pt-md-0">
           <div class="dt-buttons btn-group flex-wrap ">
@@ -140,7 +138,7 @@ ob_start();
                     <h1 class="modal-title fs-5 mef2" id="exampleModalLabel">ការដាក់បញ្ជូលឯកសារចូល</h1>
                   </div>
                   <div class="modal-body">
-                    <form method="POST" class="row g-2 needs-validation" name="example" enctype="multipart/form-data" novalidate>
+                    <form method="POST" class="row g-3 needs-validation" name="example" enctype="multipart/form-data" novalidate>
                       <div class="row">
                         <div class="mb-3 col-md-6">
                           <label for="code" class="form-label">លេខឯកសារ</label>
@@ -164,10 +162,23 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="give" class="form-label">ឈ្មោះមន្រ្តីប្រគល់</label>
+                          <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                            <input type="text" class="form-control" id="give" name="give" placeholder="បំពេញឈ្មោះមន្រ្តី​ប្រគល់..." required>
+                            <select name="give" id="give" class="form-select form-control" required>
+                              <option value="">ជ្រើសរើស...</option>
+                              <?php
+                              $sql = "SELECT * FROM tbluser";
+                              $query = $dbh->prepare($sql);
+                              $query->execute();
+                              $results = $query->fetchAll(PDO::FETCH_OBJ);
+                              if ($query->rowCount() > 0) {
+                                foreach ($results as $result) {
+                              ?>
+                                  <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                              <?php }
+                              } ?>
+                            </select>
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -225,12 +236,7 @@ ob_start();
                 </div>
                 <div class="form-group me-1">
                   <button type="submit" class="btn btn-icon btn-secondary"><i class='bx bx-search'></i></button>
-                </div>
-                <!-- <div class="form-group me-1 fw-medium">
-                  <button type="button" class="btn btn-icon btn-label-danger btn-reset" id="resetButton">
-                    <span><i class='bx bx-refresh'></i></span>
-                  </button>
-                </div> -->
+                </div>                
               </form>
             </div>
 
@@ -250,7 +256,6 @@ ob_start();
                         </button>
                       </form>
                     </div>
-
           </div>
         </div>
       </div>
@@ -268,7 +273,7 @@ ob_start();
                       <th>កម្មវត្តុ</th>
                       <th>មកពីស្ថាប័នឬក្រសួង</th>
                       <th>ឈ្មោះមន្រ្តីប្រគល់</th>
-                      <th>ប្រភេទឯកសារចូល/ចំណារ</th>
+                      <th>ប្រភេទឯកសារចូល</th>
                       <th>កាលបរិច្ឆេទ</th>
                       <th>សកម្មភាព</th>
                     </tr>
@@ -280,28 +285,26 @@ ob_start();
                       foreach ($searchResults as $row) {
                     ?>
                         <tr>
-                          <td class="text-sm font-weight-bold text-center mb-0"><b><?php echo htmlentities($cnt); ?></b></td>
-                          <td>
-                            <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo htmlentities($row['CodeId']); ?>
-                          </td>
-                          <td>
-                            <div class="d-inline-block text-truncate" style="max-width:180px;"><?php echo htmlentities($row['Type']); ?></div>
-                          </td>
-                          <td><?php echo htmlentities($row['DepartmentName']); ?></td>
-                          <td><?php echo htmlentities($row['NameOfgive']); ?></td>
-                          <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ពិនិត្យមើលឯកសារ</a></td>
-                          <td><?php echo htmlentities($row['Date']); ?></td>
-                          <td>
-                            <div class="d-flex align-items-center justify-content-center">
-                              <a href="showiniau.php?ID=<?php echo htmlentities($row['ID']); ?>">
-                                <i class='bx bx-show p-2'></i>
-                              </a>
-                              <a href="#" onclick="confirmDelete(<?php echo htmlentities($row['ID']); ?>)">
-                                <i class='bx bx-trash p-2' style='color:#fd0606'></i>
-                              </a>
-                            </div>
-                          </td>
-                        </tr>
+                                <td class="text-sm font-weight-bold text-center mb-0"><b><?php echo htmlentities($cnt); ?></b></td>
+                                <td><div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['CodeId'] ?></td>
+                                <td>
+                                  <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['Type'] ?></div>
+                                </td>
+                                <td><?php echo $row['DepartmentName'] ?></td>
+                                <td><?php echo $row['NameOfgive'] ?></td>
+                                <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ពិនិត្យមើលឯកសារ</a></td>
+                                <td><?php echo $row['Date'] ?></td>
+                                <td>
+                                  <div class="d-flex align-items-center justify-content-center">
+                                    <a href="showinaudit1.php?ID=<?php echo $row['ID'] ?>">
+                                      <i class='bx bx-show p-2'></i>
+                                    </a>
+                                    <a href="#" onclick="confirmDelete(<?php echo $row['ID'] ?>)">
+                                      <i class='bx bx-trash p-2' style='color:#fd0606'></i>
+                                    </a>
+                                  </div>
+                                </td>
+                              </tr>
                     <?php
                         $cnt++;
                       }

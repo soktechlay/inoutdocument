@@ -148,6 +148,25 @@ ob_start();
                                     </div>
                                 </div>
                                 <div class="mb-3 col-md-6">
+                                    <label for="files" class="form-label">ប្រភេទឯកសារបញ្ជូនបន្ត</label>
+                                    <div class="input-group ">
+                                        <div class="input-group-append">
+                                            <?php
+                                            $sql2 = "SELECT Typedocument FROM indocument WHERE ID = ?";
+                                            $stmt2 = $dbh->prepare($sql2);
+                                            $stmt2->execute([$id]);
+                                            while ($row2 = $stmt2->fetch(PDO::FETCH_ASSOC)) { ?>
+                                                <div class="d-flex justify-content-between  p-2 rounded-3">
+                                                    <a href="../../uploads/file/in-doc/<?php echo $row2['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0">
+                                                    <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                                                    </a>
+
+                                                </div>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mb-3 col-md-6">
                                     <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                                     <input class="form-control" type="text" id="recrived" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
                                 </div>

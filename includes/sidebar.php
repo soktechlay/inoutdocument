@@ -136,13 +136,13 @@ $activePage = ''; // Replace with your logic to determine active page
           <ul class="menu-sub">
             <!-- Submenu Items for audit2 -->
             <li class="menu-item <?php echo ($activePage === 'inhr.php') ? 'active' : ''; ?>">
-              <a href="inaudit2.php" class="menu-link">
+              <a href="inhr.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
               </a>
             </li>
             <li class="menu-item <?php echo ($activePage === 'outhr.php') ? 'active' : ''; ?>">
-              <a href="outaudit2.php" class="menu-link">
+              <a href="outhr.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>

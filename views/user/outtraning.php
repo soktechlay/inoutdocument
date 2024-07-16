@@ -2,95 +2,98 @@
 session_start();
 include('../../config/dbconn.php');
 
-// Redirect if user is not logged in
+// Redirect to login page if user is not logged in
 if (!isset($_SESSION['userid'])) {
   header('Location: ../../index.php');
   exit();
 }
 
-// Include translation functionality
+// Include translation if needed
 include('../../includes/translate.php');
 
-$pageTitle = "ឯកសារចូលអង្គភាពសវនកម្មផ្ទៃក្នុង";
-$sidebar = "iau";
+// Page variables
+$pageTitle = "ឯកសារចេញការិយាល័យបណ្តុះបណ្តាល";
+$sidebar = "audit1";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
-// Handle form submission for adding new document
+// Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-
+  // Prepare data array for insertion
   $data = [
     ':userid' => $userId,
     ':code' => $_POST['code'],
     ':type' => $_POST['type'],
-    ':echonomic' => $_POST['echonomic'],
-    ':give' => $_POST['give'],
-    ':recrived' => $_POST['recrived'],
+    ':fromdepartment' => $_POST['fromdepartment'],
+    ':nameofgive' => $_POST['nameofgive'],
+    ':outdepartment' => $_POST['outdepartment'],
+    ':nameofreceive' => $_POST['nameofreceive'],
     ':file_name' => $_FILES['files']['name'],
     ':date' => $date,
-    ':department' => 1  // Adding offices value
   ];
 
-  // Destination path for uploaded file
+  // File handling
   $file_tmp = $_FILES['files']['tmp_name'];
-  $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
+  $destination = "../../uploads/file/out-doc/" . $data[':file_name'];
 
-  // Upload file and insert data into database
+  // Move uploaded file to destination
   if (move_uploaded_file($file_tmp, $destination)) {
-    // Database insertion query
-    $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
-                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid , :department)";
+    // Prepare SQL statement for insertion
+    $sql = "INSERT INTO outdocument (CodeId, Type, OutDepartment, NameOfgive, Typedocument, NameOFReceive, FromDepartment, Date, user_id)
+                VALUES (:code, :type, :outdepartment, :nameofgive, :file_name, :nameofreceive, :fromdepartment, :date, :userid)";
     $query = $dbh->prepare($sql);
 
+    // Execute SQL query with data array
     try {
       $query->execute($data);
       $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-      // Redirect with success message
-      header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
+      header("Location: outaudit1.php?msg=" . urlencode($msg) . "&status=success");
       exit();
     } catch (PDOException $e) {
       $error = "Error: " . $e->getMessage();
-      // Redirect with error message
-      header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+      header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
       exit();
     }
   } else {
     $error = "Error uploading file.";
-    // Redirect with error message
-    header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+    header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
     exit();
   }
 }
+
 // Handle document deletion
 if (isset($_GET['delete'])) {
-  $sql = "UPDATE indocument SET isdelete = 1 WHERE ID = :documentID";
+  $sql = "UPDATE outdocument SET isdelete = 1 WHERE ID = :documentID";
   $query = $dbh->prepare($sql);
   $query->bindParam(':documentID', $_GET['delete'], PDO::PARAM_INT);
-  $query->execute();
 
-  if ($query->rowCount()) {
-    $msg = "Document deleted successfully!";
-    // Redirect with success message
-    header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
-    exit();
-  } else {
-    $error = "Failed to delete document.";
-    // Redirect with error message
-    header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+  // Execute deletion query
+  try {
+    $query->execute();
+    if ($query->rowCount()) {
+      $msg = "Document deleted successfully!";
+      header("Location: outaudit1.php?msg=" . urlencode($msg) . "&status=success");
+      exit();
+    } else {
+      $error = "Failed to delete document.";
+      header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
+      exit();
+    }
+  } catch (PDOException $e) {
+    $error = "Error: " . $e->getMessage();
+    header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
     exit();
   }
 }
 
-// Construct base SQL query for fetching documents
-$sql = "SELECT * FROM indocument 
-        JOIN tbluser ON indocument.user_id = tbluser.id 
+// Handle search functionality and fetch records
+$sql = "SELECT * FROM outdocument 
+        JOIN tbluser ON outdocument.user_id = tbluser.id 
         WHERE tbluser.id = :userid 
-        AND indocument.isdelete = 0
-         AND indocument.Department = 1";
-
+        AND outdocument.isdelete = 0";
 $params = [':userid' => $userId];
 
-// Handle search functionality
+// Handle search query
 if (isset($_GET['search'])) {
   $searchKeyword = '%' . $_GET['search'] . '%';
   $sql .= " AND (CodeId LIKE :searchKeyword OR Type LIKE :searchKeyword OR DepartmentName LIKE :searchKeyword)";
@@ -101,13 +104,13 @@ if (isset($_GET['search'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fromDate'], $_POST['toDate'])) {
   $fromDate = date('Y-m-d 00:00:00', strtotime($_POST['fromDate']));
   $toDate = date('Y-m-d 23:59:59', strtotime($_POST['toDate']));
-  $sql .= " AND indocument.Date BETWEEN :fromDate AND :toDate";
+  $sql .= " AND outdocument.Date BETWEEN :fromDate AND :toDate";
   $params[':fromDate'] = $fromDate;
   $params[':toDate'] = $toDate;
 }
 
 // Finalize SQL query with ORDER BY
-$sql .= " ORDER BY indocument.id DESC";
+$sql .= " ORDER BY outdocument.id DESC";
 
 // Prepare and execute the SQL query
 $query = $dbh->prepare($sql);
@@ -116,37 +119,36 @@ $query->execute($params);
 // Fetch all results into $searchResults
 $searchResults = $query->fetchAll(PDO::FETCH_ASSOC);
 
-// Example usage of $searchResults
+// Start buffering output
 ob_start();
 ?>
-
-
 <div class="row">
   <div class="col-md-12">
     <div class="container-xl flex-grow-1">
       <div class="d-flex align-items-center justify-content-between">
         <div class="card-header">
-          <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">អង្គភាពសវនកម្មផ្ទៃក្នុង/</span>ឯកសារចូល</h4>
+          <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">ការិយាល័យបណ្តុះបណ្តាល/</span>ឯកសារចេញ</h4>
         </div>
         <div class="dt-action-buttons pt-md-0">
           <div class="dt-buttons btn-group flex-wrap ">
-            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>បញ្ជូលឯកសារចូល</span></button>
+            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>បញ្ជូលឯកសារចេញ</span></button>
           </div>
           <div class="row row-bordered g-0">
             <div class="modal animate__animated animate__bounceIn" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog modal-xl modal-dialog-centered">
                 <div class="modal-content">
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5 mef2" id="exampleModalLabel">ការដាក់បញ្ជូលឯកសារចូល</h1>
+                    <h1 class="modal-title fs-5 mef2" id="exampleModalLabel">ការដាក់បញ្ជូលឯកសារចេញ</h1>
                   </div>
                   <div class="modal-body">
-                    <form method="POST" class="row g-2 needs-validation" name="example" enctype="multipart/form-data" novalidate>
+                    <form method="POST" class="row g-3 needs-validation" name="example1" enctype="multipart/form-data" novalidate>
                       <div class="row">
                         <div class="mb-3 col-md-6">
                           <label for="code" class="form-label">លេខឯកសារ</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-book'></i></span>
                             <input class="form-control" type="text" id="code" name="code" autocomplete="on" placeholder="បំពេញលេខឯកសារ..." onBlur="checkAvailabilityCodeId()" required>
+
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -157,41 +159,55 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                          <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                            <input class="form-control" type="text" id="name" name="echonomic" placeholder="បំពេញឈ្មោះស្ថាប័នឬក្រសួង..." required>
+                            <input class="form-control" type="text" id="outdepartment" name="outdepartment" placeholder="បំពេញឈ្មោះស្ថាប័នឬក្រសួង..." required>
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="give" class="form-label">ឈ្មោះមន្រ្តីប្រគល់</label>
+                          <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                            <input type="text" class="form-control" id="give" name="give" placeholder="បំពេញឈ្មោះមន្រ្តី​ប្រគល់..." required>
+                            <input type="text" id="nameofreceive" name="nameofreceive" class="form-control" placeholder="បំពេញឈ្មោះមន្រ្តីទទួល..." required>
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                          <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                            <select name="recrived" id="recrived" class="form-select form-control" required>
+                            <select name="nameofgive" id="nameofgive" class="form-select form-control " required>
                               <option value="">ជ្រើសរើស...</option>
                               <?php
                               $sql = "SELECT * FROM tbluser";
                               $query = $dbh->prepare($sql);
                               $query->execute();
                               $results = $query->fetchAll(PDO::FETCH_OBJ);
+                              $cnt = 1;
                               if ($query->rowCount() > 0) {
                                 foreach ($results as $result) {
                               ?>
-                                  <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                  <option value="<?php echo htmlentities($result->UserName) ?>"><?php echo htmlentities($result->UserName) ?></option>
                               <?php }
                               } ?>
                             </select>
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="document" class="form-label">ប្រភេទឯកសារចូល</label>
+                          <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
+                          <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
+                            <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
+                              <option value="">ជ្រើសរើស...</option>
+                              <option value="អង្គភាពសវនកម្មផ្ទៃក្នុង">អង្គភាពសវនកម្មផ្ទៃក្នុង</option>
+                              <option value="នាយកដ្ឋានកិច្ចការទូទៅ">នាយកដ្ឋានកិច្ចការទូទៅ</option>
+                              <option value="នាយកដ្ឋានសវនកម្មទី១">នាយកដ្ឋានសវនកម្មទី១</option>
+                              <option value="នាយកដ្ឋានសវនកម្មទី២">នាយកដ្ឋានសវនកម្មទី២</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="mb-3 col-md-6">
+                          <label for="document" class="form-label">ប្រភេទឯកសារចេញ</label>
                           <input type="file" class="form-control" id="files" accept=".xlsx,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" name="files" required>
                         </div>
                       </div>
@@ -218,43 +234,35 @@ ob_start();
             <div class="col-md-4 mb-1">
               <form action="" method="post" class="d-flex" id="filterForm">
                 <div class="form-group me-1">
-                  <input type="text" id="fromDate" name="fromDate" class="form-control" placeholder="ចាប់ពីថ្ងៃខែឆ្នាំ" value="<?php echo isset($_POST['fromDate']) ? htmlspecialchars($_POST['fromDate']) : ''; ?>">
+                  <input type="text" id="dates" name="fromDate" class="form-control" placeholder="ចាប់ពីថ្ងៃខែឆ្នាំ" value="<?php echo isset($_POST['fromDate']) ? htmlspecialchars($_POST['fromDate']) : ''; ?>">
                 </div>
                 <div class="form-group me-1">
-                  <input type="text" id="toDate" name="toDate" class="form-control" placeholder="ដល់ថ្ងៃទីខែឆ្នាំ" value="<?php echo isset($_POST['toDate']) ? htmlspecialchars($_POST['toDate']) : ''; ?>">
+                  <input type="text" id="dates" name="toDate" class="form-control" placeholder="ដល់ថ្ងៃទីខែឆ្នាំ" value="<?php echo isset($_POST['toDate']) ? htmlspecialchars($_POST['toDate']) : ''; ?>">
                 </div>
                 <div class="form-group me-1">
                   <button type="submit" class="btn btn-icon btn-secondary"><i class='bx bx-search'></i></button>
                 </div>
-                <!-- <div class="form-group me-1 fw-medium">
-                  <button type="button" class="btn btn-icon btn-label-danger btn-reset" id="resetButton">
-                    <span><i class='bx bx-refresh'></i></span>
-                  </button>
-                </div> -->
               </form>
             </div>
-
             <!-- Export button -->
             <?php
-                    // Define $fromDate and $toDate variables here
-                    $fromDate = isset($_POST['fromDate']) ? $_POST['fromDate'] : ''; // Example, replace with your actual value
-                    $toDate = isset($_POST['toDate']) ? $_POST['toDate'] : ''; // Example, replace with your actual value
-                    ?>
-                    <div class="col-md-4 mb-1 text-end">
-                      <form method="POST" action="export_script.php" id="filterIndocument">
-                        <input type="hidden" name="documentType" value="indocument">
-                        <input type="hidden" name="fromDate" value="<?php echo $fromDate; ?>">
-                        <input type="hidden" name="toDate" value="<?php echo $toDate; ?>">
-                        <button id="exportButton" type="sumbit" class="btn btn-primary">
-                          <span class="text-white"><i class="bx bx-export me-1"></i>Export</span>
-                        </button>
-                      </form>
-                    </div>
-
+            // Define $fromDate and $toDate variables here
+            $fromDate = isset($_POST['fromDate']) ? $_POST['fromDate'] : ''; // Example, replace with your actual value
+            $toDate = isset($_POST['toDate']) ? $_POST['toDate'] : ''; // Example, replace with your actual value
+            ?>
+            <div class="col-md-4 mb-1 text-end">
+              <form method="POST" action="export_script.php" id="filterOutdocument">
+                <input type="hidden" name="documentType" value="outdocument">
+                <input type="hidden" name="fromDate" value="<?php echo $fromDate; ?>">
+                <input type="hidden" name="toDate" value="<?php echo $toDate; ?>">
+                <button id="exportButton" type="sumbit" class="btn btn-primary">
+                  <span class="text-white"><i class="bx bx-export me-1"></i>Export</span>
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-      <!-- show datatable -->
       <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
         <div class="card">
           <div class="card-datatable dataTable_select text-nowrap pb-2">
@@ -266,9 +274,9 @@ ob_start();
                       <th>ល.រ</th>
                       <th>លេខឯកសារ</th>
                       <th>កម្មវត្តុ</th>
-                      <th>មកពីស្ថាប័នឬក្រសួង</th>
-                      <th>ឈ្មោះមន្រ្តីប្រគល់</th>
-                      <th>ប្រភេទឯកសារចូល/ចំណារ</th>
+                      <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
+                      <th>ឈ្មោះមន្រ្តីទទួល</th>
+                      <th>ប្រភេទឯកសារចេញ</th>
                       <th>កាលបរិច្ឆេទ</th>
                       <th>សកម្មភាព</th>
                     </tr>
@@ -282,21 +290,23 @@ ob_start();
                         <tr>
                           <td class="text-sm font-weight-bold text-center mb-0"><b><?php echo htmlentities($cnt); ?></b></td>
                           <td>
-                            <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo htmlentities($row['CodeId']); ?>
+                            <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['CodeId'] ?>
                           </td>
                           <td>
-                            <div class="d-inline-block text-truncate" style="max-width:180px;"><?php echo htmlentities($row['Type']); ?></div>
+                            <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['Type'] ?></div>
                           </td>
-                          <td><?php echo htmlentities($row['DepartmentName']); ?></td>
-                          <td><?php echo htmlentities($row['NameOfgive']); ?></td>
-                          <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ពិនិត្យមើលឯកសារ</a></td>
-                          <td><?php echo htmlentities($row['Date']); ?></td>
+                          <td><?php echo $row['OutDepartment'] ?></td>
+                          <td><?php echo $row['NameOFReceive'] ?></td>
+                          <td><a href="../../uploads/file/out-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
+                              ពិនិត្យមើលឯកសារ
+                            </a></td>
+                          <td><?php echo $row['Date'] ?></td>
                           <td>
                             <div class="d-flex align-items-center justify-content-center">
-                              <a href="showiniau.php?ID=<?php echo htmlentities($row['ID']); ?>">
+                              <a href="showoutaudit1.php?ID=<?php echo $row['ID'] ?>">
                                 <i class='bx bx-show p-2'></i>
                               </a>
-                              <a href="#" onclick="confirmDelete(<?php echo htmlentities($row['ID']); ?>)">
+                              <a href="#" onclick="confirmDelete(<?php echo $row['ID'] ?>)">
                                 <i class='bx bx-trash p-2' style='color:#fd0606'></i>
                               </a>
                             </div>
@@ -317,7 +327,6 @@ ob_start();
     </div>
   </div>
 </div>
-<!-- Modal delete -->
 <div id="deleteConfirmationModal" class="modal animate__animated animate__bounceIn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
@@ -337,6 +346,10 @@ ob_start();
     </div>
   </div>
 </div>
+
+<!-- Input field for search -->
+
+<!-- HTML code for displaying completed and rejected requests -->
 
 <?php
 // Get the content from output buffer
@@ -395,23 +408,7 @@ include('../../layouts/user_layout.php');
       dateFormat: "Y-m-d", // Format of the selected date (matching HTML date input format)
     });
 
-    // Reset Button Event Listener
-    document.getElementById("resetButton").addEventListener("click", function() {
-      const form = document.getElementById("filterForm");
-      const fromDateInput = document.getElementById("fromDate");
-      const toDateInput = document.getElementById("toDate");
 
-      if (form && fromDateInput && toDateInput) {
-        console.log("Reset button clicked. Clearing date inputs and submitting form.");
-
-        // Clear the date input fields
-        document.getElementById("fromDate").value = "";
-        document.getElementById("toDate").value = "";
-        document.getElementById("filterForm").submit();
-      } else {
-        console.error("Form or date input elements not found.");
-      }
-    });
   });
 
 
