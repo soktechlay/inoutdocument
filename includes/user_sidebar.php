@@ -223,6 +223,78 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
+      <?php if ($userPermissions['ofaudit2'] == 1) : ?>
+        <li class="menu-item">
+          <a href="javascript:void(0)" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី២</div>
+          </a>
+          <ul class="menu-sub">
+            <!-- Submenu Items for traning -->
+            <li class="menu-item <?php echo ($activePage === 'inofaudit2.php') ? 'active' : ''; ?>">
+              <a href="inofaudit2.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($activePage === 'outofaudit2.php') ? 'active' : ''; ?>">
+              <a href="outofaudit2.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+      <?php endif; ?>
+
+      <?php if ($userPermissions['ofaudit3'] == 1) : ?>
+        <li class="menu-item">
+          <a href="javascript:void(0)" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី៣</div>
+          </a>
+          <ul class="menu-sub">
+            <!-- Submenu Items for traning -->
+            <li class="menu-item <?php echo ($activePage === 'inofaudit3.php') ? 'active' : ''; ?>">
+              <a href="inofaudit3.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($activePage === 'outofaudit3.php') ? 'active' : ''; ?>">
+              <a href="outofaudit3.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+      <?php endif; ?>
+
+      <?php if ($userPermissions['ofaudit4'] == 1) : ?>
+        <li class="menu-item">
+          <a href="javascript:void(0)" class="menu-link menu-toggle">
+            <i class="menu-icon tf-icons bx bx-grid-alt"></i>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី៤</div>
+          </a>
+          <ul class="menu-sub">
+            <!-- Submenu Items for traning -->
+            <li class="menu-item <?php echo ($activePage === 'inofaudit4.php') ? 'active' : ''; ?>">
+              <a href="inofaudit4.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
+              </a>
+            </li>
+            <li class="menu-item <?php echo ($activePage === 'outofaudit4.php') ? 'active' : ''; ?>">
+              <a href="outofaudit4.php" class="menu-link">
+                <i class="menu-icon tf-icons bx bx-table"></i>
+                <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
+              </a>
+            </li>
+          </ul>
+        </li>
+      <?php endif; ?>
+
 
       <!-- Add other menu items similarly based on user permissions -->
 
