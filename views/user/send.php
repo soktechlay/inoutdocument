@@ -167,9 +167,9 @@ ob_start();
             <h4 class="mt-2">ឯកសារចំណារ</h4>
         </div>
     </div>
-    <form method="POST" enctype="multipart/form-data">        
-        <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">       
-        
+    <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">
+
         <div class="row mt-2">
             <div class="mb-3 col-md-6">
                 <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
@@ -178,15 +178,17 @@ ob_start();
                     <select name="burden" id="burden" class="form-select form-control" required>
                         <option value="">ជ្រើសរើស...</option>
                         <?php
-                        $sql = "SELECT * FROM tbluser";
+                        $sql = "SELECT UserName FROM tbluser WHERE iau = 1 OR general = 1 OR audit1 = 1 OR audit2 = 1";
                         $query = $dbh->prepare($sql);
                         $query->execute();
                         $results = $query->fetchAll(PDO::FETCH_OBJ);
                         if ($query->rowCount() > 0) {
                             foreach ($results as $result) { ?>
                                 <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
-                        <?php }
-                        } ?>
+                            <?php }
+                        } else { ?>
+                            <option value="">No users available</option>
+                        <?php } ?>
                     </select>
                 </div>
             </div>
@@ -196,10 +198,16 @@ ob_start();
                     <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                     <select class="custom-select form-control form-select rounded-2" name="department" required>
                         <option value="">ជ្រើសរើស...</option>
-                        <option value="អង្គភាពសវនកម្មផ្ទៃក្នុង">អង្គភាពសវនកម្មផ្ទៃក្នុង</option>
-                        <option value="នាយកដ្ឋានកិច្ចការទូទៅ">នាយកដ្ឋានកិច្ចការទូទៅ</option>
-                        <option value="នាយកដ្ឋានសវនកម្មទី១">នាយកដ្ឋានសវនកម្មទី១</option>
-                        <option value="នាយកដ្ឋានសវនកម្មទី២">នាយកដ្ឋានសវនកម្មទី២</option>
+                        <?php
+                        $sql = "SELECT * FROM tbldepartments";
+                        $query = $dbh->prepare($sql);
+                        $query->execute();
+                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                        if ($query->rowCount() > 0) {
+                            foreach ($results as $result) { ?>
+                                <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                        <?php }
+                        } ?>
                     </select>
                 </div>
             </div>

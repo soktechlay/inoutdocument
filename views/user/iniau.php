@@ -236,20 +236,20 @@ ob_start();
 
             <!-- Export button -->
             <?php
-                    // Define $fromDate and $toDate variables here
-                    $fromDate = isset($_POST['fromDate']) ? $_POST['fromDate'] : ''; // Example, replace with your actual value
-                    $toDate = isset($_POST['toDate']) ? $_POST['toDate'] : ''; // Example, replace with your actual value
-                    ?>
-                    <div class="col-md-4 mb-1 text-end">
-                      <form method="POST" action="export_script.php" id="filterIndocument">
-                        <input type="hidden" name="documentType" value="indocument">
-                        <input type="hidden" name="fromDate" value="<?php echo $fromDate; ?>">
-                        <input type="hidden" name="toDate" value="<?php echo $toDate; ?>">
-                        <button id="exportButton" type="sumbit" class="btn btn-primary">
-                          <span class="text-white"><i class="bx bx-export me-1"></i>Export</span>
-                        </button>
-                      </form>
-                    </div>
+            // Define $fromDate and $toDate variables here
+            $fromDate = isset($_POST['fromDate']) ? $_POST['fromDate'] : ''; // Example, replace with your actual value
+            $toDate = isset($_POST['toDate']) ? $_POST['toDate'] : ''; // Example, replace with your actual value
+            ?>
+            <div class="col-md-4 mb-1 text-end">
+              <form method="POST" action="export_script.php" id="filterIndocument">
+                <input type="hidden" name="documentType" value="indocument">
+                <input type="hidden" name="fromDate" value="<?php echo $fromDate; ?>">
+                <input type="hidden" name="toDate" value="<?php echo $toDate; ?>">
+                <button id="exportButton" type="sumbit" class="btn btn-primary">
+                  <span class="text-white"><i class="bx bx-export me-1"></i>Export</span>
+                </button>
+              </form>
+            </div>
 
           </div>
         </div>
@@ -292,12 +292,15 @@ ob_start();
                           <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ពិនិត្យមើលឯកសារ</a></td>
                           <td><?php echo htmlentities($row['Date']); ?></td>
                           <td>
-                            <div class="d-flex align-items-center justify-content-center">
-                              <a href="showiniau.php?ID=<?php echo htmlentities($row['ID']); ?>">
-                                <i class='bx bx-show p-2'></i>
-                              </a>
-                              <a href="#" onclick="confirmDelete(<?php echo htmlentities($row['ID']); ?>)">
-                                <i class='bx bx-trash p-2' style='color:#fd0606'></i>
+                            <div class="d-flex ">
+                              <button type="button" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#editModal" data-id="<?php echo $row['ID']; ?>">
+                                <i class='bx bx-edit-alt' style='color:gray'></i>
+                              </button>
+                              <button type="button" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#viewModal" data-id="<?php echo $row['ID']; ?>">
+                                <i class='bx bx-show' style='color:blue;'></i>
+                              </button>
+                              <a href="#" onclick="confirmDelete(<?php echo $row['ID'] ?>)" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;">
+                                <i class='bx bx-trash' style='color:#fd0606'></i>
                               </a>
                             </div>
                           </td>
@@ -317,6 +320,7 @@ ob_start();
     </div>
   </div>
 </div>
+
 <!-- Modal delete -->
 <div id="deleteConfirmationModal" class="modal animate__animated animate__bounceIn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
@@ -337,6 +341,175 @@ ob_start();
     </div>
   </div>
 </div>
+
+<!-- Modal edit -->
+<div class="modal animate__animated animate__bounceIn" id="editModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title mef2" id="exampleModalLabel4">ក្រែប្រែឯកសារ</h5>
+      </div>
+      <div class="modal-body">
+        <form id="formAccountSettings" method="post" enctype="multipart/form-data">
+          <div class="row">
+
+            <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
+            <input type="hidden" name="current_file" value="<?php echo htmlentities($row['Typedocument']); ?>"> <!-- Hidden input for current file -->
+            <input type="hidden" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']); ?>"> <!-- Hidden input for ID -->
+            <div class="mb-3 col-md-6">
+              <label for="code" class="form-label">លេខឯកសារ</label>
+              <div class="input-group input-group-merge">
+                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-book'></i></span>
+                <input class="form-control" type="text" id="code" name="code" value="<?php echo htmlentities($row['CodeId']); ?>">
+              </div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="type" class="form-label">កម្មវត្តុ</label>
+              <div class="input-group input-group-merge">
+                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-detail'></i></span>
+                <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>">
+              </div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
+              <div class="input-group input-group-merge">
+                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
+                <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']); ?>">
+              </div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+              <div class="input-group input-group-merge">
+                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                <input class="form-control" type="text" id="give" name="give" value="<?php echo htmlentities($row['NameOfgive']); ?>">
+              </div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
+              <div class="input-group">
+                <input type="file" class="form-control" id="files" name="files">
+                <input type="text" class="form-control" value="<?php echo htmlentities($row['Typedocument']); ?>" readonly>
+              </div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+              <div class="input-group input-group-merge">
+                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                <select name="recrived" id="recrived" class="form-select form-control">
+                  <option value="<?php echo htmlentities($row['NameOFReceive']); ?>"><?php echo htmlentities($row['NameOFReceive']); ?></option>
+                  <?php
+                  $sql = "SELECT * FROM tbluser";
+                  $query = $dbh->prepare($sql);
+                  $query->execute();
+                  $results = $query->fetchAll(PDO::FETCH_OBJ);
+                  if ($query->rowCount() > 0) {
+                    foreach ($results as $result) {
+                  ?>
+                      <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                  <?php }
+                  } ?>
+                </select>
+              </div>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
+            <button type="submit" name="edit" class="btn btn-primary">យល់ព្រម</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal view -->
+<div class="modal animate__animated animate__bounceIn" id="viewModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+    <div class="modal-content ">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel4">ពិនិត្យមើលឯកសារ</h5>
+      </div>
+      <div class="modal-body">
+        <form id="formAccountSettings" method="post">
+          <div class="row">
+
+            <div class="mb-3 col-md-6">
+              <label for="code" class="form-label">លេខឯកសារ</label>
+              <input class="form-control" type="text" id="code" name="code" value="<?php echo htmlentities($row['CodeId']) ?>" disabled>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="type" class="form-label">កម្មវត្តុ</label>
+              <input class="form-control " type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']) ?>" disabled>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+              <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="give" class="form-label">ឈ្មោះមន្រ្ទី​ប្រគល់</label>
+              <input class="form-control" type="text" id="give" name="give" value="<?php echo htmlentities($row['NameOfgive']) ?>" disabled>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="recrived" class="form-label">ឈ្មោះមន្រ្ទីទទួល</label>
+              <input class="form-control" type="text" id="recrived" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
+              <div class="input-group ">
+                <div class="input-group-append">
+
+                  <div class="d-flex  justify-content-between  p-2 rounded-3">
+                    <a href="../../uploads/file/in-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0  ">
+                      <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                    </a>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="files" class="form-label">ប្រភេទឯកសារចំណារ</label>
+              <div class="input-group">
+                <div class="input-group-append">
+                  <div class="d-flex justify-content-between p-2 rounded-3">
+                    <?php if (!empty($row['document'])) : ?>
+                      <a href="../../uploads/file/note-doc/<?php echo htmlentities($row['document']); ?>" target="_blank" class="btn-sm btn-link h6 mb-0">
+                        <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                      </a>
+                    <?php else : ?>
+                      <span class="text-muted h6 mb-0">មិនទាន់មានឯកសារ</span>
+                    <?php endif; ?>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3 col-md-6">
+              <label for="department" class="form-label">នាយកដ្ឋានទទួលបន្ទុក</label>
+              <input class="form-control" type="text" id="department" name="department" value="<?php echo htmlentities($row['DepartmentReceive']) ?>" disabled>
+            </div>
+            <div class="mb-3 col-md-6">
+              <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
+              <input class="form-control" type="text" id="burden" name="burden" value="<?php echo htmlentities($row['NameRecipient']) ?>" disabled>
+            </div>
+
+          </div>
+          <div class="mt-2">
+            <!-- Button trigger modal -->
+            <div class="col-md-12 text-end">
+              <!-- Buttons for editing and deleting -->
+              <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
+            </div>
+
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <?php
 // Get the content from output buffer
