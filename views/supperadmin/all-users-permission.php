@@ -315,7 +315,7 @@ if ($userData) {
     // Ensure $dbh (PDO instance) and $getid (user ID) are properly defined and initialized
 
     // Query to fetch permissions from tbluser for the user
-    $sqlUser = "SELECT iau, general, audit1, audit2, hr, traning, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :getid";
+    $sqlUser = "SELECT iau, general, audit1, audit2, hr, training, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :getid";
     $queryUser = $dbh->prepare($sqlUser);
     $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
     $queryUser->execute();
@@ -329,7 +329,7 @@ if ($userData) {
             'audit1' => 'នាយកដ្ឋានសវនកម្មទី១', // Audit 1
             'audit2' => 'នាយកដ្ឋានសវនកម្មទី២', // Audit 2
             'hr' => 'ការិយាល័យធនធានមនុស្ស', // Human Resources
-            'traning' => 'ការិយាល័យបណ្តុះបណ្តាល', // Training
+            'training' => 'ការិយាល័យបណ្តុះបណ្តាល', // Training
             'it' => 'ការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា', // Information Technology
             'ofaudit1' => 'ការិយាល័យសវនកម្មទី១', // Office Audit 1
             'ofaudit2' => 'ការិយាល័យសវនកម្មទី២', // Office Audit 2

@@ -97,14 +97,34 @@ ob_start();
                             </tr>
                         </thead>
                         <tbody>
-                            <?php
+                        <?php
                             try {
                                 // Assuming $userId contains the user ID
+                                // Check user permissions
+                                $sqlPerm = "SELECT iau, general, audit1, audit2, hr, training, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :userid";
+                                $queryPerm = $dbh->prepare($sqlPerm);
+                                $queryPerm->bindParam(':userid', $userId, PDO::PARAM_INT);
+                                $queryPerm->execute();
+                                $permissions = $queryPerm->fetch(PDO::FETCH_ASSOC);
+
+                                $condition = "";
+                                if ($permissions['hr'] == 1 || $permissions['training'] == 1 || $permissions['it'] == 1 || $permissions['ofaudit1'] == 1 || $permissions['ofaudit2'] == 1 || $permissions['ofaudit3'] == 1 || $permissions['ofaudit4'] == 1) {
+                                    $condition = "indocument.office = 1";
+                                }
+                                if ($permissions['iau'] == 1 || $permissions['general'] == 1 || $permissions['audit1'] == 1 || $permissions['audit2'] == 1) {
+                                    $condition = "indocument.Department = 1";
+                                }
+
                                 $sql = "SELECT indocument.*, tbluser.username FROM indocument 
                                     JOIN tbluser ON indocument.user_id = tbluser.id 
                                     WHERE tbluser.id = :userid 
-                                    AND indocument.isdelete = 0
-                                    ORDER BY indocument.Date DESC 
+                                    AND indocument.isdelete = 0";
+                                
+                                if ($condition != "") {
+                                    $sql .= " AND " . $condition;
+                                }
+
+                                $sql .= " ORDER BY indocument.Date DESC 
                                     LIMIT 8"; // Adjust the limit as needed
 
                                 $query = $dbh->prepare($sql);

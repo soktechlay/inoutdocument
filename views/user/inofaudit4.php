@@ -107,7 +107,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fromDate'], $_POST['t
 }
 
 if (isset($_POST['edit'])) {
-    $id = $_POST['id'];
+
     // Correctly format the date
     date_default_timezone_set('Asia/Bangkok');
     $date = date('Y-m-d H:i:s');
@@ -363,14 +363,14 @@ ob_start();
                                                         </a></td>
                                                     <td><?php echo $row['Date'] ?></td>
                                                     <td>
-                                                        <div class="d-flex ">
+                                                        <div class="d-flex">
                                                             <button type="button" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#editModal" data-id="<?php echo $row['ID']; ?>">
                                                                 <i class='bx bx-edit-alt' style='color:gray'></i>
                                                             </button>
                                                             <button type="button" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#viewModal" data-id="<?php echo $row['ID']; ?>">
-                                                                <i class='bx bx-show'style='color:blue;'></i>
+                                                                <i class='bx bx-show' style='color:blue;'></i>
                                                             </button>
-                                                            <a href="#" onclick="confirmDelete(<?php echo $row['ID'] ?>)" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;">
+                                                            <a href="#" onclick="confirmDelete(<?php echo $row['ID']; ?>)" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;">
                                                                 <i class='bx bx-trash' style='color:#fd0606'></i>
                                                             </a>
                                                         </div>
@@ -531,7 +531,7 @@ ob_start();
                                     </div>
                                 </div>
                             </div>
-                        </div>                       
+                        </div>
                         <div class="mb-3 col-md-6">
                             <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                             <input class="form-control" type="text" id="recrived" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>

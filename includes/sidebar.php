@@ -3,7 +3,7 @@ include('../../config/dbconn.php');
 
 // Fetch user permissions from tbluser
 $userId = $_SESSION['userid']; // Assuming you have the user's ID stored in the session
-$query = "SELECT iau, general, audit1, audit2, hr, traning, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :userId";
+$query = "SELECT iau, general, audit1, audit2, hr, training, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :userId";
 $stmt = $dbh->prepare($query);
 $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 $stmt->execute();
@@ -150,22 +150,22 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['traning'] == 1) : ?>
+      <?php if ($userPermissions['training'] == 1) : ?>
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យបណ្តុះបណ្តាល</div>
           </a>
           <ul class="menu-sub">
-            <!-- Submenu Items for traning -->
-            <li class="menu-item <?php echo ($activePage === 'intraning.php') ? 'active' : ''; ?>">
-              <a href="intraning.php" class="menu-link">
+            <!-- Submenu Items for training -->
+            <li class="menu-item <?php echo ($activePage === 'intraining.php') ? 'active' : ''; ?>">
+              <a href="intraining.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Login Documents">បញ្ចីឯកសារចូល</div>
               </a>
             </li>
-            <li class="menu-item <?php echo ($activePage === 'outtraning.php') ? 'active' : ''; ?>">
-              <a href="outtraning.php" class="menu-link">
+            <li class="menu-item <?php echo ($activePage === 'outtraining.php') ? 'active' : ''; ?>">
+              <a href="outtraining.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>
