@@ -19,48 +19,65 @@ date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
 // Handle form submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-  // Prepare data array for insertion
-  $data = [
-    ':userid' => $userId,
-    ':code' => $_POST['code'],
-    ':type' => $_POST['type'],
-    ':fromdepartment' => $_POST['fromdepartment'],
-    ':nameofgive' => $_POST['nameofgive'],
-    ':outdepartment' => $_POST['outdepartment'],
-    ':nameofreceive' => $_POST['nameofreceive'],
-    ':file_name' => $_FILES['files']['name'],
-    ':date' => $date,
-  ];
+  $code = $_POST['code'];
+  $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
 
-  // File handling
-  $file_tmp = $_FILES['files']['tmp_name'];
-  $destination = "../../uploads/file/out-doc/" . $data[':file_name'];
+  // Check if the code already exists in the database for the specific user
+  $sql_check = "SELECT * FROM outdocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
+  $query_check = $dbh->prepare($sql_check);
+  $query_check->bindParam(':code', $code, PDO::PARAM_STR);
+  $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
+  $query_check->execute();
+  if ($query_check->rowCount() > 0) {
+    // Code already exists, handle the error or display a message
+    $error = "លេខឯកសារនេះបានបញ្ចូលរួចហើយ។";
+    // Redirect with error message
+    header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
+    exit();
+  } else {
+    // Prepare data array for insertion
+    $data = [
+      ':userid' => $userId,
+      ':code' => $_POST['code'],
+      ':type' => $_POST['type'],
+      ':fromdepartment' => $_POST['fromdepartment'],
+      ':nameofgive' => $_POST['nameofgive'],
+      ':outdepartment' => $_POST['outdepartment'],
+      ':nameofreceive' => $_POST['nameofreceive'],
+      ':file_name' => $_FILES['files']['name'],
+      ':date' => $date,
+      ':department' => 1,  // Adjust according to your department value logic
+    ];
 
-  // Move uploaded file to destination
-  if (move_uploaded_file($file_tmp, $destination)) {
-    // Prepare SQL statement for insertion
-    $sql = "INSERT INTO outdocument (CodeId, Type, OutDepartment, NameOfgive, Typedocument, NameOFReceive, FromDepartment, Date, user_id)
-                VALUES (:code, :type, :outdepartment, :nameofgive, :file_name, :nameofreceive, :fromdepartment, :date, :userid)";
-    $query = $dbh->prepare($sql);
+    // File handling
+    $file_tmp = $_FILES['files']['tmp_name'];
+    $destination = "../../uploads/file/out-doc/" . $data[':file_name'];
 
-    // Execute SQL query with data array
-    try {
-      $query->execute($data);
-      $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-      header("Location: outaudit1.php?msg=" . urlencode($msg) . "&status=success");
-      exit();
-    } catch (PDOException $e) {
-      $error = "Error: " . $e->getMessage();
+    // Move uploaded file to destination
+    if (move_uploaded_file($file_tmp, $destination)) {
+      // Prepare SQL statement for insertion
+      $sql = "INSERT INTO outdocument (CodeId, Type, OutDepartment, NameOfgive, Typedocument, NameOFReceive, FromDepartment, Date, user_id, Department)
+                VALUES (:code, :type, :outdepartment, :nameofgive, :file_name, :nameofreceive, :fromdepartment, :date, :userid, :department)";
+      $query = $dbh->prepare($sql);
+
+      // Execute SQL query with data array
+      try {
+        $query->execute($data);
+        $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
+        header("Location: outaudit1.php?msg=" . urlencode($msg) . "&status=success");
+        exit();
+      } catch (PDOException $e) {
+        $error = "Error: " . $e->getMessage();
+        header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
+        exit();
+      }
+    } else {
+      $error = "Error uploading file.";
       header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
       exit();
     }
-  } else {
-    $error = "Error uploading file.";
-    header("Location: outaudit1.php?msg=" . urlencode($error) . "&status=error");
-    exit();
   }
 }
-
 // Handle document deletion
 if (isset($_GET['delete'])) {
   $sql = "UPDATE outdocument SET isdelete = 1 WHERE ID = :documentID";
@@ -90,7 +107,8 @@ if (isset($_GET['delete'])) {
 $sql = "SELECT * FROM outdocument 
         JOIN tbluser ON outdocument.user_id = tbluser.id 
         WHERE tbluser.id = :userid 
-        AND outdocument.isdelete = 0";
+        AND outdocument.isdelete = 0
+        AND outdocument.Department = 1";
 $params = [':userid' => $userId];
 
 // Handle search query
@@ -108,6 +126,43 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fromDate'], $_POST['t
   $params[':fromDate'] = $fromDate;
   $params[':toDate'] = $toDate;
 }
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $id = $_POST['id'];
+  date_default_timezone_set('Asia/Bangkok');
+  $update = date('Y-m-d H:i:s');
+  $uploadedFile = $_POST['current_file'];
+
+  if (isset($_FILES['files']) && $_FILES['files']['error'] == UPLOAD_ERR_OK) {
+    $fileTmpPath = $_FILES['files']['tmp_name'];
+    $fileName = $_FILES['files']['name'];
+    $newFileName = basename($fileName);
+    $dest_path = '../../uploads/file/out-doc/' . $newFileName;
+    if (move_uploaded_file($fileTmpPath, $dest_path)) {
+      $uploadedFile = $newFileName;
+    } else {
+      $error = 'Error moving the uploaded file.';
+    }
+  }
+
+  if (isset($_POST['edit'])) {
+    $query = $dbh->prepare("UPDATE outdocument SET
+  CodeId = ?, Type = ?, FromDepartment = ?, NameOfgive = ?,
+  OutDepartment = ?, NameOFReceive = ?, Typedocument = ?, `update` = ?
+  WHERE ID = ?");
+    $query->execute([
+      $_POST['code'], $_POST['type'], $_POST['fromdepartment'], $_POST['nameofgive'],
+      $_POST['outdepartment'], $_POST['nameofreceive'], $uploadedFile, $update, $id
+    ]);
+    if ($query->rowCount() > 0) {
+      header("Location: outaudit1.php?ID=" . urlencode($id) . "&msg=Successfully+Edited&status=success");
+      exit();
+    } else {
+      header("Location: outaudit1.php?ID=" . urlencode($id) . "&msg=Error+Edited&status=failed");
+      exit();
+    }
+  }
+}
+
 
 // Finalize SQL query with ORDER BY
 $sql .= " ORDER BY outdocument.id DESC";
@@ -302,16 +357,171 @@ ob_start();
                             </a></td>
                           <td><?php echo $row['Date'] ?></td>
                           <td>
-                            <div class="d-flex align-items-center justify-content-center">
-                              <a href="showoutaudit1.php?ID=<?php echo $row['ID'] ?>">
-                                <i class='bx bx-show p-2'></i>
-                              </a>
-                              <a href="#" onclick="confirmDelete(<?php echo $row['ID'] ?>)">
-                                <i class='bx bx-trash p-2' style='color:#fd0606'></i>
+                            <div class="d-flex ">
+                              <button type="button" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#editModal<?php echo $row['ID']; ?>" data-id="<?php echo $row['ID']; ?>">
+                                <i class='bx bx-edit-alt' style='color:gray'></i>
+                              </button>
+                              <button type="button" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;" data-bs-toggle="modal" data-bs-target="#viewModal<?php echo $row['ID']; ?>" data-id="<?php echo $row['ID']; ?>">
+                                <i class='bx bx-show' style='color:blue;'></i>
+                              </button>
+                              <a href="#" onclick="confirmDelete(<?php echo $row['ID'] ?>)" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;">
+                                <i class='bx bx-trash' style='color:#fd0606'></i>
                               </a>
                             </div>
                           </td>
                         </tr>
+                        <!-- Modal view -->
+                        <div class="modal animate__animated animate__bounceIn" id="viewModal<?php echo $row['ID']; ?>" tabindex="-1" aria-hidden="true">
+                          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                            <div class="modal-content ">
+                              <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel4">ពិនិត្យមើលឯកសារ</h5>
+                              </div>
+                              <div class="modal-body">
+                                <form id="formAccountSettings" method="post">
+                                  <div class="row">
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="code" class="form-label">លេខឯកសារ</label>
+                                      <input class="form-control" type="text" id="code" name="code" value="<?php echo htmlentities($row['CodeId']); ?>" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="type" class="form-label">កម្មវត្តុ</label>
+                                      <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                      <input class="form-control" type="text" id="outdepartment" name="outdepartment" value="<?php echo htmlentities($row['OutDepartment']); ?>" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                      <input class="form-control" type="text" id="nameofreceive" name="nameofreceive" value="<?php echo htmlentities($row['NameOFReceive']); ?>" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                      <input class="form-control" type="text" id="nameofgive" name="nameofgive" value="<?php echo htmlentities($row['NameOfgive']); ?>" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
+                                      <input class="form-control" type="text" id="fromdepartment" name="fromdepartment" value="<?php echo htmlentities($row['FromDepartment']); ?>" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="files" class="form-label">ប្រភេទឯកសារចេញ</label>
+                                      <div class="input-group">
+                                        <div class="input-group-append">
+
+                                          <div class="d-flex justify-content-between p-2 rounded-3">
+                                            <a href="../../uploads/file/out-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 ">
+                                              <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                                            </a>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="col-md-12 text-end">
+                                                                        <!-- Buttons for editing and deleting -->
+                                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
+                                                                    </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Modal edit -->
+                        <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>"" tabindex=" -1" aria-hidden="true">
+                          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title mef2" id="exampleModalLabel4">ក្រែប្រែឯកសារ</h5>
+                              </div>
+                              <div class="modal-body">
+                                <form id="formAccountSettings" method="post" enctype="multipart/form-data">
+                                  <div class="row">
+
+                                    <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
+                                    <input type="hidden" name="nameofgive" value="<?php echo htmlentities($row['NameOfgive']); ?>"> <!-- Hidden input for ID -->
+                                    <input type="hidden" name="fromdepartment" value="<?php echo htmlentities($row['FromDepartment']); ?>">
+                                    <input type="hidden" name="current_file" value="<?php echo htmlentities($row['Typedocument']); ?>"> <!-- Hidden input for current file -->
+                                    <div class="mb-3 col-md-6">
+                                      <label for="code" class="form-label">លេខឯកសារ</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-book'></i></span>
+                                        <input class="form-control" type="text" id="code" name="code" value="<?php echo htmlentities($row['CodeId']); ?>">
+                                      </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="type" class="form-label">កម្មវត្តុ</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-detail'></i></span>
+                                        <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>">
+                                      </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
+                                        <input class="form-control" type="text" id="outdepartment" name="outdepartment" value="<?php echo htmlentities($row['OutDepartment']); ?>">
+                                      </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                                        <input class="form-control" type="text" id="nameofreceive" name="nameofreceive" value="<?php echo htmlentities($row['NameOFReceive']); ?>">
+                                      </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                                        <select name="nameofgive" id="nameofgive" class="form-select form-control">
+                                          <option value="<?php echo htmlentities($row['NameOfgive']); ?>"><?php echo htmlentities($row['NameOfgive']); ?></option>
+                                          <?php
+                                          $sql = "SELECT * FROM tbluser";
+                                          $query = $dbh->prepare($sql);
+                                          $query->execute();
+                                          $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                          if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) {
+                                          ?>
+                                              <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                          <?php }
+                                          } ?>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
+                                        <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
+                                          <option value="<?php echo htmlentities($row['FromDepartment']); ?>"><?php echo htmlentities($row['FromDepartment']); ?></option>
+                                          <option value="អង្គភាពសវនកម្មផ្ទៃក្នុង">អង្គភាពសវនកម្មផ្ទៃក្នុង</option>
+                                          <option value="នាយកដ្ឋានកិច្ចការទូទៅ">នាយកដ្ឋានកិច្ចការទូទៅ</option>
+                                          <option value="នាយកដ្ឋានសវនកម្មទី១">នាយកដ្ឋានសវនកម្មទី១</option>
+                                          <option value="នាយកដ្ឋានសវនកម្មទី២">នាយកដ្ឋានសវនកម្មទី២</option>
+                                        </select>
+                                      </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="files" class="form-label">ប្រភេទឯកសារចេញ</label>
+                                      <div class="input-group">
+                                        <input type="file" class="form-control" id="files" name="files">
+                                        <input type="text" class="form-control" value="<?php echo htmlentities($row['Typedocument']); ?>" readonly>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
+                                    <button type="submit" name="edit" class="btn btn-primary">យល់ព្រម</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
                     <?php
                         $cnt++;
                       }
