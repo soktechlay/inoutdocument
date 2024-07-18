@@ -34,48 +34,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     header("Location: inaudit2.php?msg=" . urlencode($error) . "&status=error");
     exit();
   } else {
-  $data = [
-    ':userid' => $userId,
-    ':code' => $_POST['code'],
-    ':type' => $_POST['type'],
-    ':echonomic' => $_POST['echonomic'],
-    ':give' => $_POST['give'],
-    ':recrived' => $_POST['recrived'],
-    ':file_name' => $_FILES['files']['name'],
-    ':date' => $date,
-    ':department' => 1,
-  ];
+    $data = [
+      ':userid' => $userId,
+      ':code' => $_POST['code'],
+      ':type' => $_POST['type'],
+      ':echonomic' => $_POST['echonomic'],
+      ':give' => $_POST['give'],
+      ':recrived' => $_POST['recrived'],
+      ':file_name' => $_FILES['files']['name'],
+      ':date' => $date,
+      ':department' => 1,
+    ];
 
-  // Destination path for uploaded file
-  $file_tmp = $_FILES['files']['tmp_name'];
-  $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
+    // Destination path for uploaded file
+    $file_tmp = $_FILES['files']['tmp_name'];
+    $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
 
-  // Upload file and insert data into database
-  if (move_uploaded_file($file_tmp, $destination)) {
-    // Database insertion query
-    $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id)
+    // Upload file and insert data into database
+    if (move_uploaded_file($file_tmp, $destination)) {
+      // Database insertion query
+      $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id)
                 VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid)";
-    $query = $dbh->prepare($sql);
+      $query = $dbh->prepare($sql);
 
-    try {
-      $query->execute($data);
-      $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-      // Redirect with success message
-      header("Location: inaudit2.php?msg=" . urlencode($msg) . "&status=success");
-      exit();
-    } catch (PDOException $e) {
-      $error = "Error: " . $e->getMessage();
+      try {
+        $query->execute($data);
+        $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
+        // Redirect with success message
+        header("Location: inaudit2.php?msg=" . urlencode($msg) . "&status=success");
+        exit();
+      } catch (PDOException $e) {
+        $error = "Error: " . $e->getMessage();
+        // Redirect with error message
+        header("Location: inaudit2.php?msg=" . urlencode($error) . "&status=error");
+        exit();
+      }
+    } else {
+      $error = "Error uploading file.";
       // Redirect with error message
       header("Location: inaudit2.php?msg=" . urlencode($error) . "&status=error");
       exit();
     }
-  } else {
-    $error = "Error uploading file.";
-    // Redirect with error message
-    header("Location: inaudit2.php?msg=" . urlencode($error) . "&status=error");
-    exit();
   }
-}}
+}
 // Handle document deletion
 if (isset($_GET['delete'])) {
   $sql = "UPDATE indocument SET isdelete = 1 WHERE ID = :documentID";
@@ -234,10 +235,22 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                          <label for="echonomic" class="form-label">មកពីនាយកដ្ឋាន</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                            <input class="form-control" type="text" id="name" name="echonomic" placeholder="បំពេញឈ្មោះស្ថាប័នឬក្រសួង..." required>
+                            <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
+                              <option value="">ជ្រើសរើស...</option>
+                              <?php
+                              $sql = "SELECT * FROM tbldepartments";
+                              $query = $dbh->prepare($sql);
+                              $query->execute();
+                              $results = $query->fetchAll(PDO::FETCH_OBJ);
+                              if ($query->rowCount() > 0) {
+                                foreach ($results as $result) { ?>
+                                  <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                              <?php }
+                              } ?>
+                            </select>
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
@@ -254,7 +267,9 @@ ob_start();
                               if ($query->rowCount() > 0) {
                                 foreach ($results as $result) {
                               ?>
-                                  <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                  <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                    <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                  </option>
                               <?php }
                               } ?>
                             </select>
@@ -274,7 +289,9 @@ ob_start();
                               if ($query->rowCount() > 0) {
                                 foreach ($results as $result) {
                               ?>
-                                  <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                  <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                    <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                  </option>
                               <?php }
                               } ?>
                             </select>
@@ -463,6 +480,9 @@ ob_start();
                                     <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
                                     <input type="hidden" name="current_file" value="<?php echo htmlentities($row['Typedocument']); ?>"> <!-- Hidden input for current file -->
                                     <input type="hidden" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']); ?>"> <!-- Hidden input for ID -->
+                                    <input type="hidden" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']); ?>"> <!-- Hidden input for ID -->
+                                    <input type="hidden" name="give" value="<?php echo htmlentities($row['NameOfgive']); ?>"> <!-- Hidden input for ID -->
+
                                     <div class="mb-3 col-md-6">
                                       <label for="code" class="form-label">លេខឯកសារ</label>
                                       <div class="input-group input-group-merge">
@@ -481,14 +501,42 @@ ob_start();
                                       <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                                        <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']); ?>">
+                                        <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
+                                          <option value="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                          <?php
+                                          $sql = "SELECT * FROM tbldepartments";
+                                          $query = $dbh->prepare($sql);
+                                          $query->execute();
+                                          $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                          if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) { ?>
+                                              <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                          <?php }
+                                          } ?>
+                                        </select>
                                       </div>
                                     </div>
+
                                     <div class="mb-3 col-md-6">
                                       <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                        <input class="form-control" type="text" id="give" name="give" value="<?php echo htmlentities($row['NameOfgive']); ?>">
+                                        <select name="give" id="give" class="form-select form-control">
+                                          <option value="<?php echo htmlentities($row['NameOfgive']); ?>"><?php echo htmlentities($row['NameOfgive']); ?></option>
+                                          <?php
+                                          $sql = "SELECT * FROM tbluser";
+                                          $query = $dbh->prepare($sql);
+                                          $query->execute();
+                                          $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                          if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) {
+                                          ?>
+                                              <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                              </option>
+                                          <?php }
+                                          } ?>
+                                        </select>
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
@@ -512,7 +560,9 @@ ob_start();
                                           if ($query->rowCount() > 0) {
                                             foreach ($results as $result) {
                                           ?>
-                                              <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                              <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                              </option>
                                           <?php }
                                           } ?>
                                         </select>

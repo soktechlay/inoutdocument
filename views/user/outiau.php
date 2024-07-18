@@ -243,7 +243,9 @@ ob_start();
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) {
                                                             ?>
-                                                                    <option value="<?php echo htmlentities($result->UserName) ?>"><?php echo htmlentities($result->UserName) ?></option>
+                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                    </option>
                                                             <?php }
                                                             } ?>
                                                         </select>
@@ -255,10 +257,17 @@ ob_start();
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                                                         <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
                                                             <option value="">ជ្រើសរើស...</option>
-                                                            <option value="អង្គភាពសវនកម្មផ្ទៃក្នុង">អង្គភាពសវនកម្មផ្ទៃក្នុង</option>
-                                                            <option value="នាយកដ្ឋានកិច្ចការទូទៅ">នាយកដ្ឋានកិច្ចការទូទៅ</option>
-                                                            <option value="នាយកដ្ឋានសវនកម្មទី១">នាយកដ្ឋានសវនកម្មទី១</option>
-                                                            <option value="នាយកដ្ឋានសវនកម្មទី២">នាយកដ្ឋានសវនកម្មទី២</option>
+                                                            <?php
+                                                            $sql = "SELECT * FROM tbldepartments";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
+                                                                    <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                                            <?php }
+                                                            } ?>
+
                                                         </select>
                                                     </div>
                                                 </div>

@@ -178,17 +178,17 @@ ob_start();
                     <select name="burden" id="burden" class="form-select form-control" required>
                         <option value="">ជ្រើសរើស...</option>
                         <?php
-                        $sql = "SELECT UserName FROM tbluser WHERE iau = 1 OR general = 1 OR audit1 = 1 OR audit2 = 1";
+                        $sql = "SELECT UserName, FirstName, LastName FROM tbluser WHERE iau = 1 OR general = 1 OR audit1 = 1 OR audit2 = 1";
                         $query = $dbh->prepare($sql);
                         $query->execute();
                         $results = $query->fetchAll(PDO::FETCH_OBJ);
+
                         if ($query->rowCount() > 0) {
                             foreach ($results as $result) { ?>
-                                <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
-                            <?php }
-                        } else { ?>
-                            <option value="">No users available</option>
-                        <?php } ?>
+                                <option value="<?php echo htmlentities($result->UserName); ?>">
+                                    <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                </option>
+                        <?php } } ?>
                     </select>
                 </div>
             </div>

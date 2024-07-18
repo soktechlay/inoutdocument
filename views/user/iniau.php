@@ -18,67 +18,67 @@ date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-    
-    // Fetch the submitted code from the form
-    $code = $_POST['code'];
-    $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
 
-    // Check if the code already exists in the database for the specific user
-    $sql_check = "SELECT * FROM indocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
-    $query_check = $dbh->prepare($sql_check);
-    $query_check->bindParam(':code', $code, PDO::PARAM_STR);
-    $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
-    $query_check->execute();
-    if ($query_check->rowCount() > 0) {
-        // Code already exists, handle the error or display a message
-        $error = "លេខឯកសារនេះបានបញ្ចូលរួចហើយ។";
+  // Fetch the submitted code from the form
+  $code = $_POST['code'];
+  $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
+
+  // Check if the code already exists in the database for the specific user
+  $sql_check = "SELECT * FROM indocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
+  $query_check = $dbh->prepare($sql_check);
+  $query_check->bindParam(':code', $code, PDO::PARAM_STR);
+  $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
+  $query_check->execute();
+  if ($query_check->rowCount() > 0) {
+    // Code already exists, handle the error or display a message
+    $error = "លេខឯកសារនេះបានបញ្ចូលរួចហើយ។";
+    // Redirect with error message
+    header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+    exit();
+  } else {
+    // Prepare data for insertion
+    $data = [
+      ':userid' => $userId,
+      ':code' => $code,
+      ':type' => $_POST['type'],
+      ':echonomic' => $_POST['echonomic'],
+      ':give' => $_POST['give'],
+      ':recrived' => $_POST['recrived'],
+      ':file_name' => $_FILES['files']['name'],
+      ':date' => $date,
+      ':department' => 1,  // Adjust according to your department value logic
+    ];
+
+    // Destination path for uploaded file
+    $file_tmp = $_FILES['files']['tmp_name'];
+    $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
+
+    // Upload file and insert data into database
+    if (move_uploaded_file($file_tmp, $destination)) {
+      // Database insertion query
+      $sql_insert = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
+                        VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid , :department)";
+      $query_insert = $dbh->prepare($sql_insert);
+
+      try {
+        $query_insert->execute($data);
+        $msg = $query_insert->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
+        // Redirect with success message
+        header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
+        exit();
+      } catch (PDOException $e) {
+        $error = "Error: " . $e->getMessage();
         // Redirect with error message
         header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
         exit();
+      }
     } else {
-        // Prepare data for insertion
-        $data = [
-            ':userid' => $userId,
-            ':code' => $code,
-            ':type' => $_POST['type'],
-            ':echonomic' => $_POST['echonomic'],
-            ':give' => $_POST['give'],
-            ':recrived' => $_POST['recrived'],
-            ':file_name' => $_FILES['files']['name'],
-            ':date' => $date,
-            ':department' => 1,  // Adjust according to your department value logic
-        ];
-
-        // Destination path for uploaded file
-        $file_tmp = $_FILES['files']['tmp_name'];
-        $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
-
-        // Upload file and insert data into database
-        if (move_uploaded_file($file_tmp, $destination)) {
-            // Database insertion query
-            $sql_insert = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
-                        VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid , :department)";
-            $query_insert = $dbh->prepare($sql_insert);
-
-            try {
-                $query_insert->execute($data);
-                $msg = $query_insert->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-                // Redirect with success message
-                header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
-                exit();
-            } catch (PDOException $e) {
-                $error = "Error: " . $e->getMessage();
-                // Redirect with error message
-                header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-                exit();
-            }
-        } else {
-            $error = "Error uploading file.";
-            // Redirect with error message
-            header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-            exit();
-        }
+      $error = "Error uploading file.";
+      // Redirect with error message
+      header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+      exit();
     }
+  }
 }
 
 
@@ -294,7 +294,9 @@ ob_start();
                               if ($query->rowCount() > 0) {
                                 foreach ($results as $result) {
                               ?>
-                                  <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                  <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                    <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                  </option>
                               <?php }
                               } ?>
                             </select>
@@ -498,7 +500,7 @@ ob_start();
                           </div>
                         </div>
                         <!-- Modal edit -->
-                        <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>"" tabindex="-1" aria-hidden="true">
+                        <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>"" tabindex=" -1" aria-hidden="true">
                           <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                             <div class="modal-content">
                               <div class="modal-header">
@@ -560,7 +562,9 @@ ob_start();
                                           if ($query->rowCount() > 0) {
                                             foreach ($results as $result) {
                                           ?>
-                                              <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                              <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                              </option>
                                           <?php }
                                           } ?>
                                         </select>
