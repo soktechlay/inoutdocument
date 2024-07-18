@@ -323,6 +323,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $address = $_POST['address'];
       $permissions = isset($_POST['permissionid']) ? $_POST['permissionid'] : [];
       $profileImage = '';
+      date_default_timezone_set('Asia/Bangkok');
+      $date = date('Y-m-d');
 
       // Handle file upload
       if ($_FILES['profile']['error'] == UPLOAD_ERR_OK) {
@@ -357,10 +359,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $general = in_array('general', $permissions) ? 1 : 0;
         $audit1 = in_array('audit1', $permissions) ? 1 : 0;
         $audit2 = in_array('audit2', $permissions) ? 1 : 0;
+        $hr = in_array('hr', $permissions) ? 1 : 0;
+        $training = in_array('training', $permissions) ? 1 : 0;
+        $it = in_array('it', $permissions) ? 1 : 0;
+        $ofaudit1 = in_array('ofaudit1', $permissions) ? 1 : 0;
+        $ofaudit2 = in_array('ofaudit2', $permissions) ? 1 : 0;
+        $ofaudit3 = in_array('ofaudit3', $permissions) ? 1 : 0;
+        $ofaudit4 = in_array('ofaudit4', $permissions) ? 1 : 0;
 
         // SQL query to insert data into tbluser
-        $sql_insert_user = "INSERT INTO tbluser (Honorific, FirstName, LastName, Gender, Contact, UserName, Email, Password, Status, DateofBirth, Department, Office, RoleId, Address, Profile, iau, general, audit1, audit2, CreationDate, UpdateAt)
-                              VALUES (:honorific, :firstname, :lastname, :gender, :contact, :username, :email, :password, :status, :dob, :department, :office, :role, :address, :profileImage, :iau, :general, :audit1, :audit2, NOW(), NOW())";
+        $sql_insert_user = "INSERT INTO tbluser (Honorific, FirstName, LastName, Gender, Contact, UserName, Email, Password, Status, DateofBirth, Department, Office, RoleId, Address, Profile, iau, general, audit1, audit2, hr, training, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4, CreationDate, UpdateAt)
+                              VALUES (:honorific, :firstname, :lastname, :gender, :contact, :username, :email, :password, :status, :dob, :department, :office, :role, :address, :profileImage, :iau, :general, :audit1, :audit2, :hr, :training, :it, :ofaudit1, :ofaudit2, :ofaudit3, :ofaudit4, :date, NOW())";
 
         $query_insert_user = $dbh->prepare($sql_insert_user);
 
@@ -384,6 +393,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $query_insert_user->bindParam(':general', $general, PDO::PARAM_INT);
         $query_insert_user->bindParam(':audit1', $audit1, PDO::PARAM_INT);
         $query_insert_user->bindParam(':audit2', $audit2, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':hr', $hr, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':training', $training, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':it', $it, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':ofaudit1', $ofaudit1, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':ofaudit2', $ofaudit2, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':ofaudit3', $ofaudit3, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':ofaudit4', $ofaudit4, PDO::PARAM_INT);
+        $query_insert_user->bindParam(':date', $date, PDO::PARAM_INT);
+        
+
 
         if ($query_insert_user->execute()) {
           $msg = "User inserted successfully.";
@@ -444,44 +463,41 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
   } elseif ($loginType == 'updatepass') {
     $msg = $error = '';
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_type"]) && $_POST["login_type"] == "updatepass") {
-  if (!empty($_POST["updatepassid"]) && !empty($_POST["formValidationPass"]) && !empty($_POST["formValidationConfirmPass"])) {
-    $getid = $_POST['updatepassid'];
-    $password = $_POST['formValidationPass'];
-    $confirmPassword = $_POST['formValidationConfirmPass'];
+    if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["login_type"]) && $_POST["login_type"] == "updatepass") {
+      if (!empty($_POST["updatepassid"]) && !empty($_POST["formValidationPass"]) && !empty($_POST["formValidationConfirmPass"])) {
+        $getid = $_POST['updatepassid'];
+        $password = $_POST['formValidationPass'];
+        $confirmPassword = $_POST['formValidationConfirmPass'];
 
-    if ($password === $confirmPassword) {
-      if (preg_match('/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/', $password)) {
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+        if ($password === $confirmPassword) {
+          if (preg_match('/^(?=.*[A-Z])(?=.*[!@#$%^&*])(?=.{8,})/', $password)) {
+            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        try {
-          $query = "UPDATE tbluser SET Password = :password WHERE id = :id";
-          $stmt = $dbh->prepare($query);
-          $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
-          $stmt->bindParam(':id', $getid);
-          $stmt->execute();
-          $msg = 'Password has been successfully updated.';
-          $_SESSION['msg'] = $msg;
-        } catch (PDOException $e) {
-          $error = "Database error: " . $e->getMessage();
+            try {
+              $query = "UPDATE tbluser SET Password = :password WHERE id = :id";
+              $stmt = $dbh->prepare($query);
+              $stmt->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
+              $stmt->bindParam(':id', $getid);
+              $stmt->execute();
+              $msg = 'Password has been successfully updated.';
+              $_SESSION['msg'] = $msg;
+            } catch (PDOException $e) {
+              $error = "Database error: " . $e->getMessage();
+              $_SESSION['error'] = $error;
+            }
+          } else {
+            $error = 'Password must be at least 8 characters long, contain an uppercase letter, and a special symbol.';
+            $_SESSION['error'] = $error;
+          }
+        } else {
+          $error = 'Passwords do not match.';
           $_SESSION['error'] = $error;
         }
       } else {
-        $error = 'Password must be at least 8 characters long, contain an uppercase letter, and a special symbol.';
+        $error = 'Please provide all required fields.';
         $_SESSION['error'] = $error;
       }
-    } else {
-      $error = 'Passwords do not match.';
-      $_SESSION['error'] = $error;
     }
-  } else {
-    $error = 'Please provide all required fields.';
-    $_SESSION['error'] = $error;
-  }
-
- 
-}
-
   } elseif ($loginType == 'twofacode') {
     // Handle 2FA secret update
     if (!empty($_POST['twofacodeid']) && !empty($_POST['modalEnableOTPPhone']) && !empty($_POST['secret'])) {

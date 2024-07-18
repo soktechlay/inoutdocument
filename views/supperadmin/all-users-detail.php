@@ -86,7 +86,13 @@ if ($userData) {
                   </li>
                   <li class="list-inline-item fw-medium">
                     <i class="bx bx-calendar-alt"></i> Joined
-                    <?php echo date('F Y', strtotime($userData['CreationDate'])); ?>
+                    <?php
+                    if (!empty($userData['CreationDate'])) {
+                      echo date('D F Y', strtotime($userData['CreationDate']));
+                    } else {
+                      echo 'Date not available';
+                    }
+                    ?>
                   </li>
                 </ul>
               </div>
@@ -227,10 +233,25 @@ if ($userData) {
               <span><?php echo htmlentities($userData['Address']); ?></span>
             </li>
             <li class="d-flex align-items-center mb-3"><i class="bx bx-buildings"></i><span class="fw-medium mx-2" data-i18n="Department">Department:</span>
-              <span><?php echo htmlentities($userData['DepartmentName']); ?></span>
+              <span>
+                <?php
+                if (!empty($userData['DepartmentName'])) {
+                  echo htmlentities($userData['DepartmentName']);
+                } else {
+                  echo 'not available';
+                }
+                ?></span>
+              <!-- <?php echo htmlentities($userData['DepartmentName']); ?></span> -->
             </li>
             <li class="d-flex align-items-center mb-3"><i class="bx bx-building"></i><span class="fw-medium mx-2" data-i18n="Office">Office:</span>
-              <span><?php echo htmlentities($userData['OfficeName']); ?></span>
+              <span><?php
+                if (!empty($userData['OfficeName'])) {
+                  echo htmlentities($userData['OfficeName']);
+                } else {
+                  echo 'not available';
+                }
+                ?></span>
+                <!-- <?php echo htmlentities($userData['OfficeName']); ?></span> -->
             </li>
           </ul>
           <small class="text-muted text-uppercase" data-i18n="Contacts">Contacts</small>
@@ -248,7 +269,15 @@ if ($userData) {
             <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
               <div class="d-flex flex-wrap">
                 <span class="fw-medium mx-2" data-i18n="Head Of Department">Head Of Department:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfDepartment']); ?></span>
+                <span class="fw-medium me-2 mef2">
+                  <?php
+                  if (!empty($userData['HeadOfDepartment'])) {
+                    echo htmlentities($userData['HeadOfDepartment']);
+                  } else {
+                    echo 'not available';
+                  }
+                  ?></span>
+                <!-- <?php echo htmlentities($userData['HeadOfDepartment']); ?></span> -->
               </div>
             </li>
             <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
@@ -257,20 +286,41 @@ if ($userData) {
                   Of
                   Department:
                 </span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOfDepartment']); ?></span>
+                <span class="fw-medium me-2 mef2"><?php
+                                                  if (!empty($userData['DepHeadOfDepartment'])) {
+                                                    echo htmlentities($userData['DepHeadOfDepartment']);
+                                                  } else {
+                                                    echo 'not available';
+                                                  }
+                                                  ?></span>
+                <!-- <?php echo htmlentities($userData['DepHeadOfDepartment']); ?></span> -->
               </div>
             </li>
             <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
               <div class="d-flex flex-wrap">
                 <span class="fw-medium mx-2 " data-i18n="Head Of Office">Head Of Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfOffice']); ?></span>
+                <span class="fw-medium me-2 mef2"><?php
+                                                  if (!empty($userData['HeadOfOffice'])) {
+                                                    echo htmlentities($userData['HeadOfOffice']);
+                                                  } else {
+                                                    echo 'not available';
+                                                  }
+                                                  ?></span>
+                <!-- <?php echo htmlentities($userData['HeadOfOffice']); ?></span> -->
               </div>
             </li>
             <li class="d-flex align-items-center"><i class="bx bx-user-circle  me-2"></i>
               <div class="d-flex flex-wrap">
                 <span class="fw-medium mx-2 " data-i18n="Deputy Head Of Office">Deputy Head Of
                   Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOffice']); ?></span>
+                <span class="fw-medium me-2 mef2"><?php
+                                                  if (!empty($userData['DepHeadOffice'])) {
+                                                    echo htmlentities($userData['DepHeadOffice']);
+                                                  } else {
+                                                    echo ' not available';
+                                                  }
+                                                  ?></span>
+                <!-- <?php echo htmlentities($userData['DepHeadOffice']); ?></span> -->
               </div>
             </li>
           </ul>

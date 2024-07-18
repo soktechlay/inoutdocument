@@ -504,11 +504,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               }
               ?>
             </select> -->
-            <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple required>
-              <option value="iau">IAU</option>
-              <option value="general">General</option>
-              <option value="audit1">Audit 1</option>
-              <option value="audit2">Audit 2</option>
+            <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple >
+              <option value="iau">អង្គភាពសវនកម្មការផ្ទៃក្នុង</option>
+              <option value="general">នាយកដ្ឋានកិច្ចការទូទៅ</option>
+              <option value="audit1">នាយកដ្ឋានសវនកម្មទី១</option>
+              <option value="audit2">នាយកដ្ឋានសវនកម្មទី២</option>
+              <option value="hr">ការិយាល័យធនធានមនុស្ស</option>
+              <option value="training">ការិយាល័យបណ្តុះបណ្តាល</option>
+              <option value="it">ការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា</option>
+              <option value="ofaudit1">ការិយាល័យសវនកម្មទី១</option>
+              <option value="ofaudit2">ការិយាល័យសវនកម្មទី២</option>
+              <option value="ofaudit3">ការិយាល័យសវនកម្មទី៣</option>
+              <option value="ofaudit4">ការិយាល័យសវនកម្មទី៤</option>
             </select>
           </div>
 

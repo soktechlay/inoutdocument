@@ -16,49 +16,72 @@ $sidebar = "iau";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
+
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-  $data = [
-    ':userid' => $userId,
-    ':code' => $_POST['code'],
-    ':type' => $_POST['type'],
-    ':echonomic' => $_POST['echonomic'],
-    ':give' => $_POST['give'],
-    ':recrived' => $_POST['recrived'],
-    ':file_name' => $_FILES['files']['name'],
-    ':date' => $date,
-    ':department' => 1  // Adding offices value
-  ];
+    
+    // Fetch the submitted code from the form
+    $code = $_POST['code'];
+    $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
 
-  // Destination path for uploaded file
-  $file_tmp = $_FILES['files']['tmp_name'];
-  $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
+    // Check if the code already exists in the database for the specific user
+    $sql_check = "SELECT * FROM indocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
+    $query_check = $dbh->prepare($sql_check);
+    $query_check->bindParam(':code', $code, PDO::PARAM_STR);
+    $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
+    $query_check->execute();
+    if ($query_check->rowCount() > 0) {
+        // Code already exists, handle the error or display a message
+        $error = "លេខឯកសារនេះបានបញ្ចូលរួចហើយ។";
+        // Redirect with error message
+        header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+        exit();
+    } else {
+        // Prepare data for insertion
+        $data = [
+            ':userid' => $userId,
+            ':code' => $code,
+            ':type' => $_POST['type'],
+            ':echonomic' => $_POST['echonomic'],
+            ':give' => $_POST['give'],
+            ':recrived' => $_POST['recrived'],
+            ':file_name' => $_FILES['files']['name'],
+            ':date' => $date,
+            ':department' => 1,  // Adjust according to your department value logic
+        ];
 
-  // Upload file and insert data into database
-  if (move_uploaded_file($file_tmp, $destination)) {
-    // Database insertion query
-    $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
-                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid , :department)";
-    $query = $dbh->prepare($sql);
+        // Destination path for uploaded file
+        $file_tmp = $_FILES['files']['tmp_name'];
+        $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
 
-    try {
-      $query->execute($data);
-      $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-      // Redirect with success message
-      header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
-      exit();
-    } catch (PDOException $e) {
-      $error = "Error: " . $e->getMessage();
-      // Redirect with error message
-      header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-      exit();
+        // Upload file and insert data into database
+        if (move_uploaded_file($file_tmp, $destination)) {
+            // Database insertion query
+            $sql_insert = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
+                        VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid , :department)";
+            $query_insert = $dbh->prepare($sql_insert);
+
+            try {
+                $query_insert->execute($data);
+                $msg = $query_insert->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
+                // Redirect with success message
+                header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
+                exit();
+            } catch (PDOException $e) {
+                $error = "Error: " . $e->getMessage();
+                // Redirect with error message
+                header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+                exit();
+            }
+        } else {
+            $error = "Error uploading file.";
+            // Redirect with error message
+            header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+            exit();
+        }
     }
-  } else {
-    $error = "Error uploading file.";
-    // Redirect with error message
-    header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-    exit();
-  }
 }
+
+
 // Handle document deletion
 if (isset($_GET['delete'])) {
   $sql = "UPDATE indocument SET isdelete = 1 WHERE ID = :documentID";
@@ -193,6 +216,8 @@ if (isset($_POST['edit'])) {
   }
 }
 
+// Finalize SQL query with ORDER BY
+$sql .= " ORDER BY indocument.id DESC";
 
 // Prepare and execute the SQL query
 $query = $dbh->prepare($sql);
@@ -353,7 +378,7 @@ ob_start();
                       <th>កម្មវត្តុ</th>
                       <th>មកពីស្ថាប័នឬក្រសួង</th>
                       <th>ឈ្មោះមន្រ្តីប្រគល់</th>
-                      <th>ប្រភេទឯកសារចូល/ចំណារ</th>
+                      <th>ប្រភេទឯកសារចំណារ</th>
                       <th>កាលបរិច្ឆេទ</th>
                       <th>សកម្មភាព</th>
                     </tr>
@@ -374,7 +399,7 @@ ob_start();
                           </td>
                           <td><?php echo htmlentities($row['DepartmentName']); ?></td>
                           <td><?php echo htmlentities($row['NameOfgive']); ?></td>
-                          <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ពិនិត្យមើលឯកសារ</a></td>
+                          <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ផ្ទេរឯកសារ</a></td>
                           <td><?php echo htmlentities($row['Date']); ?></td>
                           <td>
                             <div class="d-flex ">
@@ -451,7 +476,6 @@ ob_start();
                                         </div>
                                       </div>
                                     </div>
-
                                     <div class="mb-3 col-md-6">
                                       <label for="department" class="form-label">នាយកដ្ឋានទទួលបន្ទុក</label>
                                       <input class="form-control" type="text" id="department" name="department" value="<?php echo htmlentities($row['DepartmentReceive']) ?>" disabled>
@@ -460,7 +484,6 @@ ob_start();
                                       <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
                                       <input class="form-control" type="text" id="burden" name="burden" value="<?php echo htmlentities($row['NameRecipient']) ?>" disabled>
                                     </div>
-
                                   </div>
                                   <div class="mt-2">
                                     <!-- Button trigger modal -->
@@ -468,7 +491,6 @@ ob_start();
                                       <!-- Buttons for editing and deleting -->
                                       <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
                                     </div>
-
                                   </div>
                                 </form>
                               </div>

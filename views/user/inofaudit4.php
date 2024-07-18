@@ -18,47 +18,67 @@ date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
 // Handle form submission for adding new document
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
+    // Fetch the submitted code from the form
+    $code = $_POST['code'];
+    $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
+    
+    // Check if the code already exists in the database for the specific user
+    $sql_check = "SELECT * FROM indocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
+    $query_check = $dbh->prepare($sql_check);
+    $query_check->bindParam(':code', $code, PDO::PARAM_STR);
+    $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
+    $query_check->execute();
+    
 
-    $data = [
-        ':userid' => $userId,
-        ':code' => $_POST['code'],
-        ':type' => $_POST['type'],
-        ':echonomic' => $_POST['echonomic'],
-        ':give' => $_POST['give'],
-        ':recrived' => $_POST['recrived'],
-        ':file_name' => $_FILES['files']['name'],
-        ':date' => $date,
-        ':office' => 1  // Adding offices value
-    ];
+    if ($query_check->rowCount() > 0) {
+        // Code already exists, handle the error or display a message
+        $error = "លេខឯកសារនេះបានបញ្ចូលរួចហើយ។";
+        // Redirect with error message
+        header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+        exit();
+    } else {
 
-    // Destination path for uploaded file
-    $file_tmp = $_FILES['files']['tmp_name'];
-    $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
+        $data = [
+            ':userid' => $userId,
+            ':code' => $_POST['code'],
+            ':type' => $_POST['type'],
+            ':echonomic' => $_POST['echonomic'],
+            ':give' => $_POST['give'],
+            ':recrived' => $_POST['recrived'],
+            ':file_name' => $_FILES['files']['name'],
+            ':date' => $date,
+            ':office' => 1  // Adding offices value
+        ];
 
-    // Upload file and insert data into database
-    if (move_uploaded_file($file_tmp, $destination)) {
-        // Database insertion query
-        $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, office)
+        // Destination path for uploaded file
+        $file_tmp = $_FILES['files']['tmp_name'];
+        $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
+
+        // Upload file and insert data into database
+        if (move_uploaded_file($file_tmp, $destination)) {
+            // Database insertion query
+            $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, office)
                 VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid ,:office)";
-        $query = $dbh->prepare($sql);
+            $query = $dbh->prepare($sql);
 
-        try {
-            $query->execute($data);
-            $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-            // Redirect with success message
-            header("Location: inofaudit4.php?msg=" . urlencode($msg) . "&status=success");
-            exit();
-        } catch (PDOException $e) {
-            $error = "Error: " . $e->getMessage();
+            try {
+                $query->execute($data);
+                $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
+                // Redirect with success message
+                header("Location: inofaudit4.php?msg=" . urlencode($msg) . "&status=success");
+                exit();
+            } catch (PDOException $e) {
+                $error = "Error: " . $e->getMessage();
+                // Redirect with error message
+                header("Location: inofaudit4.php?msg=" . urlencode($error) . "&status=error");
+                exit();
+            }
+        } else {
+            $error = "Error uploading file.";
             // Redirect with error message
             header("Location: inofaudit4.php?msg=" . urlencode($error) . "&status=error");
             exit();
         }
-    } else {
-        $error = "Error uploading file.";
-        // Redirect with error message
-        header("Location: inofaudit4.php?msg=" . urlencode($error) . "&status=error");
-        exit();
     }
 }
 // Handle document deletion
