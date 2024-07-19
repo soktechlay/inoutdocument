@@ -418,47 +418,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (PDOException $e) {
       $error = "Database error: " . $e->getMessage();
     }
-  } elseif ($loginType == 'update-permission') {
+  } elseif ($loginType== 'update-permission') {
     try {
-      // Assuming $getid contains the user ID
-      $userId = $_POST['updateinout'];
+        // Assuming $getid contains the user ID
+        $userId = $_POST['updateinout'];
 
-      // Determine checkbox states
-      $iauChecked = in_array('iau', $_POST['pid']) ? 1 : 0;
-      $generalChecked = in_array('general', $_POST['pid']) ? 1 : 0;
-      $audit1Checked = in_array('audit1', $_POST['pid']) ? 1 : 0;
-      $audit2Checked = in_array('audit2', $_POST['pid']) ? 1 : 0;
-      $hrChecked = in_array('hr', $_POST['pid']) ? 1 : 0;
-      $traningChecked = in_array('traning', $_POST['pid']) ? 1 : 0;
-      $itChecked = in_array('it', $_POST['pid']) ? 1 : 0;
-      $ofaudit1Checked = in_array('ofaudit1', $_POST['pid']) ? 1 : 0;
-      $ofaudit2Checked = in_array('ofaudit2', $_POST['pid']) ? 1 : 0;
-      $ofaudit3Checked = in_array('ofaudit3', $_POST['pid']) ? 1 : 0;
-      $ofaudit4Checked = in_array('ofaudit4', $_POST['pid']) ? 1 : 0;
-      // Update permissions in tbluser
-      $sql = "UPDATE tbluser SET iau = :iau, general = :general, audit1 = :audit1, audit2 = :audit2, hr = :hr, traning = :traning, it = :it
-      , ofaudit1 = :ofaudit1, ofaudit2 = :ofaudit2, ofaudit3 = :ofaudit3, ofaudit4 = :ofaudit4 WHERE id = :userId";
-      $stmt = $dbh->prepare($sql);
-      $stmt->bindParam(':iau', $iauChecked, PDO::PARAM_INT);
-      $stmt->bindParam(':general', $generalChecked, PDO::PARAM_INT);
-      $stmt->bindParam(':audit1', $audit1Checked, PDO::PARAM_INT);
-      $stmt->bindParam(':audit2', $audit2Checked, PDO::PARAM_INT);
-      $stmt->bindParam(':hr', $hrChecked, PDO::PARAM_INT);
-      $stmt->bindParam(':traning', $traningChecked, PDO::PARAM_INT);
-      $stmt->bindParam(':it', $itChecked, PDO::PARAM_INT);
-      $stmt->bindParam(':ofaudit1', $ofaudit1Checked, PDO::PARAM_INT);
-      $stmt->bindParam(':ofaudit2', $ofaudit2Checked, PDO::PARAM_INT);
-      $stmt->bindParam(':ofaudit3', $ofaudit3Checked, PDO::PARAM_INT);
-      $stmt->bindParam(':ofaudit4', $ofaudit4Checked, PDO::PARAM_INT);
-      $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+        // Initialize the pid array if it doesn't exist
+        $pidArray = isset($_POST['pid']) ? $_POST['pid'] : [];
 
-      if ($stmt->execute()) {
-        $msg = "Permissions updated successfully.";
-      } else {
-        $error = "Failed to update permissions.";
-      }
+        // Determine checkbox states
+        $iauChecked = in_array('iau', $pidArray) ? 1 : 0;
+        $generalChecked = in_array('general', $pidArray) ? 1 : 0;
+        $audit1Checked = in_array('audit1', $pidArray) ? 1 : 0;
+        $audit2Checked = in_array('audit2', $pidArray) ? 1 : 0;
+        $hrChecked = in_array('hr', $pidArray) ? 1 : 0;
+        $trainingChecked = in_array('training', $pidArray) ? 1 : 0;
+        $itChecked = in_array('it', $pidArray) ? 1 : 0;
+        $ofaudit1Checked = in_array('ofaudit1', $pidArray) ? 1 : 0;
+        $ofaudit2Checked = in_array('ofaudit2', $pidArray) ? 1 : 0;
+        $ofaudit3Checked = in_array('ofaudit3', $pidArray) ? 1 : 0;
+        $ofaudit4Checked = in_array('ofaudit4', $pidArray) ? 1 : 0;
+
+        // Update permissions in tbluser
+        $sql = "UPDATE tbluser 
+                SET iau = :iau, general = :general, audit1 = :audit1, audit2 = :audit2, hr = :hr, training = :training, it = :it,
+                    ofaudit1 = :ofaudit1, ofaudit2 = :ofaudit2, ofaudit3 = :ofaudit3, ofaudit4 = :ofaudit4 
+                WHERE id = :userId";
+        $stmt = $dbh->prepare($sql);
+        $stmt->bindParam(':iau', $iauChecked, PDO::PARAM_INT);
+        $stmt->bindParam(':general', $generalChecked, PDO::PARAM_INT);
+        $stmt->bindParam(':audit1', $audit1Checked, PDO::PARAM_INT);
+        $stmt->bindParam(':audit2', $audit2Checked, PDO::PARAM_INT);
+        $stmt->bindParam(':hr', $hrChecked, PDO::PARAM_INT);
+        $stmt->bindParam(':training', $trainingChecked, PDO::PARAM_INT);
+        $stmt->bindParam(':it', $itChecked, PDO::PARAM_INT);
+        $stmt->bindParam(':ofaudit1', $ofaudit1Checked, PDO::PARAM_INT);
+        $stmt->bindParam(':ofaudit2', $ofaudit2Checked, PDO::PARAM_INT);
+        $stmt->bindParam(':ofaudit3', $ofaudit3Checked, PDO::PARAM_INT);
+        $stmt->bindParam(':ofaudit4', $ofaudit4Checked, PDO::PARAM_INT);
+        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+
+        if ($stmt->execute()) {
+            $msg = "Permissions updated successfully.";
+        } else {
+            $error = "Failed to update permissions.";
+        }
     } catch (PDOException $e) {
-      $error = "Database error: " . $e->getMessage();
+        $error = "Database error: " . $e->getMessage();
     }
   } elseif ($loginType == 'updatepass') {
     $msg = $error = '';

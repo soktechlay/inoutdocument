@@ -315,7 +315,7 @@ if ($userData) {
         </div>
         <form id="formAuthentication" class="row g-3 mb-3" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="login_type" value="update-permission">
-          <input type="hidden" name="updateinout" value="<?php echo $getid ?>">
+          <input type="hidden" name="updateinout" value="<?php echo htmlentities((string)$getid); ?>">
           <div class="table-responsive">
             <table class="table border-top mb-1 table-striped">
               <thead>
@@ -324,11 +324,9 @@ if ($userData) {
                   <th class="text-nowrap text-center">Permission</th>
                 </tr>
               </thead>
-
               <tbody>
                 <?php
                 // Ensure $dbh (PDO instance) and $getid (user ID) are properly defined and initialized
-
                 // Query to fetch permissions from tbluser for the user
                 $sqlUser = "SELECT iau, general, audit1, audit2, hr, training, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :getid";
                 $queryUser = $dbh->prepare($sqlUser);
@@ -355,11 +353,11 @@ if ($userData) {
                 ?>
                     <tr>
                       <td class="text-nowrap fw-medium">
-                        <?= ucfirst($permissionName); ?>
+                        <?= htmlentities($permissionName); ?>
                       </td>
                       <td class="d-flex flex-row justify-content-center">
                         <label class="switch switch-primary">
-                          <input type="checkbox" name="pid[]" value="<?= $key; ?>" <?= $user[$key] ? 'checked' : ''; ?> class="switch-input permission-toggle">
+                          <input type="checkbox" name="pid[]" value="<?= htmlentities((string)$key); ?>" <?= $user[$key] ? 'checked' : ''; ?> class="switch-input permission-toggle">
                           <span class="switch-toggle-slider">
                             <span class="switch-on">
                               <i class="bx bx-check"></i>
@@ -374,7 +372,6 @@ if ($userData) {
                   <?php
                   endforeach;
                 else :
-                  // Handle case where user is not found
                   ?>
                   <tr>
                     <td colspan="2">User not found.</td>
@@ -383,10 +380,6 @@ if ($userData) {
                 endif;
                 ?>
               </tbody>
-
-
-
-
             </table>
           </div>
           <div>
