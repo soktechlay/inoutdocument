@@ -217,10 +217,10 @@ ob_start();
             <div class="input-group input-file" name="Fichier2">
                 <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
                 <span class="input-group-btn ml-1">
-                    <button class="btn btn-danger btn-reset" type="button" onclick="resetFileInput('file2')">Reset</button>
+                    <button class="btn btn-danger btn-reset" type="button" onclick="resetFileInput('file2')">ត្រឡប់</button>
                 </span>
                 <div class="form-group ml-1">
-                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">Submit</button>
+                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូន</button>
                 </div>
             </div>
             <?php if (isset($error2)) { ?>

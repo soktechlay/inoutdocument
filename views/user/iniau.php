@@ -528,7 +528,7 @@ ob_start();
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
+                                      <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                                         <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']); ?>">

@@ -1,8 +1,6 @@
 <?php
-
 declare(strict_types=1);
 session_start();
-
 include('../../config/dbconn.php');
 
 // Redirect to index page if the user is not authenticated
@@ -292,242 +290,78 @@ if ($userData) {
     <!-- end-user-detail -->
     <!-- user-security -->
     <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
-     
+
       <!-- change-password -->
       <div class="card mb-4">
-  <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
-  <div class="card-body">
-    <!-- Display Success or Error Messages -->
-    <?php if(isset($_SESSION['msg'])): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo $_SESSION['msg']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      <?php unset($_SESSION['msg']); ?>
-    <?php endif; ?>
-
-    <?php if(isset($_SESSION['error'])): ?>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo $_SESSION['error']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      <?php unset($_SESSION['error']); ?>
-    <?php endif; ?>
-
-    <form id="formValidationExamples" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="login_type" value="updatepass">
-      <input type="hidden" name="updatepassid" value="<?php echo $getid; ?>">
-      <div class="alert alert-warning" role="alert">
-        <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that these requirements are met</h6>
-        <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp; symbol</span>
-      </div>
-      <div class="row">
-        <div class="col-md-6 fv-plugins-icon-container">
-          <div class="form-password-toggle">
-            <label class="form-label" for="formValidationPass" data-i18n="password_label">Password</label>
-            <div class="input-group input-group-merge has-validation">
-              <input class="form-control" type="password" id="formValidationPass" name="formValidationPass" placeholder="············" aria-describedby="multicol-password2">
-              <span class="input-group-text cursor-pointer" id="multicol-password2">
-                <i class="bx bx-hide"></i>
-              </span>
-            </div>
-            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 fv-plugins-icon-container">
-          <div class="form-password-toggle">
-            <label class="form-label" for="formValidationConfirmPass" data-i18n="confirm_password_label">Confirm Password</label>
-            <div class="input-group input-group-merge has-validation">
-              <input class="form-control" type="password" id="formValidationConfirmPass" name="formValidationConfirmPass" placeholder="············" aria-describedby="multicol-confirm-password2">
-              <span class="input-group-text cursor-pointer" id="multicol-confirm-password2">
-                <i class="bx bx-hide"></i>
-              </span>
-            </div>
-            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-            </div>
-          </div>
-        </div>
-        <div class="mt-3">
-          <button type="submit" class="btn btn-primary me-2" data-i18n="save_button">
-            Save Changes
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
-      <!--end change password -->
-      <!-- <div class="card mb-4">
-        <div class="card-header">
-          <h5 class="card-title mb-2">Two-steps verification</h5>
-          <span class="card-subtitle">Keep your account secure with an additional authentication step.</span>
-        </div>
+        <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
         <div class="card-body">
-          <?php if ($userData['authenticator_enabled'] == 1) { ?>
+          <!-- Display Success or Error Messages -->
+          <?php if (isset($_SESSION['msg'])) : ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <?php echo $_SESSION['msg']; ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['msg']); ?>
+          <?php endif; ?>
+
+          <?php if (isset($_SESSION['error'])) : ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <?php echo $_SESSION['error']; ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+          <?php endif; ?>
+
+          <form id="formValidationExamples" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="login_type" value="updatepass">
+            <input type="hidden" name="updatepassid" value="<?php echo $getid; ?>">
+            <div class="alert alert-warning" role="alert">
+              <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that these requirements are met</h6>
+              <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp; symbol</span>
+            </div>
             <div class="row">
-              <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                <div class="d-flex gap-2 align-items-center">
-                  <i class="bx bx-cog bx-md"></i>
-                  <span class="custom-option-header">
-                    <span class="h6 mb-2 fw-bolder">Authenticator Apps</span>
-                  </span>
-                </div>
-                <div class="d-flex align-items-center">
-                  <a href="javascript:;" class="btn btn-primary d-flex align-items-center me-3" data-bs-toggle="modal" data-bs-target="#disconnectModal">
-                    <i class="bx bx-user-check me-1"></i>Connected
-                  </a>
-                  Disconnect Button
-                  <button type="button" class="btn btn-label-danger d-flex align-items-center me-3" data-bs-toggle="modal" data-bs-target="#disconnectModal">
-                    <i class="bx bx-user-x me-1"></i>Disconnect
-                  </button> -->
-      <!-- Disconnect Modal -->
-      <!-- <div class="modal fade" id="disconnectModal" tabindex="-1" aria-labelledby="disconnectModalLabel" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="disconnectModalLabel">
-                            Disconnect Authenticator
-                          </h5>
-                        </div>
-                        <form id="formValidationExamples" class="mb-3" onsubmit="submitForm()" method="post">
-                          <input type="hidden" name="login_type" value="disconnect_twofa">
-                          <input type="hidden" name="twofacodeid" value="<?php echo $getid; ?>">
-                          <div class="modal-body">
-                            Are you sure you want to disconnect the authenticator app?
-                          </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button> -->
-      <!-- Use JavaScript to submit the form -->
-      <!-- <button class="btn btn-danger">Disconnect</button>
-                          </div>
-                        </form>
-                      </div>
-                    </div>
+              <div class="col-md-6 fv-plugins-icon-container">
+                <div class="form-password-toggle">
+                  <label class="form-label" for="formValidationPass" data-i18n="password_label">Password</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" id="formValidationPass" name="formValidationPass" placeholder="············" aria-describedby="multicol-password2">
+                    <span class="input-group-text cursor-pointer" id="multicol-password2">
+                      <i class="bx bx-hide"></i>
+                    </span>
                   </div>
-
+                  <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+                  </div>
                 </div>
               </div>
-              <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                <div class="d-flex gap-2 align-items-center">
-                  <i class="bx bx-message bx-md"></i>
-                  <span class="d-flex flex-column custom-option-header">
-                    <span class="h6 mb-2 fw-bolder">SMS</span>
-                    <span class="mb-0">
-                      We will send a code via SMS if you need to use your backup login method.
+              <div class="col-md-6 fv-plugins-icon-container">
+                <div class="form-password-toggle">
+                  <label class="form-label" for="formValidationConfirmPass" data-i18n="confirm_password_label">Confirm Password</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" id="formValidationConfirmPass" name="formValidationConfirmPass" placeholder="············" aria-describedby="multicol-confirm-password2">
+                    <span class="input-group-text cursor-pointer" id="multicol-confirm-password2">
+                      <i class="bx bx-hide"></i>
                     </span>
-                  </span>
+                  </div>
+                  <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+                  </div>
                 </div>
-                <a href="javascript:;" class="btn btn-label-primary d-flex align-items-center me-3" data-bs-target="#twoFactorAuthTwo" data-bs-toggle="modal">
-                  <i class="bx bx-user-plus me-1"></i>Connect
-                </a>
               </div>
-            </div> -->
-      <!-- <?php } else { ?>
-
-            <div class="row">
-              <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                <div class="d-flex gap-2 align-items-center">
-                  <i class="bx bx-cog bx-md"></i>
-                  <span class="custom-option-header">
-                    <span class="h6 mb-2 fw-bolder">Authenticator Apps</span>
-                  </span>
-                </div>
-                <a href="javascript:;" class="btn btn-label-primary d-flex align-items-center me-3" data-bs-target="#twoFactorAuthOne" data-bs-toggle="modal">
-                  <i class="bx bx-user-plus me-1"></i>Connect
-                </a>
-              </div> -->
-
-      <!-- <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-3">
-                <div class="d-flex gap-2 align-items-center">
-                  <i class="bx bx-message bx-md"></i>
-                  <span class="d-flex flex-column custom-option-header">
-                    <span class="h6 mb-2 fw-bolder">SMS</span>
-                    <span class="mb-0">
-                      We will send a code via SMS if you need to use your backup login method.
-                    </span>
-                  </span>
-                </div>
-                <a href="javascript:;" class="btn btn-label-primary d-flex align-items-center me-3" data-bs-target="#twoFactorAuthTwo" data-bs-toggle="modal">
-                  <i class="bx bx-user-plus me-1"></i>Connect
-                </a>
-              </div> -->
-      <!-- </div>
-          <?php } ?>
-          <p class="mb-0">Two-factor authentication adds an additional layer of security to your account by
-            requiring more than just a password to log in.
-            <a href="javascript:void(0);" class="text-body">Learn more.</a>
-          </p>
+              <div class="mt-3">
+                <button type="submit" class="btn btn-primary me-2" data-i18n="save_button">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
-      </div> -->
+      </div>
+
     </div>
     <!-- end-user-security -->
   </div>
 
 
-  <!-- modal QR-->
-  <!-- <div class="modal fade" id="twoFactorAuthOne" tabindex="-1" aria-labelledby="twoFactorAuthOneLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <form id="formValidationExamples" onsubmit="submitForm()" class="row g-3" method="POST">
-          <input type="hidden" name="login_type" value="twofacode">
-          <input type="hidden" name="twofacodeid" value="<?php echo $getid; ?>">
-          <input type="hidden" name="secret" value="<?php echo $secret; ?>">
-          <div class="modal-body p-5">
-            <div class="text-center mb-2">
-              <h3 class="mb-0">Add Authenticator App</h3>
-            </div>
-            <h5 class="mb-2 pt-1 text-break">Authenticator Apps</h5>
-            <p class="mb-4">Using an authenticator app like Google Authenticator, Microsoft Authenticator,
-              Authy, or 1Password, scan the QR code. It will generate a 6-digit code for you to enter
-              below.
-            </p>
-            <div id="qrScanner" class="text-center">
-              <img src="<?= $link; ?>" class="bg-light p-2 rounded shadow-lg">
-            </div>
-            <div class="alert alert-warning d-flex flex-column align-items-center justify-content-center mt-3" role="alert">
 
-              <p class="mb-0">PLEASE ENTER THE 6 DIGIT CODE FROM GOOGLE AUTHENTICATION</p>
-            </div>
-            <div class="col-md-12">
-              <input type="text" id="modalEnableOTPPhone" name="modalEnableOTPPhone" required class="form-control phone-number-otp-mask" placeholder="បញ្ចូលលេខកូដពី Google Authenticator">
-              <div class="invalid-feedback">
-                សូមវាយបញ្ចូលលេខកូដ។
-              </div>
-            </div>
-            <div class="mt-3 text-end">
-              <button class="btn btn-primary me-2" type="submit">
-                បញ្ជូន
-              </button>
-            </div>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div> -->
-  <!-- end-modal-QR -->
-  <!-- modal-SMS -->
-  <!-- <div class="modal fade" id="twoFactorAuthTwo" tabindex="-1" aria-modal="true" role="dialog">
-    <div class="modal-dialog modal-lg modal-dialog-centered modal-simple">
-      <div class="modal-content p-3 p-md-5">
-        <div class="modal-body">
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          <h5 class="mb-2 pt-1">Verify Your Mobile Number for SMS</h5>
-          <p class="mb-4">Enter your mobile phone number with country code
-          <div class="mb-4">
-            <input type="text" class="form-control" id="twoFactorAuthInputSms" placeholder="747 875 3459">
-          </div>
-          <div class="col-12 text-end">
-            <button type="button" class="btn btn-label-secondary me-sm-3 me-2 px-3 px-sm-4" data-bs-toggle="modal" data-bs-target="#twoFactorAuth"><i class="bx bx-left-arrow-alt bx-xs me-1 scaleX-n1-rtl"></i><span class="align-middle">Back</span></button>
-            <button type="button" class="btn btn-primary px-3 px-sm-4" data-bs-dismiss="modal" aria-label="Close"><span class="align-middle">Continue</span><i class="bx bx-right-arrow-alt bx-xs ms-1 scaleX-n1-rtl"></i></button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div> -->
 
   <script>
     // Display selected profile image

@@ -228,60 +228,75 @@ if ($userData) {
             <li class="d-flex align-items-center mb-3">
               <i class="bx bx-user"></i>
               <span class="fw-medium mx-2" data-i18n="Full Name">Full Name:</span>
-              <span><?php echo htmlentities($userData['Honorific'] . ' ' . $userData['FirstName'] . ' ' . $userData['LastName']); ?></span>
+              <span><?php echo htmlentities(($userData['Honorific'] ?? '') . ' ' . ($userData['FirstName'] ?? '') . ' ' . ($userData['LastName'] ?? '')); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-check"></i><span class="fw-medium mx-2" data-i18n="Status">Status:</span> <span data-i18n="Active">Active</span></li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-star"></i><span class="fw-medium mx-2" data-i18n="Role">Role:</span>
-              <span><?php echo htmlentities($userData['RoleName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-check"></i>
+              <span class="fw-medium mx-2" data-i18n="Status">Status:</span>
+              <span data-i18n="Active">Active</span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-flag"></i><span class="fw-medium mx-2" data-i18n="Address">Address:</span>
-              <span><?php echo htmlentities($userData['Address']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-star"></i>
+              <span class="fw-medium mx-2" data-i18n="Role">Role:</span>
+              <span><?php echo htmlentities($userData['RoleName'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-buildings"></i><span class="fw-medium mx-2" data-i18n="Department">Department:</span>
-              <span><?php echo htmlentities($userData['DepartmentName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-flag"></i>
+              <span class="fw-medium mx-2" data-i18n="Address">Address:</span>
+              <span><?php echo htmlentities($userData['Address'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-building"></i><span class="fw-medium mx-2" data-i18n="Office">Office:</span>
-              <span><?php echo htmlentities($userData['OfficeName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-buildings"></i>
+              <span class="fw-medium mx-2" data-i18n="Department">Department:</span>
+              <span><?php echo htmlentities($userData['DepartmentName'] ?? ''); ?></span>
+            </li>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-building"></i>
+              <span class="fw-medium mx-2" data-i18n="Office">Office:</span>
+              <span><?php echo htmlentities($userData['OfficeName'] ?? ''); ?></span>
             </li>
           </ul>
           <small class="text-muted text-uppercase" data-i18n="Contacts">Contacts</small>
           <ul class="list-unstyled mb-4 mt-3">
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-phone"></i><span class="fw-medium mx-2" data-i18n="Contact">Contact:</span>
-              <span><?php echo htmlentities($userData['Contact']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-phone"></i>
+              <span class="fw-medium mx-2" data-i18n="Contact">Contact:</span>
+              <span><?php echo htmlentities($userData['Contact'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-envelope"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-envelope"></i>
               <span class="fw-medium mx-2" data-i18n="Email">Email:</span>
-              <span><?php echo htmlentities($userData['Email']); ?></span>
+              <span><?php echo htmlentities($userData['Email'] ?? ''); ?></span>
             </li>
           </ul>
           <small class="text-muted text-uppercase" data-i18n="Teams">Teams</small>
           <ul class="list-unstyled mt-3 mb-0">
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
                 <span class="fw-medium mx-2" data-i18n="Head Of Department">Head Of Department:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfDepartment']); ?></span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfDepartment'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Department">Deputy Head
-                  Of
-                  Department:
-                </span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOfDepartment']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Department">Deputy Head Of Department:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOfDepartment'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2 " data-i18n="Head Of Office">Head Of Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfOffice']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Head Of Office">Head Of Office:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfOffice'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2 " data-i18n="Deputy Head Of Office">Deputy Head Of
-                  Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOffice']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Office">Deputy Head Of Office:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOffice'] ?? ''); ?></span>
               </div>
             </li>
           </ul>
@@ -289,73 +304,76 @@ if ($userData) {
       </div>
       <!--/ About User -->
     </div>
+
+
+
     <!-- end-user-detail -->
     <!-- user-security -->
     <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
       <!-- change-password -->
       <div class="card mb-4">
-  <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
-  <div class="card-body">
-    <!-- Display Success or Error Messages -->
-    <?php if(isset($_SESSION['msg'])): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo $_SESSION['msg']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      <?php unset($_SESSION['msg']); ?>
-    <?php endif; ?>
+        <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
+        <div class="card-body">
+          <!-- Display Success or Error Messages -->
+          <?php if (isset($_SESSION['msg'])) : ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <?php echo $_SESSION['msg']; ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['msg']); ?>
+          <?php endif; ?>
 
-    <?php if(isset($_SESSION['error'])): ?>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo $_SESSION['error']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      <?php unset($_SESSION['error']); ?>
-    <?php endif; ?>
+          <?php if (isset($_SESSION['error'])) : ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <?php echo $_SESSION['error']; ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+          <?php endif; ?>
 
-    <form id="formValidationExamples" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="login_type" value="updatepass">
-      <input type="hidden" name="updatepassid" value="<?php echo $getid; ?>">
-      <div class="alert alert-warning" role="alert">
-        <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that these requirements are met</h6>
-        <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp; symbol</span>
+          <form id="formValidationExamples" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="login_type" value="updatepass">
+            <input type="hidden" name="updatepassid" value="<?php echo $getid; ?>">
+            <div class="alert alert-warning" role="alert">
+              <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that these requirements are met</h6>
+              <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp; symbol</span>
+            </div>
+            <div class="row">
+              <div class="col-md-6 fv-plugins-icon-container">
+                <div class="form-password-toggle">
+                  <label class="form-label" for="formValidationPass" data-i18n="password_label">Password</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" id="formValidationPass" name="formValidationPass" placeholder="············" aria-describedby="multicol-password2">
+                    <span class="input-group-text cursor-pointer" id="multicol-password2">
+                      <i class="bx bx-hide"></i>
+                    </span>
+                  </div>
+                  <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 fv-plugins-icon-container">
+                <div class="form-password-toggle">
+                  <label class="form-label" for="formValidationConfirmPass" data-i18n="confirm_password_label">Confirm Password</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" id="formValidationConfirmPass" name="formValidationConfirmPass" placeholder="············" aria-describedby="multicol-confirm-password2">
+                    <span class="input-group-text cursor-pointer" id="multicol-confirm-password2">
+                      <i class="bx bx-hide"></i>
+                    </span>
+                  </div>
+                  <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <button type="submit" class="btn btn-primary me-2" data-i18n="save_button">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="row">
-        <div class="col-md-6 fv-plugins-icon-container">
-          <div class="form-password-toggle">
-            <label class="form-label" for="formValidationPass" data-i18n="password_label">Password</label>
-            <div class="input-group input-group-merge has-validation">
-              <input class="form-control" type="password" id="formValidationPass" name="formValidationPass" placeholder="············" aria-describedby="multicol-password2">
-              <span class="input-group-text cursor-pointer" id="multicol-password2">
-                <i class="bx bx-hide"></i>
-              </span>
-            </div>
-            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 fv-plugins-icon-container">
-          <div class="form-password-toggle">
-            <label class="form-label" for="formValidationConfirmPass" data-i18n="confirm_password_label">Confirm Password</label>
-            <div class="input-group input-group-merge has-validation">
-              <input class="form-control" type="password" id="formValidationConfirmPass" name="formValidationConfirmPass" placeholder="············" aria-describedby="multicol-confirm-password2">
-              <span class="input-group-text cursor-pointer" id="multicol-confirm-password2">
-                <i class="bx bx-hide"></i>
-              </span>
-            </div>
-            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-            </div>
-          </div>
-        </div>
-        <div class="mt-3">
-          <button type="submit" class="btn btn-primary me-2" data-i18n="save_button">
-            Save Changes
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
 
       <!--end change password -->
       <div class="card mb-4">

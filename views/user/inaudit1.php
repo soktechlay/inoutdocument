@@ -368,7 +368,7 @@ ob_start();
                       <th>កម្មវត្តុ</th>
                       <th>មកពីស្ថាប័នឬក្រសួង</th>
                       <th>ឈ្មោះមន្រ្តីប្រគល់</th>
-                      <th>ប្រភេទឯកសារចូល</th>
+                      <th>ផ្ទេរឯកសារ</th>
                       <th>កាលបរិច្ឆេទ</th>
                       <th>សកម្មភាព</th>
                     </tr>
@@ -389,7 +389,7 @@ ob_start();
                           </td>
                           <td><?php echo $row['DepartmentName'] ?></td>
                           <td><?php echo $row['NameOfgive'] ?></td>
-                          <td><a class="btn-link link-primary" href="sendoffice.php?ID=<?php echo htmlentities($row['ID']); ?>">ពិនិត្យមើលឯកសារ</a></td>
+                          <td><a class="btn-link link-primary" href="sendoffice.php?ID=<?php echo htmlentities($row['ID']); ?>">ផ្ទេរឯកសារ</a></td>
                           <td><?php echo $row['Date'] ?></td>
                           <td>
                             <div class="d-flex ">
@@ -465,7 +465,7 @@ ob_start();
                           </div>
                         </div>
                         <!-- Modal edit -->
-                        <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>"" tabindex=" -1" aria-hidden="true">
+                        <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>" tabindex="-1" aria-hidden="true">
                           <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                             <div class="modal-content">
                               <div class="modal-header">
@@ -476,10 +476,9 @@ ob_start();
                                   <div class="row">
                                     <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
                                     <input type="hidden" name="current_file" value="<?php echo htmlentities($row['Typedocument']); ?>"> <!-- Hidden input for current file -->
-                                    <input type="hidden" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']); ?>"> <!-- Hidden input for ID -->
-                                    <input type="hidden" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']); ?>"> <!-- Hidden input for ID -->
-                                    <input type="hidden" name="give" value="<?php echo htmlentities($row['NameOfgive']); ?>"> <!-- Hidden input for ID -->
-
+                                    <input type="hidden" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']); ?>"> <!-- Hidden input for received -->
+                                    <input type="hidden" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']); ?>"> <!-- Hidden input for Department Name -->
+                                    <input type="hidden" name="give" value="<?php echo htmlentities($row['NameOfgive']); ?>"> <!-- Hidden input for NameOfgive -->
                                     <div class="mb-3 col-md-6">
                                       <label for="code" class="form-label">លេខឯកសារ</label>
                                       <div class="input-group input-group-merge">
@@ -499,7 +498,7 @@ ob_start();
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                                         <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
-                                          <option value="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                          <option value="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo htmlentities($row['DepartmentName']); ?></option>
                                           <?php
                                           $sql = "SELECT * FROM tbldepartments";
                                           $query = $dbh->prepare($sql);
@@ -513,7 +512,6 @@ ob_start();
                                         </select>
                                       </div>
                                     </div>
-
                                     <div class="mb-3 col-md-6">
                                       <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                                       <div class="input-group input-group-merge">
@@ -574,12 +572,13 @@ ob_start();
                               </div>
                             </div>
                           </div>
+                        </div>
 
-                      <?php
+                    <?php
                         $cnt++;
                       }
                     }
-                      ?>
+                    ?>
                   </tbody>
                 </table>
               </div>

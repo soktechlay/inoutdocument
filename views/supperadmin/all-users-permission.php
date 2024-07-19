@@ -227,60 +227,75 @@ if ($userData) {
             <li class="d-flex align-items-center mb-3">
               <i class="bx bx-user"></i>
               <span class="fw-medium mx-2" data-i18n="Full Name">Full Name:</span>
-              <span><?php echo htmlentities($userData['Honorific'] . ' ' . $userData['FirstName'] . ' ' . $userData['LastName']); ?></span>
+              <span><?php echo htmlentities(($userData['Honorific'] ?? '') . ' ' . ($userData['FirstName'] ?? '') . ' ' . ($userData['LastName'] ?? '')); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-check"></i><span class="fw-medium mx-2" data-i18n="Status">Status:</span> <span data-i18n="Active">Active</span></li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-star"></i><span class="fw-medium mx-2" data-i18n="Role">Role:</span>
-              <span><?php echo htmlentities($userData['RoleName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-check"></i>
+              <span class="fw-medium mx-2" data-i18n="Status">Status:</span>
+              <span data-i18n="Active">Active</span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-flag"></i><span class="fw-medium mx-2" data-i18n="Address">Address:</span>
-              <span><?php echo htmlentities($userData['Address']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-star"></i>
+              <span class="fw-medium mx-2" data-i18n="Role">Role:</span>
+              <span><?php echo htmlentities($userData['RoleName'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-buildings"></i><span class="fw-medium mx-2" data-i18n="Department">Department:</span>
-              <span><?php echo htmlentities($userData['DepartmentName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-flag"></i>
+              <span class="fw-medium mx-2" data-i18n="Address">Address:</span>
+              <span><?php echo htmlentities($userData['Address'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-building"></i><span class="fw-medium mx-2" data-i18n="Office">Office:</span>
-              <span><?php echo htmlentities($userData['OfficeName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-buildings"></i>
+              <span class="fw-medium mx-2" data-i18n="Department">Department:</span>
+              <span><?php echo htmlentities($userData['DepartmentName'] ?? ''); ?></span>
+            </li>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-building"></i>
+              <span class="fw-medium mx-2" data-i18n="Office">Office:</span>
+              <span><?php echo htmlentities($userData['OfficeName'] ?? ''); ?></span>
             </li>
           </ul>
           <small class="text-muted text-uppercase" data-i18n="Contacts">Contacts</small>
           <ul class="list-unstyled mb-4 mt-3">
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-phone"></i><span class="fw-medium mx-2" data-i18n="Contact">Contact:</span>
-              <span><?php echo htmlentities($userData['Contact']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-phone"></i>
+              <span class="fw-medium mx-2" data-i18n="Contact">Contact:</span>
+              <span><?php echo htmlentities($userData['Contact'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-envelope"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-envelope"></i>
               <span class="fw-medium mx-2" data-i18n="Email">Email:</span>
-              <span><?php echo htmlentities($userData['Email']); ?></span>
+              <span><?php echo htmlentities($userData['Email'] ?? ''); ?></span>
             </li>
           </ul>
           <small class="text-muted text-uppercase" data-i18n="Teams">Teams</small>
           <ul class="list-unstyled mt-3 mb-0">
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
                 <span class="fw-medium mx-2" data-i18n="Head Of Department">Head Of Department:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfDepartment']); ?></span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfDepartment'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Department">Deputy Head
-                  Of
-                  Department:
-                </span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOfDepartment']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Department">Deputy Head Of Department:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOfDepartment'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2 " data-i18n="Head Of Office">Head Of Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfOffice']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Head Of Office">Head Of Office:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfOffice'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2 " data-i18n="Deputy Head Of Office">Deputy Head Of
-                  Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOffice']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Office">Deputy Head Of Office:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOffice'] ?? ''); ?></span>
               </div>
             </li>
           </ul>
@@ -311,63 +326,63 @@ if ($userData) {
               </thead>
 
               <tbody>
-    <?php
-    // Ensure $dbh (PDO instance) and $getid (user ID) are properly defined and initialized
+                <?php
+                // Ensure $dbh (PDO instance) and $getid (user ID) are properly defined and initialized
 
-    // Query to fetch permissions from tbluser for the user
-    $sqlUser = "SELECT iau, general, audit1, audit2, hr, training, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :getid";
-    $queryUser = $dbh->prepare($sqlUser);
-    $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
-    $queryUser->execute();
-    $user = $queryUser->fetch(PDO::FETCH_ASSOC);
+                // Query to fetch permissions from tbluser for the user
+                $sqlUser = "SELECT iau, general, audit1, audit2, hr, training, it, ofaudit1, ofaudit2, ofaudit3, ofaudit4 FROM tbluser WHERE id = :getid";
+                $queryUser = $dbh->prepare($sqlUser);
+                $queryUser->bindParam(':getid', $getid, PDO::PARAM_INT);
+                $queryUser->execute();
+                $user = $queryUser->fetch(PDO::FETCH_ASSOC);
 
-    // Display user-specific permissions if user exists
-    if ($user) :
-        $userPermissions = [
-            'iau' => 'អង្គភាពសវនកម្មការផ្ទៃក្នុង', // Internal Audit Unit
-            'general' => 'នាយកដ្ឋានកិច្ចការទូទៅ', // General
-            'audit1' => 'នាយកដ្ឋានសវនកម្មទី១', // Audit 1
-            'audit2' => 'នាយកដ្ឋានសវនកម្មទី២', // Audit 2
-            'hr' => 'ការិយាល័យធនធានមនុស្ស', // Human Resources
-            'training' => 'ការិយាល័យបណ្តុះបណ្តាល', // Training
-            'it' => 'ការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា', // Information Technology
-            'ofaudit1' => 'ការិយាល័យសវនកម្មទី១', // Office Audit 1
-            'ofaudit2' => 'ការិយាល័យសវនកម្មទី២', // Office Audit 2
-            'ofaudit3' => 'ការិយាល័យសវនកម្មកាទី៣', // Office Audit 3
-            'ofaudit4' => 'ការិយាល័យសវនកម្មទី៤'  // Office Audit 4
-        ];
-        foreach ($userPermissions as $key => $permissionName) :
-    ?>
-            <tr>
-                <td class="text-nowrap fw-medium">
-                    <?= ucfirst($permissionName); ?>
-                </td>
-                <td class="d-flex flex-row justify-content-center">
-                    <label class="switch switch-primary">
-                        <input type="checkbox" name="pid[]" value="<?= $key; ?>" <?= $user[$key] ? 'checked' : ''; ?> class="switch-input permission-toggle">
-                        <span class="switch-toggle-slider">
+                // Display user-specific permissions if user exists
+                if ($user) :
+                  $userPermissions = [
+                    'iau' => 'អង្គភាពសវនកម្មការផ្ទៃក្នុង', // Internal Audit Unit
+                    'general' => 'នាយកដ្ឋានកិច្ចការទូទៅ', // General
+                    'audit1' => 'នាយកដ្ឋានសវនកម្មទី១', // Audit 1
+                    'audit2' => 'នាយកដ្ឋានសវនកម្មទី២', // Audit 2
+                    'hr' => 'ការិយាល័យធនធានមនុស្ស', // Human Resources
+                    'training' => 'ការិយាល័យបណ្តុះបណ្តាល', // Training
+                    'it' => 'ការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា', // Information Technology
+                    'ofaudit1' => 'ការិយាល័យសវនកម្មទី១', // Office Audit 1
+                    'ofaudit2' => 'ការិយាល័យសវនកម្មទី២', // Office Audit 2
+                    'ofaudit3' => 'ការិយាល័យសវនកម្មកាទី៣', // Office Audit 3
+                    'ofaudit4' => 'ការិយាល័យសវនកម្មទី៤'  // Office Audit 4
+                  ];
+                  foreach ($userPermissions as $key => $permissionName) :
+                ?>
+                    <tr>
+                      <td class="text-nowrap fw-medium">
+                        <?= ucfirst($permissionName); ?>
+                      </td>
+                      <td class="d-flex flex-row justify-content-center">
+                        <label class="switch switch-primary">
+                          <input type="checkbox" name="pid[]" value="<?= $key; ?>" <?= $user[$key] ? 'checked' : ''; ?> class="switch-input permission-toggle">
+                          <span class="switch-toggle-slider">
                             <span class="switch-on">
-                                <i class="bx bx-check"></i>
+                              <i class="bx bx-check"></i>
                             </span>
                             <span class="switch-off">
-                                <i class="bx bx-x"></i>
+                              <i class="bx bx-x"></i>
                             </span>
-                        </span>
-                    </label>
-                </td>
-            </tr>
-    <?php
-        endforeach;
-    else :
-        // Handle case where user is not found
-    ?>
-        <tr>
-            <td colspan="2">User not found.</td>
-        </tr>
-    <?php
-    endif;
-    ?>
-</tbody>
+                          </span>
+                        </label>
+                      </td>
+                    </tr>
+                  <?php
+                  endforeach;
+                else :
+                  // Handle case where user is not found
+                  ?>
+                  <tr>
+                    <td colspan="2">User not found.</td>
+                  </tr>
+                <?php
+                endif;
+                ?>
+              </tbody>
 
 
 
