@@ -190,7 +190,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
               </a>
             </li>
             <li class="menu-item <?php echo ($activePage === 'outit.php') ? 'active' : ''; ?>">
-              <a href="outot.php" class="menu-link">
+              <a href="outit.php" class="menu-link">
                 <i class="menu-icon tf-icons bx bx-table"></i>
                 <div data-i18n="Logout Documents">បញ្ចីឯកសារចេញ</div>
               </a>

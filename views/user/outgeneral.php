@@ -383,7 +383,7 @@ ob_start();
                             <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['CodeId'] ?>
                           </td>
                           <td>
-                            <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['Type'] ?></div>
+                            <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                           </td>
                           <td><?php echo $row['OutDepartment'] ?></td>
                           <td><?php echo $row['NameOFReceive'] ?></td>
@@ -422,7 +422,7 @@ ob_start();
                                     </div>
                                     <div class="mb-3 col-md-6">
                                       <label for="type" class="form-label">កម្មវត្តុ</label>
-                                      <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>" disabled>
+                                      <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                       <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
@@ -473,7 +473,6 @@ ob_start();
                               <div class="modal-body">
                                 <form id="formAccountSettings" method="post" enctype="multipart/form-data">
                                   <div class="row">
-
                                     <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
                                     <input type="hidden" name="nameofgive" value="<?php echo htmlentities($row['NameOfgive']); ?>"> <!-- Hidden input for NameOfgive -->
                                     <input type="hidden" name="fromdepartment" value="<?php echo htmlentities($row['FromDepartment']); ?>"> <!-- Hidden input for FromDepartment -->
@@ -498,7 +497,7 @@ ob_start();
                                     </div>
 
                                     <div class="mb-3 col-md-6">
-                                      <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                      <label for="outdepartment" class="form-label">ចេញទៅនាយកដ្ឋាន</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                                         <select class="custom-select form-control form-select rounded-2" name="outdepartment" required>

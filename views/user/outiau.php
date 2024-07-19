@@ -363,7 +363,7 @@ ob_start();
                                                         <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['CodeId'] ?>
                                                     </td>
                                                     <td>
-                                                        <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo $row['Type'] ?></div>
+                                                        <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                                                     </td>
                                                     <td><?php echo $row['OutDepartment'] ?></td>
                                                     <td><?php echo $row['NameOFReceive'] ?></td>
@@ -402,7 +402,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="type" class="form-label">កម្មវត្តុ</label>
-                                                                            <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>" disabled>
+                                                                            <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>" disabled>
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
