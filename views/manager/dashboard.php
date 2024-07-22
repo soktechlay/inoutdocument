@@ -23,7 +23,28 @@ ob_start();
 <div class="col-12 d-flex align-items-center justify-content-between mb-3">
     <h3 class="mb-0"><?php echo translate('welcome') ?>,<span class="mef2 text-primary mx-2 me-0 mb-0"><?php echo  $_SESSION['username'] ?></span></h3>
     <div class="dropdown">
-        <button class="btn btn-primary"><i class="bx bx-calendar me-2"></i><?php echo date('D-m-Y h:i A') ?></button>
+        <!-- <button class="btn btn-primary"><i class="bx bx-calendar me-2"></i><?php echo date('D-m-Y h:i A') ?></button> -->
+        <button class="btn btn-primary">
+            <i class="bx bx-calendar me-2"></i>
+            <?php
+            // Set the locale to Khmer (Cambodia)
+            $locale = 'km_KH';
+
+            // Create a date formatter
+            $formatter = new IntlDateFormatter(
+                $locale,
+                IntlDateFormatter::FULL,
+                IntlDateFormatter::FULL,
+                'Asia/Phnom_Penh',
+                IntlDateFormatter::GREGORIAN,
+                'EEEE ទី d ខែ MMMM ឆ្នាំ y hh:mm a'
+            );
+
+            // Format the current date and time
+            echo $formatter->format(new DateTime());
+            ?>
+        </button>
+
     </div>
 </div>
 <!-- <div class="row">
@@ -147,61 +168,61 @@ ob_start();
     <!-- progressbar  -->
 
     <div class="col">
-    <div class="card h-100">
-        <div class="card-header d-flex justify-content-between align-items-center mb-3">
-            <h5 class="card-title me-2 mb-0">សកម្មភាពឯកសារចេញ</h5>
-        </div>
-        <div class="card-body">
-            <div class="table-responsive">
-                <table class="table border-top mb-1 table-striped">
-                    <thead>
-                        <tr>
-                            <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
-                            <th>ឈ្មោះមន្រ្តីទទួល</th>
-                            <th>កាលបរិច្ឆេទ</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php
-                        try {
-                            // Assuming $userId contains the user ID
-                            $sql = "SELECT outdocument.*, tbluser.username FROM outdocument 
+        <div class="card h-100">
+            <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                <h5 class="card-title me-2 mb-0">សកម្មភាពឯកសារចេញ</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table border-top mb-1 table-striped">
+                        <thead>
+                            <tr>
+                                <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
+                                <th>ឈ្មោះមន្រ្តីទទួល</th>
+                                <th>កាលបរិច្ឆេទ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php
+                            try {
+                                // Assuming $userId contains the user ID
+                                $sql = "SELECT outdocument.*, tbluser.username FROM outdocument 
                                     JOIN tbluser ON outdocument.user_id = tbluser.id 
                                     WHERE tbluser.id = :userid 
                                     AND outdocument.isdelete = 0
                                     ORDER BY outdocument.Date DESC 
                                     LIMIT 5"; // Adjust the limit as needed
 
-                            $query = $dbh->prepare($sql);
-                            $query->bindParam(':userid', $userId, PDO::PARAM_INT);
-                            $query->execute();
-                            $searchResults = $query->fetchAll(PDO::FETCH_ASSOC);
+                                $query = $dbh->prepare($sql);
+                                $query->bindParam(':userid', $userId, PDO::PARAM_INT);
+                                $query->execute();
+                                $searchResults = $query->fetchAll(PDO::FETCH_ASSOC);
 
-                            // Check if query returned results
-                            if (!empty($searchResults)) {
-                                foreach ($searchResults as $row) {
-                                    echo "<tr>";
-                                    echo "<td>" . htmlspecialchars($row['OutDepartment']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['NameOFReceive']) . "</td>";
-                                    echo "<td>" . htmlspecialchars($row['Date']) . "</td>";
-                                    echo "</tr>";
-                                }
-                            } else {
-                                echo "<tr><td colspan='3'><div class='text-center'>
+                                // Check if query returned results
+                                if (!empty($searchResults)) {
+                                    foreach ($searchResults as $row) {
+                                        echo "<tr>";
+                                        echo "<td>" . htmlspecialchars($row['OutDepartment']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['NameOFReceive']) . "</td>";
+                                        echo "<td>" . htmlspecialchars($row['Date']) . "</td>";
+                                        echo "</tr>";
+                                    }
+                                } else {
+                                    echo "<tr><td colspan='3'><div class='text-center'>
                                     <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
                                     <h5 class='text-muted mt-3'>No recent activities found.</h5>
                                 </div></td></tr>";
+                                }
+                            } catch (PDOException $e) {
+                                echo "<tr><td colspan='3'>Error: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
                             }
-                        } catch (PDOException $e) {
-                            echo "<tr><td colspan='3'>Error: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
-                        }
-                        ?>
-                    </tbody>
-                </table>
+                            ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 
 
