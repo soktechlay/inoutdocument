@@ -71,7 +71,8 @@ if (isset($_POST["submit"])) {
 
                         // Insert into notifications table
                         $userId = $_SESSION['userid']; // Assuming you have the user ID stored in session
-                        $notificationMessage = "New request submitted by user ID: $userId with send ID: $sendid";
+                        // $notificationMessage = "New submitted by user ID: $userId with send ID: $sendid";
+                        $notificationMessage = "ឯកសារចូលនាយកដ្ឋាន";
 
                         $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document)";
                         $queryNotification = $dbh->prepare($sqlNotification);
@@ -166,9 +167,9 @@ ob_start();
             <h4 class="mt-2">ឯកសារចំណារ</h4>
         </div>
     </div>
-    <form method="POST" enctype="multipart/form-data">        
-        <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">       
-        
+    <form method="POST" enctype="multipart/form-data">
+        <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">
+
         <div class="row mt-2">
             <div class="mb-3 col-md-6">
                 <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
@@ -177,15 +178,17 @@ ob_start();
                     <select name="burden" id="burden" class="form-select form-control" required>
                         <option value="">ជ្រើសរើស...</option>
                         <?php
-                        $sql = "SELECT * FROM tbluser";
+                        $sql = "SELECT UserName, FirstName, LastName FROM tbluser WHERE iau = 1 OR general = 1 OR audit1 = 1 OR audit2 = 1";
                         $query = $dbh->prepare($sql);
                         $query->execute();
                         $results = $query->fetchAll(PDO::FETCH_OBJ);
+
                         if ($query->rowCount() > 0) {
                             foreach ($results as $result) { ?>
-                                <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
-                        <?php }
-                        } ?>
+                                <option value="<?php echo htmlentities($result->UserName); ?>">
+                                    <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                </option>
+                        <?php } } ?>
                     </select>
                 </div>
             </div>
@@ -195,10 +198,16 @@ ob_start();
                     <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                     <select class="custom-select form-control form-select rounded-2" name="department" required>
                         <option value="">ជ្រើសរើស...</option>
-                        <option value="អង្គភាពសវនកម្មផ្ទៃក្នុង">អង្គភាពសវនកម្មផ្ទៃក្នុង</option>
-                        <option value="នាយកដ្ឋានកិច្ចការទូទៅ">នាយកដ្ឋានកិច្ចការទូទៅ</option>
-                        <option value="នាយកដ្ឋានសវនកម្មទី១">នាយកដ្ឋានសវនកម្មទី១</option>
-                        <option value="នាយកដ្ឋានសវនកម្មទី២">នាយកដ្ឋានសវនកម្មទី២</option>
+                        <?php
+                        $sql = "SELECT * FROM tbldepartments";
+                        $query = $dbh->prepare($sql);
+                        $query->execute();
+                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                        if ($query->rowCount() > 0) {
+                            foreach ($results as $result) { ?>
+                                <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                        <?php }
+                        } ?>
                     </select>
                 </div>
             </div>
@@ -208,10 +217,10 @@ ob_start();
             <div class="input-group input-file" name="Fichier2">
                 <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
                 <span class="input-group-btn ml-1">
-                    <button class="btn btn-danger btn-reset" type="button" onclick="resetFileInput('file2')">Reset</button>
+                    <button class="btn btn-danger btn-reset" type="button" onclick="resetFileInput('file2')">ត្រឡប់</button>
                 </span>
                 <div class="form-group ml-1">
-                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">Submit</button>
+                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូន</button>
                 </div>
             </div>
             <?php if (isset($error2)) { ?>
