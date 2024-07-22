@@ -12,7 +12,7 @@ if (!isset($_SESSION['userid'])) {
 include('../../includes/translate.php');
 
 // Page variables
-$pageTitle = "ឯកសារចេញការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា";
+$pageTitle = "ឯកសារចេញការិយាល័យគ្រប់គ្រងព័ត៌មានវិទ្យា";
 $sidebar = "outit";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
@@ -174,7 +174,7 @@ ob_start();
         <div class="container-xl flex-grow-1">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="card-header">
-                    <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">ការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា/</span>ឯកសារចេញ</h4>
+                    <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">ការិយាល័យគ្រប់គ្រងព័ត៌មានវិទ្យា/</span>ឯកសារចេញ</h4>
                 </div>
                 <div class="dt-action-buttons pt-md-0">
                     <div class="dt-buttons btn-group flex-wrap ">

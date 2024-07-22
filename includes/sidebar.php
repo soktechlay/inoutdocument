@@ -179,7 +179,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យគ្រប់គ្រងព័ត៌មានវីទ្យា</div>
+            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យគ្រប់គ្រងព័ត៌មានវិទ្យា</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for traning -->
