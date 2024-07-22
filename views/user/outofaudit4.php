@@ -206,17 +206,44 @@ ob_start();
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                                    <label for="outdepartment" class="form-label">ចេញទៅនាយកដ្ឋាន</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                                                        <input class="form-control" type="text" id="outdepartment" name="outdepartment" placeholder="បំពេញឈ្មោះស្ថាប័នឬក្រសួង..." required>
+                                                        <select class="custom-select form-control form-select rounded-2" name="outdepartment" required>
+                                                            <option value="">ជ្រើសរើស...</option>
+                                                            <?php
+                                                            $sql = "SELECT * FROM tbldepartments";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
+                                                                    <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                                            <?php }
+                                                            } ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
                                                     <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                                        <input type="text" id="nameofreceive" name="nameofreceive" class="form-control" placeholder="បំពេញឈ្មោះមន្រ្តីទទួល..." required>
+                                                        <select name="nameofreceive" id="nameofreceive" class="form-select form-control" required>
+                                                            <option value="">ជ្រើសរើស...</option>
+                                                            <?php
+                                                            $sql = "SELECT * FROM tbluser";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) {
+                                                            ?>
+                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                    </option>
+                                                            <?php }
+                                                            } ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
@@ -230,11 +257,12 @@ ob_start();
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            $cnt = 1;
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) {
                                                             ?>
-                                                                    <option value="<?php echo htmlentities($result->UserName) ?>"><?php echo htmlentities($result->UserName) ?></option>
+                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                    </option>
                                                             <?php }
                                                             } ?>
                                                         </select>

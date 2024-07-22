@@ -21,14 +21,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     // Fetch the submitted code from the form
     $code = $_POST['code'];
     $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
-    
+
     // Check if the code already exists in the database for the specific user
     $sql_check = "SELECT * FROM indocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
     $query_check = $dbh->prepare($sql_check);
     $query_check->bindParam(':code', $code, PDO::PARAM_STR);
     $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
     $query_check->execute();
-    
+
 
     if ($query_check->rowCount() > 0) {
         // Code already exists, handle the error or display a message
@@ -239,10 +239,22 @@ ob_start();
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                                                    <label for="echonomic" class="form-label">មកពីនាយកដ្ឋាន</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                                                        <input class="form-control" type="text" id="name" name="echonomic" placeholder="បំពេញឈ្មោះស្ថាប័នឬក្រសួង..." required>
+                                                        <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
+                                                            <option value="">ជ្រើសរើស...</option>
+                                                            <?php
+                                                            $sql = "SELECT * FROM tbldepartments";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
+                                                                    <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                                            <?php }
+                                                            } ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
@@ -259,7 +271,9 @@ ob_start();
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) {
                                                             ?>
-                                                                    <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                    </option>
                                                             <?php }
                                                             } ?>
                                                         </select>
@@ -279,7 +293,9 @@ ob_start();
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) {
                                                             ?>
-                                                                    <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                    </option>
                                                             <?php }
                                                             } ?>
                                                         </select>
@@ -422,7 +438,7 @@ ob_start();
                                                                             <label for="type" class="form-label">កម្មវត្តុ</label>
                                                                             <div class="input-group input-group-merge">
                                                                                 <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-detail'></i></span>
-                                                                                <input class="form-control" type="text" id="type" name="type"  value="<?php echo htmlentities($row['Type']); ?>">
+                                                                                <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>">
                                                                             </div>
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
