@@ -33,7 +33,7 @@ ob_start();
             {
                 $khmerDigits = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
                 return str_replace(range(0, 9), $khmerDigits, $input);
-            }gitt 
+            }
 
             // Check if the IntlDateFormatter class exists
             if (class_exists('IntlDateFormatter')) {
