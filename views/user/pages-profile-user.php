@@ -96,9 +96,9 @@ if ($userData) {
                             </ul>
                         </div>
                         <!-- Additional buttons or actions -->
-                        <a href="javascript:void(0)" class="btn btn-primary text-nowrap">
+                        <!-- <a href="javascript:void(0)" class="btn btn-primary text-nowrap">
                             <i class="bx bx-user-check me-1"></i>Connected
-                        </a>
+                        </a> -->
                     </div>
                 </div>
             </div>

@@ -107,10 +107,10 @@ if ($userData) {
                 </ul>
               </div>
               <!-- Additional buttons or actions -->
-              <a href="#" class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#profileModal">
+              <!-- <a href="#" class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#profileModal">
                 <i class="bx bx-user-check me-1"></i> View Profile
               </a>
-              <!-- Profile Modal -->
+             
               <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
                   <div class="modal-content">
@@ -119,7 +119,7 @@ if ($userData) {
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                      <!-- PHP code to fetch and display user's profile information -->
+                      
                       <?php
                       // You may need to adjust this query based on your database schema
                       $sql = "SELECT * FROM tbluser WHERE id = :userId";
@@ -135,22 +135,22 @@ if ($userData) {
                           <input type="hidden" name="login_type" value="updatedimg">
                           <input type="hidden" name="userId" value="<?php echo $getid; ?>">
 
-                          <!-- Profile Picture -->
+                          
                           <div class="mb-3 text-center">
-                            <!-- Clickable profile picture to change profile image -->
+                           
                             <label for="profileInput">
                               <?php if (!empty($user['Profile'])) : ?>
                                 <img src="<?php echo htmlentities($user['Profile']); ?>" alt="user image" class="img-fluid rounded-4 profile-image" style="cursor: pointer; object-fit:contain; width: 320px; height: 320px">
                               <?php else : ?>
-                                <!-- Placeholder image or initials -->
+                               
                                 <span class="avatar-initial rounded-circle bg-label-success" style="cursor: pointer;"><?php echo generateInitials($user['FirstName'] . ' ' . $user['LastName']); ?></span>
                               <?php endif; ?>
                             </label>
-                            <!-- File input to choose new profile picture -->
+                            
                             <input type="file" name="updateimg" id="profileInput" class="d-none" accept="image/*">
                           </div>
 
-                          <!-- Other Information -->
+                          
                           <div class="mb-3">
                             <label for="userName" class="form-label">Username:</label>
                             <input type="text" class="form-control" id="userName" name="userName" value="<?php echo htmlentities($user['UserName']); ?>">
@@ -163,13 +163,11 @@ if ($userData) {
                             <label for="lastName" class="form-label">Last Name:</label>
                             <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo htmlentities($user['LastName']); ?>">
                           </div>
-                          <!-- Add more fields as needed -->
-
-                          <!-- Modal Footer -->
+                          
                           <div class="modal-footer">
-                            <!-- Close Button -->
+                            
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <!-- Submit Button -->
+                           
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                           </div>
                         </form>
@@ -181,7 +179,7 @@ if ($userData) {
                     </div>
                   </div>
                 </div>
-              </div>
+              </div> -->
             </div>
           </div>
         </div>
