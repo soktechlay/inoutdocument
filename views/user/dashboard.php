@@ -21,52 +21,9 @@ ob_start();
 ?>
 
 <div class="col-12 d-flex align-items-center justify-content-between mb-3">
-    <h3 class="mb-0"><?php echo translate('welcome'); ?>,
-        <span class="mef2 text-primary mx-2 me-0 mb-0"><?php echo $_SESSION['username']; ?></span>
-    </h3>
+    <h3 class="mb-0"><?php echo translate('welcome') ?>,<span class="mef2 text-primary mx-2 me-0 mb-0"><?php echo  $_SESSION['username'] ?></span></h3>
     <div class="dropdown">
-        <button class="btn btn-primary">
-            <i class="bx bx-calendar me-2"></i>
-            <?php
-            // Function to convert digits to Khmer
-            function convertDigitsToKhmer($input)
-            {
-                $khmerDigits = ['០', '១', '២', '៣', '៤', '៥', '៦', '៧', '៨', '៩'];
-                return str_replace(range(0, 9), $khmerDigits, $input);
-            }
-
-            // Check if the IntlDateFormatter class exists
-            if (class_exists('IntlDateFormatter')) {
-                // Set the locale to Khmer (Cambodia)
-                $locale = 'km_KH';
-
-                // Create a date formatter
-                $formatter = new IntlDateFormatter(
-                    $locale,
-                    IntlDateFormatter::FULL,
-                    IntlDateFormatter::FULL,
-                    'Asia/Bangkok',
-                    IntlDateFormatter::GREGORIAN,
-                    'EEEE ទី d ខែ MMMM ឆ្នាំ y hh:mm a'
-                );
-
-                // Format the current date and time
-                $formattedDate = $formatter->format(new DateTime());
-
-                // Convert digits in the formatted date to Khmer
-                echo convertDigitsToKhmer($formattedDate);
-            } else {
-                // Fallback: Use PHP's built-in date functions
-                $formattedDate = date('l, j F Y h:i A');
-
-                // Display a notice about missing extension
-                echo "<!-- Notice: Intl extension is not enabled. Fallback to default date format. -->";
-
-                // Convert digits in the fallback date to Khmer
-                echo convertDigitsToKhmer($formattedDate);
-            }
-            ?>
-        </button>
+        <button class="btn btn-primary"><i class="bx bx-calendar me-2"></i><?php echo date('D-m-Y h:i A') ?></button>
     </div>
 </div>
 
