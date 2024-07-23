@@ -45,7 +45,7 @@ ob_start();
                     $locale,
                     IntlDateFormatter::FULL,
                     IntlDateFormatter::FULL,
-                    'Asia/Phnom_Penh',
+                    'Asia/Bangkok',
                     IntlDateFormatter::GREGORIAN,
                     'EEEE ទី d ខែ MMMM ឆ្នាំ y hh:mm a'
                 );
