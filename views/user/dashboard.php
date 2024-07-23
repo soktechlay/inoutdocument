@@ -23,7 +23,14 @@ ob_start();
 <div class="col-12 d-flex align-items-center justify-content-between mb-3">
     <h3 class="mb-0"><?php echo translate('welcome') ?>,<span class="mef2 text-primary mx-2 me-0 mb-0"><?php echo  $_SESSION['username'] ?></span></h3>
     <div class="dropdown">
-        <button class="btn btn-primary"><i class="bx bx-calendar me-2"></i><?php echo date('D-m-Y h:i A') ?></button>
+    <?php
+date_default_timezone_set('Asia/Bangkok'); // Set timezone to Bangkok
+?>
+<button class="btn btn-primary">
+    <i class="bx bx-calendar me-2"></i>
+    <?php echo date('D-m-Y h:i A'); ?>
+</button>
+
     </div>
 </div>
 
