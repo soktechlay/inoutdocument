@@ -73,12 +73,14 @@ if (isset($_POST["submit"])) {
                         $userId = $_SESSION['userid']; // Assuming you have the user ID stored in session
                         $notificationMessage = "ឯកសារចូលការិយាល័យ";
 
-                        $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document)";
+                        $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document )";
                         $queryNotification = $dbh->prepare($sqlNotification);
                         $queryNotification->bindParam(':user_id', $userId); // Use admin ID here
                         $queryNotification->bindParam(':message', $notificationMessage);
                         $queryNotification->bindParam(':sendid', $sendid);
                         $queryNotification->bindParam(':document', $fileName);
+                        
+
 
                         if ($queryNotification->execute()) {
                             $success2 .= " Notification sent successfully.";
@@ -114,51 +116,6 @@ $sidebar = "inoutdocument";
 ob_start();
 ?>
 
-
-<!-- <div class="app-card-body shadow-sm align-items-center rounded-4 bg-white p-3 mb-3">
-    <div class="row col-md-12 d-flex justify-content-between align-items-center">
-        <div class="title-form d-flex align-items-center justify-content-start p-0">
-            <i class='bx bxs-file-doc p-3 rounded-circle bg-label-primary'></i>
-            <h4 class="mt-2">ឯកសារចូល</h4>
-        </div>
-    </div>
-    <form method="POST" enctype="multipart/form-data">
-        <div class="form-group mt-2">
-            <div class="input-group input-file" name="Fichier1">
-                <input type="file" name="file1" class="form-control rounded-2" placeholder="Choose document..." />
-                <span class="input-group-btn ml-1">
-                    <button class="btn btn-danger btn-reset" type="button">Reset</button>
-                </span>
-                <div class="form-group ml-1">
-                    <button type="submit" name="submited" class="btn btn-primary me-2 pull-right">Submit</button>
-                </div>
-            </div>
-            <?php if (isset($error1)) { ?>
-                <div class="alert alert-danger" role="alert">
-                    <?php echo $error1; ?>
-                </div>
-            <?php } elseif (isset($success1)) { ?>
-                <div class="alert alert-success" role="alert">
-                    <?php echo $success1; ?>
-                </div>
-            <?php } ?>
-        </div>
-    </form>
-    <div class="h6 mt-4">ឯកសារចូល ថ្មីៗ</div>
-    <?php
-    $sql1 = "SELECT Typedocument FROM indocument WHERE ID = ?";
-    $stmt1 = $dbh->prepare($sql1);
-    $stmt1->execute([$id]);
-    while ($row1 = $stmt1->fetch(PDO::FETCH_ASSOC)) { ?>
-        <div class="d-flex align-items-center justify-content-between bg-label-success p-2 rounded-3">
-            <a href="../../uploads/file/in-doc/<?php echo htmlspecialchars($row1['Typedocument']); ?>" target="_blank" class="btn-sm btn-link h6 mb-0 ">
-                <?php echo htmlspecialchars($row1['Typedocument']); ?>
-            </a>
-            <a href="../../uploads/file/in-doc/<?php echo htmlspecialchars($row1['Typedocument']); ?>" target="_blank" class="btn-sm bg-gradient-success text-white h6 mb-0"><i class="bi bi-download"></i> Download</a>
-        </div>
-    <?php } ?>
-</div> -->
-
 <div class="app-card-body shadow-sm align-items-center rounded-4 bg-white p-3 mb-3">
     <div class="row col-md-12 d-flex justify-content-between align-items-center">
         <div class="title-form d-flex align-items-center justify-content-start p-0">
@@ -168,7 +125,7 @@ ob_start();
     </div>
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">
-
+        <!-- <input type="hidden" name="codeid" value="<?php echo $result['CodeId']; ?>"> -->
         <div class="row mt-2">
             <div class="mb-3 col-md-6">
                 <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
@@ -216,11 +173,11 @@ ob_start();
         <div class="form-group mt-2">
             <div class="input-group input-file" name="Fichier2">
                 <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
-                <span class="input-group-btn ml-1">
+                <!-- <span class="input-group-btn ml-1">
                     <button class="btn btn-danger btn-reset" type="button" onclick="resetFileInput('file2')">ត្រឡប់</button>
-                </span>
+                </span> -->
                 <div class="form-group ml-1">
-                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូន</button>
+                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូនឯកសារ</button>
                 </div>
             </div>
             <?php if (isset($error2)) { ?>
@@ -256,7 +213,7 @@ ob_start();
 $content = ob_get_clean();
 include('../../layouts/user_layout.php');
 ?>
-<script>
+<!-- <script>
     function resetFileInput(name) {
         const fileInput = document.querySelector(`input[name="${name}"]`);
         fileInput.value = '';
@@ -268,4 +225,4 @@ include('../../layouts/user_layout.php');
             fileInput.value = '';
         });
     });
-</script>
+</script> -->

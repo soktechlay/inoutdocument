@@ -216,11 +216,11 @@ ob_start();
         <div class="form-group mt-2">
             <div class="input-group input-file" name="Fichier2">
                 <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
-                <span class="input-group-btn ml-1">
+                <!-- <span class="input-group-btn ml-1">
                     <button class="btn btn-danger btn-reset" type="button" onclick="resetFileInput('file2')">ត្រឡប់</button>
-                </span>
+                </span> -->
                 <div class="form-group ml-1">
-                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូន</button>
+                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូនឯកសារ</button>
                 </div>
             </div>
             <?php if (isset($error2)) { ?>
@@ -256,7 +256,7 @@ ob_start();
 $content = ob_get_clean();
 include('../../layouts/user_layout.php');
 ?>
-<script>
+<!-- <script>
     function resetFileInput(name) {
         const fileInput = document.querySelector(`input[name="${name}"]`);
         fileInput.value = '';
@@ -268,4 +268,4 @@ include('../../layouts/user_layout.php');
             fileInput.value = '';
         });
     });
-</script>
+</script> -->
