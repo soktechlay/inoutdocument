@@ -153,7 +153,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </span>
       </button>
     </div>
-
     <form id="filterForm" method="POST">
       <input type="hidden" name="login_type" value="filter">
       <div class="d-flex justify-content-between align-items-center row py-3 gap-3 gap-md-0">
@@ -186,7 +185,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <th scope='col'>ID</th>
             <th scope='col'>ឈ្មោះនាយកដ្ឋាន</th>
             <th scope='col'>តួនាទី</th>
-            <th scope='col'>តួនាទី</th>
+            <th scope='col'>តួនាទីរបប</th>
             <th scope='col'>បង្កើតនៅ</th>
             <th scope='col'>កែប្រែនៅ</th>
             <th scope='col'>ស្ថានភាព</th>
@@ -202,47 +201,239 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <div class="avatar-wrapper">
                     <div class="avatar avatar-sm me-3">
                       <?php if (!empty($result->Profile)) : ?>
-                        <img src="<?php echo htmlentities($result->Profile); ?>" alt="រូបភាពអក្សរ" class="rounded-circle" style="object-fit: cover;" />
+                        <img src="<?php echo htmlentities($result->Profile ?? ''); ?>" alt="រូបភាពអក្សរ" class="rounded-circle" style="object-fit: cover;" />
                       <?php else : ?>
-                        <span class="avatar-initial rounded-circle bg-label-success"><?php echo substr($result->UserName, 0, 2); ?></span>
+                        <span class="avatar-initial rounded-circle bg-label-success"><?php echo substr($result->UserName ?? '', 0, 2); ?></span>
                       <?php endif; ?>
                     </div>
                   </div>
                   <div class="d-flex flex-column">
-                    <a href="all-users-detail.php?uid=<?php echo htmlentities($result->id) ?>" class="text-body text-truncate">
-                      <span class="fw-medium"><?php echo $result->Honorific . " " . $result->FirstName . " " . $result->LastName ?></span>
+                    <a href="all-users-detail.php?uid=<?php echo htmlentities($result->id ?? ''); ?>" class="text-body text-truncate">
+                      <span class="fw-medium"><?php echo htmlentities($result->Honorific ?? '') . " " . htmlentities($result->FirstName ?? '') . " " . htmlentities($result->LastName ?? ''); ?></span>
                     </a>
-                    <small class="text-muted"><?php echo $result->Email ?></small>
+                    <small class="text-muted"><?php echo htmlentities($result->Email ?? ''); ?></small>
                   </div>
                 </div>
               </td>
               <td>
-                <span class="fw-medium head-of-department badge <?php echo $result->Colors ?>"><?php echo $result->RoleName ?></span>
+                <span class="fw-medium head-of-department badge <?php echo htmlentities($result->Colors ?? ''); ?>"><?php echo htmlentities($result->RoleName ?? ''); ?></span>
               </td>
-              <td><?php echo $result->Position; ?></td>
-              <td><?php echo $result->CreationDate; ?></td>
-              <td><?php echo $result->UpdateAt; ?></td>
-              <td><?php echo $result->Status; ?></td>
+              <td><?php echo htmlentities($result->Position ?? ''); ?></td>
+              <td><?php echo htmlentities($result->CreationDate ?? ''); ?></td>
+              <td><?php echo htmlentities($result->UpdateAt ?? ''); ?></td>
+              <td><?php echo htmlentities($result->Status ?? ''); ?></td>
               <td class='text-end'>
                 <div>
                   <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top" data-bs-html="true" title="លម្អិត">
-                    <a href="all-users-detail.php?uid=<?php echo htmlentities($result->id) ?>">
+                    <a href="all-users-detail.php?uid=<?php echo htmlentities($result->id ?? ''); ?>">
                       <i class="bx bx-show-alt"></i>
                     </a>
                   </button>
                   <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top" data-bs-html="true" title="កែប្រែ">
-                    <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#editUser">
+                    <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#update<?php echo htmlentities($result->id ?? ''); ?>" data-id="<?php echo htmlentities($result->id ?? ''); ?>">
                       <i class="bx bx-edit-alt"></i>
                     </a>
                   </button>
                   <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top" data-bs-html="true" title="លុប">
-                    <a href="javascript:;" class="text-danger" data-bs-toggle="modal" onclick="openDeleteModal(<?php echo $result->id; ?>)" data-bs-target="#deleteModal" >
+                    <a href="javascript:;" class="text-danger" data-bs-toggle="modal" onclick="openDeleteModal(<?php echo htmlentities($result->id ?? ''); ?>)" data-bs-target="#deleteModal">
                       <i class="bx bx-trash-alt"></i>
                     </a>
                   </button>
                 </div>
               </td>
             </tr>
+
+            <!-- Add Edit Modal for each user -->
+            <div class="modal fade" id="update<?php echo htmlentities($result->id ?? ''); ?>" tabindex="-1" aria-hidden="true">
+              <div class="modal-dialog modal-xl modal-simple modal-edit-user">
+                <div class="modal-content p-3 p-md-5">
+                  <div class="modal-body">
+                    <div class="text-center mb-4">
+                      <h3 class="mef2">កែប្រែគណនីថ្មី</h3>
+                    </div>
+                    <form id="formAuthentication<?php echo htmlentities($result->id ?? ''); ?>" class="row g-3 mb-3" method="POST" enctype="multipart/form-data">
+                      <input type="hidden" name="login_type" value="updateuser">
+
+                      <div class="d-flex flex-column align-items-center align-items-sm-center gap-4">
+                        <img src="<?php echo !empty($result->Profile) ? htmlentities($result->Profile) : '../../assets/img/avatars/no-image.jpg'; ?>" alt="user-avatar" class="d-block rounded" height="150" width="150" id="uploadedAvatar" style="object-fit: cover;" />
+                        <div class="button-wrapper">
+                          <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
+                            <span class="d-none d-sm-block"><i class="bx bx-photo-album"></i> ប្តូររូបភាព</span>
+                            <i class="bx bx-upload d-block d-sm-none"></i>
+                            <input type="file" id="upload" name="profile" class="account-file-input" hidden accept="image/png, image/jpeg" />
+                          </label>
+                        </div>
+                      </div>
+
+                      <div class="row">
+                        <div class="col-12 col-md-2">
+                          <label for="honorific" class="form-label">គោរមងារ<span class="text-danger fw-bolder">*</span></label>
+                          <select id="honorific" class="select2 form-select form-select-lg select2-hidden-accessible" data-allow-clear="false" tabindex="-1" aria-hidden="true" name="honorific">
+                            <option value="">ជ្រើសរើស</option>
+                            <option value="ឯកឧត្តម" <?php echo $result->Honorific == 'ឯកឧត្តម' ? 'selected' : ''; ?>>ឯកឧត្តម</option>
+                            <option value="លោកជំទាវ" <?php echo $result->Honorific == 'លោកជំទាវ' ? 'selected' : ''; ?>>លោកជំទាវ</option>
+                            <option value="លោក" <?php echo $result->Honorific == 'លោក' ? 'selected' : ''; ?>>លោក</option>
+                            <option value="លោកស្រី" <?php echo $result->Honorific == 'លោកស្រី' ? 'selected' : ''; ?>>លោកស្រី</option>
+                            <option value="អ្នកនាង" <?php echo $result->Honorific == 'អ្នកនាង' ? 'selected' : ''; ?>>អ្នកនាង</option>
+                            <option value="កញ្ញា" <?php echo $result->Honorific == 'កញ្ញា' ? 'selected' : ''; ?>>កញ្ញា</option>
+                          </select>
+                        </div>
+
+                        <div class="col-12 col-md-5">
+                          <label class="form-label" for="firstname">គោត្តនាម<span class="text-danger fw-bolder">*</span></label>
+                          <input type="text" id="firstname" name="firstname" class="form-control" placeholder="គោត្តនាម" value="<?php echo htmlentities($result->FirstName ?? ''); ?>">
+                        </div>
+
+                        <div class="col-12 col-md-5">
+                          <label class="form-label" for="lastname">នាម<span class="text-danger fw-bolder">*</span></label>
+                          <input type="text" id="lastname" name="lastname" class="form-control" placeholder="នាម" value="<?php echo htmlentities($result->LastName ?? ''); ?>">
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="gender">ភេទ<span class="text-danger fw-bolder">*</span></label>
+                          <div class="d-flex">
+                            <div class="btn-group w-100" role="group" aria-label="Basic radio toggle button group">
+                              <input type="radio" value="ស្រី" class="btn-check" name="gender" id="gender1" <?php echo $result->Gender == 'ស្រី' ? 'checked' : ''; ?>>
+                              <label class="btn btn-outline-primary" for="gender1">ស្រី</label>
+                              <input type="radio" value="ប្រុស" class="btn-check" name="gender" id="gender2" <?php echo $result->Gender == 'ប្រុស' ? 'checked' : ''; ?>>
+                              <label class="btn btn-outline-primary" for="gender2">ប្រុស</label>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="contact">លេខទូរស័ព្ទ<span class="text-danger fw-bolder">*</span></label>
+                          <div class="input-group input-group-merge">
+                            <span class="input-group-text">+855</span>
+                            <input type="tel" id="contact" name="contact" class="form-control phone-number-mask" placeholder="098 765 4321" value="<?php echo htmlentities($result->Contact ?? ''); ?>">
+                          </div>
+                        </div>
+
+                        <div class="col-12 col-md-12 fv-plugins-icon-container">
+                          <label class="form-label" for="username">ឈ្មោះមន្ត្រី<span class="text-danger fw-bolder">*</span></label>
+                          
+                          <input type="text" id="username" name="username" class="form-control" placeholder="ឈ្មោះមន្ត្រី" value="<?php echo htmlentities($result->UserName ?? ''); ?>">
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="email">Email<span class="text-danger fw-bolder">*</span></label>
+                          <input type="email" id="email" name="email" class="form-control" placeholder="example@gmail.com" value="<?php echo htmlentities($result->Email ?? ''); ?>">
+                        </div>
+
+                        <!-- <div class="col-12 col-md-6">
+                          <label class="form-label" for="password">ពាក្យសម្ងាត់<span class="text-danger fw-bolder">*</span></label>
+                          <input type="password" id="password" name="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password">
+                        </div> -->
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="status">ស្ថានភាពគណនី<span class="text-danger fw-bolder">*</span></label>
+                          <select id="status" name="status" class="select2 form-select" aria-label="ជ្រើសរើស">
+                            <option value="<?php echo htmlentities($result->Status ?? ''); ?>"><?php echo htmlentities($result->Status ?? ''); ?></option>
+                            <option value="1" <?php echo $result->Status == 1 ? 'selected' : ''; ?>>សកម្ម</option>
+                            <option value="0" <?php echo $result->Status == 0 ? 'selected' : ''; ?>>អសកម្ម</option>
+                          </select>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="dob">ថ្ងៃខែឆ្នាំកំណើត<span class="text-danger fw-bolder">*</span></label>
+                          <input type="text" id="formValidationDob" name="dob" class="form-control phone-number-mask" placeholder="<?php echo htmlentities($result->DateOfBirth ?? ''); ?>" value="<?php echo htmlentities($result->DateOfBirth ?? ''); ?>">
+                        </div>
+
+                        <!-- <div class="col-12 col-md-6">
+                          <label class="form-label" for="PermissionId">សិទ្ធិគណនី<span class="text-danger fw-bolder">*</span></label>
+                          <select id="PermissionId" name="PermissionId" class="select2 form-select" aria-label="Default select example">
+                            <option value="<?php echo htmlentities($result->PermissionId ?? ''); ?>">
+                              <?php echo htmlentities($result->PermissionId ?? ''); ?>
+                            </option>
+                            <option value="iau" <?php echo $result->PermissionId == 'iau' ? 'selected' : ''; ?>>iau</option>
+                            <option value="general" <?php echo $result->PermissionId == 'general' ? 'selected' : ''; ?>>general</option>
+                            <option value="audit1" <?php echo $result->PermissionId == 'audit1' ? 'selected' : ''; ?>>audit1</option>
+                            <option value="audit2" <?php echo $result->PermissionId == 'audit2' ? 'selected' : ''; ?>>audit2</option>
+                            <option value="hr" <?php echo $result->PermissionId == 'hr' ? 'selected' : ''; ?>>hr</option>
+                            <option value="training" <?php echo $result->PermissionId == 'training' ? 'selected' : ''; ?>>training</option>
+                            <option value="it" <?php echo $result->PermissionId == 'it' ? 'selected' : ''; ?>>it</option>
+                            <option value="ofaudit1" <?php echo $result->PermissionId == 'ofaudit1' ? 'selected' : ''; ?>>ofaudit1</option>
+                            <option value="ofaudit2" <?php echo $result->PermissionId == 'ofaudit2' ? 'selected' : ''; ?>>ofaudit2</option>
+                            <option value="ofaudit3" <?php echo $result->PermissionId == 'ofaudit3' ? 'selected' : ''; ?>>ofaudit3</option>
+                            <option value="ofaudit4" <?php echo $result->PermissionId == 'ofaudit4' ? 'selected' : ''; ?>>ofaudit4</option>
+                          </select>
+                        </div> -->
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="role">Role<span class="text-danger fw-bolder">*</span></label>
+                          <select id="role" name="role" class="select2 form-select" aria-label="Default select example">
+                            <option selected="<?php echo htmlentities($result->RoleName ?? ''); ?>"><?php echo htmlentities($result->RoleName ?? ''); ?></option>
+                            <?php
+                            $sql = "SELECT * FROM tblrole";
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                            if ($query->rowCount() > 0) {
+                              foreach ($results as $result) { ?>
+                                <option value="<?php echo htmlentities($result->id) ?>">
+                                  <?php echo htmlentities($result->RoleName) ?>
+                                </option>
+                            <?php }
+                            } ?>
+                          </select>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="department">នាយកដ្ឋាន<span class="text-danger fw-bolder">*</span></label>
+                          <select id="department" name="department" class="select2 form-select" aria-label="Default select example">
+                            <option selected="<?php echo htmlentities($result->DepartmentName ?? ''); ?>"><?php echo htmlentities($result->DepartmentName ?? ''); ?></option>
+                            <?php
+                            $sql = "SELECT * FROM tbldepartments";
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                            if ($query->rowCount() > 0) {
+                              foreach ($results as $result) { ?>
+                                <option value="<?php echo htmlentities($result->id) ?>">
+                                  <?php echo htmlentities($result->DepartmentName) ?>
+                                </option>
+                            <?php }
+                            } ?>
+                          </select>
+                        </div>
+
+                        <div class="col-12 col-md-6">
+                          <label class="form-label" for="office">ការិយាល័យ<span class="text-danger fw-bolder">*</span></label>
+                          <select id="office" name="office" class="select2 form-select" aria-label="Default select example">
+                            <option selected="<?php echo htmlentities($result->OfficeName ?? ''); ?>"><?php echo htmlentities($result->OfficeName ?? ''); ?></option>
+                            <?php
+                            $sql = "SELECT * FROM tbloffices";
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                            if ($query->rowCount() > 0) {
+                              foreach ($results as $result) { ?>
+                                <option value="<?php echo htmlentities($result->id) ?>">
+                                  <?php echo htmlentities($result->OfficeName) ?>
+                                </option>
+                            <?php }
+                            } ?>
+                          </select>
+                        </div>
+
+                        <div class="col-12">
+                          <label class="form-label" for="address">អាសយដ្ឋានបច្ចុប្បន្ន</label>
+                          <div class="position-relative">
+                            <textarea name="address" class="form-control" id="address" rows="4" placeholder="<?php echo htmlentities($result->Address ?? ''); ?>"></textarea>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="col-12 text-center mt-2">
+                        <button type="submit" id="submitedit" class="btn btn-primary me-sm-3 me-1">រក្សាទុក</button>
+                        <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">មិនទាន់</button>
+                      </div>
+                    </form>
+
+                  </div>
+                </div>
+              </div>
+            </div>
           <?php endforeach; ?>
         </tbody>
       </table>
@@ -316,7 +507,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </label>
             </div>
           </div>
-
           <div class="col-12 col-md-2">
             <label for="honorific" class="form-label">គោរមងារ
               <span class="text-danger fw-bolder">*</span>
@@ -331,7 +521,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <option value="កញ្ញា" data-select2-id="4">កញ្ញា</option>
             </select>
           </div>
-
           <div class="col-12 col-md-5 fv-plugins-icon-container">
             <label class="form-label" for="firstname">គោត្តនាម
               <span class="text-danger fw-bolder">*</span>
@@ -504,7 +693,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               }
               ?>
             </select> -->
-            <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple >
+            <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple>
               <option value="iau">អង្គភាពសវនកម្មការផ្ទៃក្នុង</option>
               <option value="general">នាយកដ្ឋានកិច្ចការទូទៅ</option>
               <option value="audit1">នាយកដ្ឋានសវនកម្មទី១</option>
