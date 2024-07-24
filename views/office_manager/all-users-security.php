@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 session_start();
 include('../../config/dbconn.php');
@@ -68,23 +69,23 @@ if ($userData) {
           </div>
         </div>
         <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-          <!-- <form id="formAuthentication" method="POST" enctype="multipart/form-data"> -->
-          <!-- <input type="hidden" name="login_type" value="updatedimg"> -->
-          <div class="flex-shrink-0 mt-n5 mx-sm-0 mx-auto">
-            <!-- Clickable profile picture to change profile image -->
-            <!-- <label for="profileInput" class="profile-image"> -->
-            <?php if (!empty($userData['Profile'])) : ?>
-              <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img" height="150" width="150" style="object-fit: cover;">
-            <?php else : ?>
-              <!-- Placeholder image or initials -->
-              <span class="avatar-initial rounded-circle bg-label-success">
-                <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
-              </span>
-            <?php endif; ?>
-            <!-- </label> -->
-            <!-- <input type="file" name="updateimg" class="d-none" accept="image/*"> -->
-          </div>
-          <!-- </form> -->
+          <form id="formAuthentication" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="login_type" value="updatedimg">
+            <div class="flex-shrink-0 mt-n5 mx-sm-0 mx-auto">
+              <!-- Clickable profile picture to change profile image -->
+              <label for="profileInput" class="profile-image">
+                <?php if (!empty($userData['Profile'])) : ?>
+                  <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img" height="150" width="150" style="object-fit: cover;">
+                <?php else : ?>
+                  <!-- Placeholder image or initials -->
+                  <span class="avatar-initial rounded-circle bg-label-success">
+                    <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
+                  </span>
+                <?php endif; ?>
+              </label>
+              <input type="file" name="updateimg" class="d-none" accept="image/*">
+            </div>
+          </form>
           <div class="flex-grow-1 mt-3 mt-sm-5">
             <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
               <div class="user-profile-info">
@@ -105,81 +106,8 @@ if ($userData) {
                 </ul>
               </div>
               <!-- Additional buttons or actions -->
-              <a href="#" class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#profileModal">
-                <i class="bx bx-user-check me-1"></i> View Profile
-              </a>
-              <!-- Profile Modal -->
-              <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      <!-- PHP code to fetch and display user's profile information -->
-                      <?php
-                      // You may need to adjust this query based on your database schema
-                      $sql = "SELECT * FROM tbluser WHERE id = :userId";
-                      $query = $dbh->prepare($sql);
-                      $query->bindParam(':userId', $getid, PDO::PARAM_INT);
-                      $query->execute();
-                      $user = $query->fetch(PDO::FETCH_ASSOC);
 
-                      // Display fetched profile information within a form for editing
-                      if ($user) {
-                      ?>
-                        <form id="editProfileForm" method="POST" enctype="multipart/form-data">
-                          <input type="hidden" name="login_type" value="updatedimg">
-                          <input type="hidden" name="userId" value="<?php echo $getid; ?>">
 
-                          <!-- Profile Picture -->
-                          <div class="mb-3 text-center">
-                            <!-- Clickable profile picture to change profile image -->
-                            <label for="profileInput">
-                              <?php if (!empty($user['Profile'])) : ?>
-                                <img src="<?php echo htmlentities($user['Profile']); ?>" alt="user image" class="img-fluid rounded-4 profile-image" style="cursor: pointer; object-fit:contain; width: 320px; height: 320px">
-                              <?php else : ?>
-                                <!-- Placeholder image or initials -->
-                                <span class="avatar-initial rounded-circle bg-label-success" style="cursor: pointer;"><?php echo generateInitials($user['FirstName'] . ' ' . $user['LastName']); ?></span>
-                              <?php endif; ?>
-                            </label>
-                            <!-- File input to choose new profile picture -->
-                            <input type="file" name="updateimg" id="profileInput" class="d-none" accept="image/*">
-                          </div>
-
-                          <!-- Other Information -->
-                          <div class="mb-3">
-                            <label for="userName" class="form-label">Username:</label>
-                            <input type="text" class="form-control" id="userName" name="userName" value="<?php echo htmlentities($user['UserName']); ?>">
-                          </div>
-                          <div class="mb-3">
-                            <label for="firstName" class="form-label">First Name:</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo htmlentities($user['FirstName']); ?>">
-                          </div>
-                          <div class="mb-3">
-                            <label for="lastName" class="form-label">Last Name:</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo htmlentities($user['LastName']); ?>">
-                          </div>
-                          <!-- Add more fields as needed -->
-
-                          <!-- Modal Footer -->
-                          <div class="modal-footer">
-                            <!-- Close Button -->
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <!-- Submit Button -->
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                          </div>
-                        </form>
-                      <?php
-                      } else {
-                        echo "User not found.";
-                      }
-                      ?>
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
@@ -226,60 +154,75 @@ if ($userData) {
             <li class="d-flex align-items-center mb-3">
               <i class="bx bx-user"></i>
               <span class="fw-medium mx-2" data-i18n="Full Name">Full Name:</span>
-              <span><?php echo htmlentities($userData['Honorific'] . ' ' . $userData['FirstName'] . ' ' . $userData['LastName']); ?></span>
+              <span><?php echo htmlentities(($userData['Honorific'] ?? '') . ' ' . ($userData['FirstName'] ?? '') . ' ' . ($userData['LastName'] ?? '')); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-check"></i><span class="fw-medium mx-2" data-i18n="Status">Status:</span> <span data-i18n="Active">Active</span></li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-star"></i><span class="fw-medium mx-2" data-i18n="Role">Role:</span>
-              <span><?php echo htmlentities($userData['RoleName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-check"></i>
+              <span class="fw-medium mx-2" data-i18n="Status">Status:</span>
+              <span data-i18n="Active">Active</span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-flag"></i><span class="fw-medium mx-2" data-i18n="Address">Address:</span>
-              <span><?php echo htmlentities($userData['Address']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-star"></i>
+              <span class="fw-medium mx-2" data-i18n="Role">Role:</span>
+              <span><?php echo htmlentities($userData['RoleName'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-buildings"></i><span class="fw-medium mx-2" data-i18n="Department">Department:</span>
-              <span><?php echo htmlentities($userData['DepartmentName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-flag"></i>
+              <span class="fw-medium mx-2" data-i18n="Address">Address:</span>
+              <span><?php echo htmlentities($userData['Address'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-building"></i><span class="fw-medium mx-2" data-i18n="Office">Office:</span>
-              <span><?php echo htmlentities($userData['OfficeName']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-buildings"></i>
+              <span class="fw-medium mx-2" data-i18n="Department">Department:</span>
+              <span><?php echo htmlentities($userData['DepartmentName'] ?? ''); ?></span>
+            </li>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-building"></i>
+              <span class="fw-medium mx-2" data-i18n="Office">Office:</span>
+              <span><?php echo htmlentities($userData['OfficeName'] ?? ''); ?></span>
             </li>
           </ul>
           <small class="text-muted text-uppercase" data-i18n="Contacts">Contacts</small>
           <ul class="list-unstyled mb-4 mt-3">
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-phone"></i><span class="fw-medium mx-2" data-i18n="Contact">Contact:</span>
-              <span><?php echo htmlentities($userData['Contact']); ?></span>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-phone"></i>
+              <span class="fw-medium mx-2" data-i18n="Contact">Contact:</span>
+              <span><?php echo htmlentities($userData['Contact'] ?? ''); ?></span>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-envelope"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-envelope"></i>
               <span class="fw-medium mx-2" data-i18n="Email">Email:</span>
-              <span><?php echo htmlentities($userData['Email']); ?></span>
+              <span><?php echo htmlentities($userData['Email'] ?? ''); ?></span>
             </li>
           </ul>
           <small class="text-muted text-uppercase" data-i18n="Teams">Teams</small>
           <ul class="list-unstyled mt-3 mb-0">
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
                 <span class="fw-medium mx-2" data-i18n="Head Of Department">Head Of Department:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfDepartment']); ?></span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfDepartment'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Department">Deputy Head
-                  Of
-                  Department:
-                </span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOfDepartment']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Department">Deputy Head Of Department:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOfDepartment'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center mb-3"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center mb-3">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2 " data-i18n="Head Of Office">Head Of Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfOffice']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Head Of Office">Head Of Office:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['HeadOfOffice'] ?? ''); ?></span>
               </div>
             </li>
-            <li class="d-flex align-items-center"><i class="bx bx-user-circle  me-2"></i>
+            <li class="d-flex align-items-center">
+              <i class="bx bx-user-circle me-2"></i>
               <div class="d-flex flex-wrap">
-                <span class="fw-medium mx-2 " data-i18n="Deputy Head Of Office">Deputy Head Of
-                  Office:</span>
-                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOffice']); ?></span>
+                <span class="fw-medium mx-2" data-i18n="Deputy Head Of Office">Deputy Head Of Office:</span>
+                <span class="fw-medium me-2 mef2"><?php echo htmlentities($userData['DepHeadOffice'] ?? ''); ?></span>
               </div>
             </li>
           </ul>
@@ -287,10 +230,9 @@ if ($userData) {
       </div>
       <!--/ About User -->
     </div>
-    <!-- end-user-detail -->
+
     <!-- user-security -->
     <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
-
       <!-- change-password -->
       <div class="card mb-4">
         <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
@@ -356,12 +298,10 @@ if ($userData) {
         </div>
       </div>
 
+
     </div>
     <!-- end-user-security -->
   </div>
-
-
-
 
   <script>
     // Display selected profile image
