@@ -58,7 +58,7 @@ if ($userData) {
                         <!-- Clickable profile picture to open modal -->
                         <label for="profileInput" class="profile-image" data-bs-toggle="modal" data-bs-target="#profileModal">
                             <?php if (!empty($userData['Profile'])) : ?>
-                                <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img shadow-sm" height="200px" width="200px" style="object-fit: cover;">
+                                <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img shadow-sm" height="150px" width="150px" style="object-fit: cover;">
                             <?php else : ?>
                                 <!-- Placeholder image or initials -->
                                 <span class="avatar-initial rounded-circle bg-label-success">
