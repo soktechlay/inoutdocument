@@ -69,23 +69,41 @@ if ($userData) {
           </div>
         </div>
         <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-          <form id="formAuthentication" method="POST" enctype="multipart/form-data">
-            <input type="hidden" name="login_type" value="updatedimg">
-            <div class="flex-shrink-0 mt-n5 mx-sm-0 mx-auto">
-              <!-- Clickable profile picture to change profile image -->
-              <label for="profileInput" class="profile-image">
-                <?php if (!empty($userData['Profile'])) : ?>
-                  <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img" height="150" width="150" style="object-fit: cover;">
-                <?php else : ?>
-                  <!-- Placeholder image or initials -->
-                  <span class="avatar-initial rounded-circle bg-label-success">
-                    <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
-                  </span>
-                <?php endif; ?>
-              </label>
-              <input type="file" name="updateimg" class="d-none" accept="image/*">
+          <div class="flex-shrink-0 mt-n5 mx-sm-0 mx-auto">
+            <!-- Clickable profile picture to open modal -->
+            <label for="profileInput" class="profile-image" data-bs-toggle="modal" data-bs-target="#profileModal">
+              <?php if (!empty($userData['Profile'])) : ?>
+                <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img shadow-sm" height="200px" width="200px" style="object-fit: cover;">
+              <?php else : ?>
+                <!-- Placeholder image or initials -->
+                <span class="avatar-initial rounded-circle bg-label-success">
+                  <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
+                </span>
+              <?php endif; ?>
+            </label>
+          </div>
+
+          <!-- Modal -->
+          <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="profileModalLabel">Profile Picture</h5>
+                 
+                </div>
+                <div class="modal-body">
+                  <?php if (!empty($userData['Profile'])) : ?>
+                    <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="img-fluid rounded" style="object-fit: cover;">
+                  <?php else : ?>
+                    <span class="avatar-initial rounded-circle bg-label-success d-block text-center" style="width: 100%; height: auto;">
+                      <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
+                    </span>
+                  <?php endif; ?>
+                </div>
+              </div>
             </div>
-          </form>
+          </div>
+
           <div class="flex-grow-1 mt-3 mt-sm-5">
             <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
               <div class="user-profile-info">

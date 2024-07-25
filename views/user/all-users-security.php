@@ -70,23 +70,41 @@ if ($userData) {
           </div>
         </div>
         <div class="user-profile-header d-flex flex-column flex-sm-row text-sm-start text-center mb-4">
-          <!-- <form id="formAuthentication" method="POST" enctype="multipart/form-data"> -->
-          <!-- <input type="hidden" name="login_type" value="updatedimg"> -->
           <div class="flex-shrink-0 mt-n5 mx-sm-0 mx-auto">
-            <!-- Clickable profile picture to change profile image -->
-            <!-- <label for="profileInput" class="profile-image"> -->
-            <?php if (!empty($userData['Profile'])) : ?>
-              <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img" height="150" width="150" style="object-fit: cover;">
-            <?php else : ?>
-              <!-- Placeholder image or initials -->
-              <span class="avatar-initial rounded-circle bg-label-success">
-                <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
-              </span>
-            <?php endif; ?>
-            <!-- </label> -->
-            <!-- <input type="file" name="updateimg" class="d-none" accept="image/*"> -->
+            <!-- Clickable profile picture to open modal -->
+            <label for="profileInput" class="profile-image" data-bs-toggle="modal" data-bs-target="#profileModal">
+              <?php if (!empty($userData['Profile'])) : ?>
+                <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="d-block h-auto ms-0 ms-sm-5 rounded border p-1 bg-light user-profile-img shadow-sm" height="200px" width="200px" style="object-fit: cover;">
+              <?php else : ?>
+                <!-- Placeholder image or initials -->
+                <span class="avatar-initial rounded-circle bg-label-success">
+                  <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
+                </span>
+              <?php endif; ?>
+            </label>
           </div>
-          <!-- </form> -->
+
+          <!-- Modal -->
+          <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="profileModalLabel">Profile Picture</h5>
+
+                </div>
+                <div class="modal-body">
+                  <?php if (!empty($userData['Profile'])) : ?>
+                    <img src="<?php echo htmlentities($userData['Profile']); ?>" alt="user image" class="img-fluid rounded" style="object-fit: cover;">
+                  <?php else : ?>
+                    <span class="avatar-initial rounded-circle bg-label-success d-block text-center" style="width: 100%; height: auto;">
+                      <?php echo generateInitials($userData['FirstName'] . ' ' . $userData['LastName']); ?>
+                    </span>
+                  <?php endif; ?>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="flex-grow-1 mt-3 mt-sm-5">
             <div class="d-flex align-items-md-end align-items-sm-start align-items-center justify-content-md-between justify-content-start mx-4 flex-md-row flex-column gap-4">
               <div class="user-profile-info">
@@ -107,79 +125,8 @@ if ($userData) {
                 </ul>
               </div>
               <!-- Additional buttons or actions -->
-              <!-- <a href="#" class="btn btn-primary text-nowrap" data-bs-toggle="modal" data-bs-target="#profileModal">
-                <i class="bx bx-user-check me-1"></i> View Profile
-              </a>
-             
-              <div class="modal fade" id="profileModal" tabindex="-1" aria-labelledby="profileModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title" id="profileModalLabel">User Profile</h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                      
-                      <?php
-                      // You may need to adjust this query based on your database schema
-                      $sql = "SELECT * FROM tbluser WHERE id = :userId";
-                      $query = $dbh->prepare($sql);
-                      $query->bindParam(':userId', $getid, PDO::PARAM_INT);
-                      $query->execute();
-                      $user = $query->fetch(PDO::FETCH_ASSOC);
 
-                      // Display fetched profile information within a form for editing
-                      if ($user) {
-                      ?>
-                        <form id="editProfileForm" method="POST" enctype="multipart/form-data">
-                          <input type="hidden" name="login_type" value="updatedimg">
-                          <input type="hidden" name="userId" value="<?php echo $getid; ?>">
 
-                          
-                          <div class="mb-3 text-center">
-                           
-                            <label for="profileInput">
-                              <?php if (!empty($user['Profile'])) : ?>
-                                <img src="<?php echo htmlentities($user['Profile']); ?>" alt="user image" class="img-fluid rounded-4 profile-image" style="cursor: pointer; object-fit:contain; width: 320px; height: 320px">
-                              <?php else : ?>
-                               
-                                <span class="avatar-initial rounded-circle bg-label-success" style="cursor: pointer;"><?php echo generateInitials($user['FirstName'] . ' ' . $user['LastName']); ?></span>
-                              <?php endif; ?>
-                            </label>
-                            
-                            <input type="file" name="updateimg" id="profileInput" class="d-none" accept="image/*">
-                          </div>
-
-                          
-                          <div class="mb-3">
-                            <label for="userName" class="form-label">Username:</label>
-                            <input type="text" class="form-control" id="userName" name="userName" value="<?php echo htmlentities($user['UserName']); ?>">
-                          </div>
-                          <div class="mb-3">
-                            <label for="firstName" class="form-label">First Name:</label>
-                            <input type="text" class="form-control" id="firstName" name="firstName" value="<?php echo htmlentities($user['FirstName']); ?>">
-                          </div>
-                          <div class="mb-3">
-                            <label for="lastName" class="form-label">Last Name:</label>
-                            <input type="text" class="form-control" id="lastName" name="lastName" value="<?php echo htmlentities($user['LastName']); ?>">
-                          </div>
-                          
-                          <div class="modal-footer">
-                            
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                           
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                          </div>
-                        </form>
-                      <?php
-                      } else {
-                        echo "User not found.";
-                      }
-                      ?>
-                    </div>
-                  </div>
-                </div>
-              </div> -->
             </div>
           </div>
         </div>
@@ -290,71 +237,71 @@ if ($userData) {
     <!-- end-user-detail -->
     <!-- user-security -->
     <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
-     
+
       <!-- change-password -->
       <div class="card mb-4">
-  <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
-  <div class="card-body">
-    <!-- Display Success or Error Messages -->
-    <?php if(isset($_SESSION['msg'])): ?>
-      <div class="alert alert-success alert-dismissible fade show" role="alert">
-        <?php echo $_SESSION['msg']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      <?php unset($_SESSION['msg']); ?>
-    <?php endif; ?>
+        <h5 class="card-header mef2" data-i18n="card_header">Change Password</h5>
+        <div class="card-body">
+          <!-- Display Success or Error Messages -->
+          <?php if (isset($_SESSION['msg'])) : ?>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              <?php echo $_SESSION['msg']; ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['msg']); ?>
+          <?php endif; ?>
 
-    <?php if(isset($_SESSION['error'])): ?>
-      <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <?php echo $_SESSION['error']; ?>
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-      </div>
-      <?php unset($_SESSION['error']); ?>
-    <?php endif; ?>
+          <?php if (isset($_SESSION['error'])) : ?>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+              <?php echo $_SESSION['error']; ?>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <?php unset($_SESSION['error']); ?>
+          <?php endif; ?>
 
-    <form id="formValidationExamples" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST" enctype="multipart/form-data">
-      <input type="hidden" name="login_type" value="updatepass">
-      <input type="hidden" name="updatepassid" value="<?php echo $getid; ?>">
-      <div class="alert alert-warning" role="alert">
-        <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that these requirements are met</h6>
-        <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp; symbol</span>
+          <form id="formValidationExamples" class="row g-3 fv-plugins-bootstrap5 fv-plugins-framework" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="login_type" value="updatepass">
+            <input type="hidden" name="updatepassid" value="<?php echo $getid; ?>">
+            <div class="alert alert-warning" role="alert">
+              <h6 class="alert-heading mb-1" data-i18n="requirements_heading">Ensure that these requirements are met</h6>
+              <span data-i18n="requirements">Minimum 8 characters long, uppercase &amp; symbol</span>
+            </div>
+            <div class="row">
+              <div class="col-md-6 fv-plugins-icon-container">
+                <div class="form-password-toggle">
+                  <label class="form-label" for="formValidationPass" data-i18n="password_label">Password</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" id="formValidationPass" name="formValidationPass" placeholder="············" aria-describedby="multicol-password2">
+                    <span class="input-group-text cursor-pointer" id="multicol-password2">
+                      <i class="bx bx-hide"></i>
+                    </span>
+                  </div>
+                  <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 fv-plugins-icon-container">
+                <div class="form-password-toggle">
+                  <label class="form-label" for="formValidationConfirmPass" data-i18n="confirm_password_label">Confirm Password</label>
+                  <div class="input-group input-group-merge has-validation">
+                    <input class="form-control" type="password" id="formValidationConfirmPass" name="formValidationConfirmPass" placeholder="············" aria-describedby="multicol-confirm-password2">
+                    <span class="input-group-text cursor-pointer" id="multicol-confirm-password2">
+                      <i class="bx bx-hide"></i>
+                    </span>
+                  </div>
+                  <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
+                  </div>
+                </div>
+              </div>
+              <div class="mt-3">
+                <button type="submit" class="btn btn-primary me-2" data-i18n="save_button">
+                  Save Changes
+                </button>
+              </div>
+            </div>
+          </form>
+        </div>
       </div>
-      <div class="row">
-        <div class="col-md-6 fv-plugins-icon-container">
-          <div class="form-password-toggle">
-            <label class="form-label" for="formValidationPass" data-i18n="password_label">Password</label>
-            <div class="input-group input-group-merge has-validation">
-              <input class="form-control" type="password" id="formValidationPass" name="formValidationPass" placeholder="············" aria-describedby="multicol-password2">
-              <span class="input-group-text cursor-pointer" id="multicol-password2">
-                <i class="bx bx-hide"></i>
-              </span>
-            </div>
-            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-            </div>
-          </div>
-        </div>
-        <div class="col-md-6 fv-plugins-icon-container">
-          <div class="form-password-toggle">
-            <label class="form-label" for="formValidationConfirmPass" data-i18n="confirm_password_label">Confirm Password</label>
-            <div class="input-group input-group-merge has-validation">
-              <input class="form-control" type="password" id="formValidationConfirmPass" name="formValidationConfirmPass" placeholder="············" aria-describedby="multicol-confirm-password2">
-              <span class="input-group-text cursor-pointer" id="multicol-confirm-password2">
-                <i class="bx bx-hide"></i>
-              </span>
-            </div>
-            <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
-            </div>
-          </div>
-        </div>
-        <div class="mt-3">
-          <button type="submit" class="btn btn-primary me-2" data-i18n="save_button">
-            Save Changes
-          </button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div>
       <!--end change password -->
       <!-- <div class="card mb-4">
         <div class="card-header">
