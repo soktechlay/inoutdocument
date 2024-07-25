@@ -15,29 +15,7 @@ if (is_null($id)) {
 }
 
 // File upload directories
-// $targetDir = "../../uploads/file/in-doc/";
 $targetDir1 = "../../uploads/file/note-doc/";
-
-// if (isset($_POST["submited"])) {
-//     if (!empty($_FILES["file1"]["name"])) {
-//         $fileName = basename($_FILES["file1"]["name"]);
-//         $targetFilePath = $targetDir . $fileName;
-//         $fileType = pathinfo($targetFilePath, PATHINFO_EXTENSION);
-
-//         // Allow certain file formats 
-//         $allowTypes = array('docx', 'pdf', 'pptx');
-//         if (in_array($fileType, $allowTypes)) {
-//             if (move_uploaded_file($_FILES["file1"]["tmp_name"], $targetFilePath)) {
-//                 $sql1 = "UPDATE indocument SET Typedocument = ? WHERE ID = ?";
-//                 $stmt1 = $dbh->prepare($sql1);
-//                 $stmt1->execute([$fileName, $id]);
-//                 $success1 = $fileName . " បានរក្សាទុករួចរាល់។";
-//             } else {
-//                 $error1 = "សូមអភ័យទោស, មានបញ្ហាកើតឡើងកំលុងពេលរក្សាទុកឯកសារ។";
-//             }
-//         }
-//     }
-// }
 
 if (isset($_POST["submit"])) {
     if (!empty($_FILES["file2"]["name"])) {
@@ -52,7 +30,7 @@ if (isset($_POST["submit"])) {
         if (in_array($fileType, $allowTypes)) {
             if (move_uploaded_file($_FILES["file2"]["tmp_name"], $targetFilePath)) {
                 // Fetch the ID from tbluser based on UserName (burden)
-                $sqlUser = "SELECT ID FROM tbluser WHERE UserName = :userName";
+                $sqlUser = "SELECT ID FROM tbluser WHERE CONCAT(FirstName, ' ', LastName) = :userName";
                 $stmtUser = $dbh->prepare($sqlUser);
                 $stmtUser->bindParam(':userName', $burden);
                 $stmtUser->execute();
@@ -67,20 +45,18 @@ if (isset($_POST["submit"])) {
                     if ($stmt2) {
                         // Execute SQL statement
                         $stmt2->execute([$fileName, $burden, $department, $id]);
-                        $success2 = $fileName . " បានរក្សាទុករួចរាល់។";
+                        $success2 = $fileName . " has been saved successfully.";
 
                         // Insert into notifications table
                         $userId = $_SESSION['userid']; // Assuming you have the user ID stored in session
                         $notificationMessage = "ឯកសារចូលការិយាល័យ";
 
-                        $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document )";
+                        $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document)";
                         $queryNotification = $dbh->prepare($sqlNotification);
-                        $queryNotification->bindParam(':user_id', $userId); // Use admin ID here
+                        $queryNotification->bindParam(':user_id', $userId);
                         $queryNotification->bindParam(':message', $notificationMessage);
                         $queryNotification->bindParam(':sendid', $sendid);
                         $queryNotification->bindParam(':document', $fileName);
-                        
-
 
                         if ($queryNotification->execute()) {
                             $success2 .= " Notification sent successfully.";
@@ -88,7 +64,7 @@ if (isset($_POST["submit"])) {
                             $error2 = "Error sending notification.";
                         }
                     } else {
-                        $error2 = "សូមអភ័យទោស, មានបញ្ហាកើតឡើងកំលុងពេលរក្សាទុកឯកសារ។";
+                        $error2 = "Sorry, there was an issue updating the document record.";
                     }
                 } else {
                     $error2 = "User not found.";
@@ -104,13 +80,10 @@ if (isset($_POST["submit"])) {
     }
 }
 
-
-
-
 // Translate
 include('../../includes/translate.php');
 $requestId = $_SESSION['userid'];
-$pageTitle = "ឯកសារចូលអង្គភាពសវនកម្មផ្ទៃក្នុង";
+$pageTitle = "Document Entry";
 $sidebar = "inoutdocument";
 
 ob_start();
@@ -120,32 +93,37 @@ ob_start();
     <div class="row col-md-12 d-flex justify-content-between align-items-center">
         <div class="title-form d-flex align-items-center justify-content-start p-0">
             <i class='bx bxs-file-doc p-3 rounded-circle bg-label-primary'></i>
-            <h4 class="mt-2">ឯកសារបញ្ចូនបន្ត</h4>
+            <h4 class="mt-2">ផ្ទេរឯកសារ</h4>
         </div>
     </div>
     <form method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="userid" value="<?php echo $_SESSION['userid'] ?>">
-        <!-- <input type="hidden" name="codeid" value="<?php echo $result['CodeId']; ?>"> -->
+        <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['userid']); ?>">
+
         <div class="row mt-2">
             <div class="mb-3 col-md-6">
                 <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
                 <div class="input-group input-group-merge">
                     <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
                     <select name="burden" id="burden" class="form-select form-control" required>
-                        <option value="">ជ្រើសរើស...</option>
+                        <option value="">ជ្រើសរើស......</option>
                         <?php
-                        $sql = "SELECT UserName, FirstName, LastName FROM tbluser WHERE hr = 1 OR training = 1 OR it = 1 OR ofaudit1 = 1 OR ofaudit2 = 1 OR ofaudit3 = 1 OR ofaudit4 = 1";
+                        // SQL query to fetch user names based on specific criteria
+                        $sql = "SELECT CONCAT(FirstName, ' ', LastName) AS FullName FROM tbluser WHERE hr = 1 OR training = 1 OR it = 1 OR ofaudit1 = 1 OR ofaudit2 = 1 OR ofaudit3 = 1 OR ofaudit4 = 1";
                         $query = $dbh->prepare($sql);
                         $query->execute();
                         $results = $query->fetchAll(PDO::FETCH_OBJ);
+
+                        // Check if there are results
                         if ($query->rowCount() > 0) {
                             foreach ($results as $result) { ?>
-                                <option value="<?php echo htmlentities($result->UserName); ?>">
-                                    <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                <option value="<?php echo htmlspecialchars($result->FullName); ?>">
+                                    <?php echo htmlspecialchars($result->FullName); ?>
                                 </option>
-                        <?php }
-                        }  ?>
-
+                            <?php }
+                        } else { ?>
+                            <option value="" disabled>User not found</option>
+                        <?php } ?>
+                        
                     </select>
                 </div>
             </div>
@@ -154,16 +132,16 @@ ob_start();
                 <div class="input-group input-group-merge">
                     <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                     <select class="custom-select form-control form-select rounded-2" name="department" required>
-                        <option value="">ជ្រើសរើស...</option>
+                        <option value="">ជ្រើសរើស......</option>
                         <?php
-                        $sql = "SELECT * FROM tbloffices";
+                        $sql = "SELECT OfficeName FROM tbloffices";
                         $query = $dbh->prepare($sql);
                         $query->execute();
                         $results = $query->fetchAll(PDO::FETCH_OBJ);
                         if ($query->rowCount() > 0) {
                             foreach ($results as $result) { ?>
                                 <option value="<?php echo htmlentities($result->OfficeName); ?>"><?php echo htmlentities($result->OfficeName); ?></option>
-                        <?php }
+                            <?php }
                         } ?>
                     </select>
                 </div>
@@ -173,9 +151,6 @@ ob_start();
         <div class="form-group mt-2">
             <div class="input-group input-file" name="Fichier2">
                 <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
-                <!-- <span class="input-group-btn ml-1">
-                    <button class="btn btn-danger btn-reset" type="button" onclick="resetFileInput('file2')">ត្រឡប់</button>
-                </span> -->
                 <div class="form-group ml-1">
                     <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូនឯកសារ</button>
                 </div>
@@ -207,22 +182,7 @@ ob_start();
     </form>
 </div>
 
-
-
 <?php
 $content = ob_get_clean();
 include('../../layouts/user_layout.php');
 ?>
-<!-- <script>
-    function resetFileInput(name) {
-        const fileInput = document.querySelector(`input[name="${name}"]`);
-        fileInput.value = '';
-    }
-
-    document.querySelectorAll('.btn-reset').forEach(button => {
-        button.addEventListener('click', function() {
-            const fileInput = this.closest('.input-group').querySelector('input[type="file"]');
-            fileInput.value = '';
-        });
-    });
-</script> -->

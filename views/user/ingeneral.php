@@ -454,6 +454,30 @@ ob_start();
                                       <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                                       <input class="form-control" type="text" id="recrived" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
                                     </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="files" class="form-label">ប្រភេទឯកសារផ្ទេរ</label>
+                                      <div class="input-group">
+                                        <div class="input-group-append">
+                                          <div class="d-flex justify-content-between p-2 rounded-3">
+                                            <?php if (!empty($row['document'])) : ?>
+                                              <a href="../../uploads/file/note-doc/<?php echo htmlentities($row['document']); ?>" target="_blank" class="btn-sm btn-link h6 mb-0">
+                                                <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                                              </a>
+                                            <?php else : ?>
+                                              <span class="text-muted h6 mb-0">មិនទាន់មានឯកសារ</span>
+                                            <?php endif; ?>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="department" class="form-label">នាយកដ្ឋានទទួលបន្ទុក</label>
+                                      <input class="form-control" type="text" id="department" name="department" value="<?php echo htmlentities($row['DepartmentReceive']) ?>" disabled>
+                                    </div>
+                                    <div class="mb-3 col-md-6">
+                                      <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
+                                      <input class="form-control" type="text" id="burden" name="burden" value="<?php echo htmlentities($row['NameRecipient']) ?>" disabled>
+                                    </div>
                                   </div>
                                   <div class="mt-2">
                                     <!-- Button trigger modal -->
