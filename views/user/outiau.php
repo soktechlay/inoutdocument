@@ -225,10 +225,10 @@ ob_start();
                                                     <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                                        <input type="text" id="nameofreceive" name="nameofreceive" class="form-control" placeholder="បំពេញឈ្មោះមន្រ្តីទទួល..." required>
+                                                        <input type="text" id="nameofreceive" name="nameofreceive" class="form-control" placeholder="បំពេញឈ្មោះមន្រ្តីទទួល..." >
                                                     </div>
                                                 </div>
-                                                <div class="mb-3 col-md-6">
+                                                <!-- <div class="mb-3 col-md-6">
                                                     <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
@@ -250,7 +250,47 @@ ob_start();
                                                             } ?>
                                                         </select>
                                                     </div>
+                                                </div> -->
+                                                <div class="mb-3 col-md-6">
+                                                    <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                                    <div class="input-group input-group-merge">
+                                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                                                        <select name="nameofgive" id="nameofgive" class="form-select form-control" onchange="handleNameChange()">
+                                                        <option value="">ជ្រើសរើស...</option>
+                                                            <?php
+                                                            $sql = "SELECT * FROM tbluser";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) {
+                                                            ?>
+                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                    </option>
+                                                            <?php }
+                                                            } ?>
+                                                            <option value="other">ផ្សេងៗ​</option>
+                                                        </select>
+                                                    </div>
+                                                    <div id="otherNameInput" style="display:none; margin-top: 10px;">
+                                                        <input type="text" name="nameofgive" id="nameofgive" class="form-control" placeholder="សូមបំពេញឈ្មោះ... ">
+                                                    </div>
                                                 </div>
+
+                                                <script>
+                                                    function handleNameChange() {
+                                                        var select = document.getElementById('nameofgive');
+                                                        var otherNameInput = document.getElementById('otherNameInput');
+                                                        if (select.value === 'other') {
+                                                            otherNameInput.style.display = 'block';
+                                                        } else {
+                                                            otherNameInput.style.display = 'none';
+                                                        }
+                                                    }
+                                                </script>
+
+
                                                 <div class="mb-3 col-md-6">
                                                     <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
                                                     <div class="input-group input-group-merge">
@@ -499,10 +539,13 @@ ob_start();
                                                                                     $query = $dbh->prepare($sql);
                                                                                     $query->execute();
                                                                                     $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                                                    $cnt = 1;
                                                                                     if ($query->rowCount() > 0) {
                                                                                         foreach ($results as $result) {
                                                                                     ?>
-                                                                                            <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                                                                            <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                                            </option>
                                                                                     <?php }
                                                                                     } ?>
                                                                                 </select>
