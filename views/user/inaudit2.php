@@ -235,7 +235,7 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="echonomic" class="form-label">មកពីនាយកដ្ឋាន</label>
+                          <label for="echonomic" class="form-label">មកពីនាយកដ្ឋានឬអង្គភាព</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                             <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
@@ -428,7 +428,7 @@ ob_start();
                                       <input class="form-control " type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']) ?>" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
+                                      <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋានឬអង្គភាព</label>
                                       <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
@@ -521,7 +521,7 @@ ob_start();
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
+                                      <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋានឬអង្គភាព</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                                         <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
