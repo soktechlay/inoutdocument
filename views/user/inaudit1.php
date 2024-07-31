@@ -498,6 +498,9 @@ ob_start();
                               <div class="modal-body">
                                 <form id="formAccountSettings" method="post" enctype="multipart/form-data">
                                   <div class="row">
+                                  
+                                    <input type="hidden" name="current_file1" value="<?php echo htmlentities($row['document']); ?>">
+                                    
                                     <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
                                     <input type="hidden" name="current_file" value="<?php echo htmlentities($row['Typedocument']); ?>"> <!-- Hidden input for current file -->
                                     <input type="hidden" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']); ?>"> <!-- Hidden input for received -->
