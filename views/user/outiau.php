@@ -22,6 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     // Fetch the submitted code from the form
     $code = $_POST['code'];
     $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
+    $date = date("Y-m-d H:i:s"); // Set the current date and time
 
     // Check if the code already exists in the database for the specific user
     $sql_check = "SELECT * FROM outdocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
@@ -36,13 +37,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
         header("Location: outiau.php?msg=" . urlencode($error) . "&status=error");
         exit();
     } else {
+        // Handle the "other" option for nameofgive
+        $nameofgive = $_POST['nameofgive'];
+        if ($nameofgive === 'other') {
+            $nameofgive = $_POST['customName'];
+        }
+
         // Prepare data array for insertion
         $data = [
-            ':userid' => $userId,
+            ':userid' => $userid,
             ':code' => $_POST['code'],
             ':type' => $_POST['type'],
             ':fromdepartment' => $_POST['fromdepartment'],
-            ':nameofgive' => $_POST['nameofgive'],
+            ':nameofgive' => $nameofgive,
             ':outdepartment' => $_POST['outdepartment'],
             ':nameofreceive' => $_POST['nameofreceive'],
             ':file_name' => $_FILES['files']['name'],
@@ -252,43 +259,44 @@ ob_start();
                                                     </div>
                                                 </div> -->
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
-                                                    <div class="input-group input-group-merge">
-                                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                                        <select name="nameofgive" id="nameofgive" class="form-select form-control" onchange="handleNameChange()">
-                                                        <option value="">ជ្រើសរើស...</option>
-                                                            <?php
-                                                            $sql = "SELECT * FROM tbluser";
-                                                            $query = $dbh->prepare($sql);
-                                                            $query->execute();
-                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) {
-                                                            ?>
-                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
-                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
-                                                                    </option>
-                                                            <?php }
-                                                            } ?>
-                                                            <option value="other">ផ្សេងៗ​</option>
-                                                        </select>
-                                                    </div>
-                                                    <div id="otherNameInput" style="display:none; margin-top: 10px;">
-                                                        <input type="text" name="nameofgive" id="nameofgive" class="form-control" placeholder="សូមបំពេញឈ្មោះ... ">
-                                                    </div>
-                                                </div>
+    <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+    <div class="input-group input-group-merge">
+        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+        <select name="nameofgive" id="nameofgive" class="form-select form-control" onchange="handleNameChange()">
+            <option value="">ជ្រើសរើស...</option>
+            <?php
+            $sql = "SELECT * FROM tbluser";
+            $query = $dbh->prepare($sql);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+            if ($query->rowCount() > 0) {
+                foreach ($results as $result) {
+            ?>
+                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                    </option>
+            <?php }
+            } ?>
+            <option value="other">ផ្សេងៗ​</option>
+        </select>
+    </div>
+    <div id="otherNameInput" style="display:none; margin-top: 10px;">
+        <input type="text" name="customName" id="customName" class="form-control" placeholder="សូមបំពេញឈ្មោះ... ">
+    </div>
+</div>
 
-                                                <script>
-                                                    function handleNameChange() {
-                                                        var select = document.getElementById('nameofgive');
-                                                        var otherNameInput = document.getElementById('otherNameInput');
-                                                        if (select.value === 'other') {
-                                                            otherNameInput.style.display = 'block';
-                                                        } else {
-                                                            otherNameInput.style.display = 'none';
-                                                        }
-                                                    }
-                                                </script>
+<script>
+    function handleNameChange() {
+        var select = document.getElementById('nameofgive');
+        var otherNameInput = document.getElementById('otherNameInput');
+        if (select.value === 'other') {
+            otherNameInput.style.display = 'block';
+        } else {
+            otherNameInput.style.display = 'none';
+        }
+    }
+</script>
+
 
 
                                                 <div class="mb-3 col-md-6">
