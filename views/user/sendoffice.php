@@ -103,7 +103,7 @@ ob_start();
             <div class="mb-3 col-md-6">
                 <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
                 <div class="input-group input-group-merge">
-                    <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                   
                     <select name="burden" id="burden" class="form-select form-control" required>
                         <option value="">ជ្រើសរើស......</option>
                         <?php
@@ -130,7 +130,7 @@ ob_start();
             <div class="mb-3 col-md-6">
                 <label class="form-label">ការិយាល័យទទួលបន្ទុក</label>
                 <div class="input-group input-group-merge">
-                    <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
+                    
                     <select class="custom-select form-control form-select rounded-2" name="department" required>
                         <option value="">ជ្រើសរើស......</option>
                         <?php

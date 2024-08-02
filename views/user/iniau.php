@@ -252,16 +252,20 @@ if (isset($_POST['edit'])) {
 }
 
 // Finalize SQL query with ORDER BY
-$sql .= " ORDER BY indocument.id DESC";
+// Corrected SQL query to include JOIN and WHERE conditions
+$sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname , i.NameRecipient AS username
+        FROM indocument i
+        JOIN tbluser u ON i.user_id = $userId
+        WHERE i.user_id = u.ID
+        ORDER BY i.Date DESC";
 
 // Prepare and execute the SQL query
 $query = $dbh->prepare($sql);
-$query->execute($params);
+$query->execute(); // No need for $params if there are no placeholders
 
 // Fetch all results into $searchResults
 $searchResults = $query->fetchAll(PDO::FETCH_ASSOC);
 
-// Example usage of $searchResults
 ob_start();
 ?>
 
@@ -519,7 +523,7 @@ ob_start();
                                     </div>
                                     <div class="mb-3 col-md-6">
                                       <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
-                                      <input class="form-control" type="text" id="burden" name="burden" value="<?php echo htmlentities($row['NameRecipient']) ?>" disabled>
+                                      <input class="form-control" type="text" id="burden" name="burden" value="<?= htmlspecialchars($row['username']); ?>"disabled>
                                     </div>
                                   </div>
                                   <div class="mt-2">

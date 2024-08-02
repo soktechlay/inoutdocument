@@ -278,24 +278,25 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="fromdepartment" class="form-label">មកពីការិយាល័យ</label>
-                          <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                            <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
-                              <option value="">ជ្រើសរើស...</option>
-                              <?php
-                              $sql = "SELECT * FROM tbloffices";
-                              $query = $dbh->prepare($sql);
-                              $query->execute();
-                              $results = $query->fetchAll(PDO::FETCH_OBJ);
-                              if ($query->rowCount() > 0) {
-                                foreach ($results as $result) { ?>
-                                  <option value="<?php echo htmlentities($result->OfficeName); ?>"><?php echo htmlentities($result->OfficeName); ?></option>
-                              <?php }
-                              } ?>
-                            </select>
-                          </div>
-                        </div>
+    <label for="fromdepartment" class="form-label">មកពីការិយាល័យឬនាយកដ្ឋាន</label>
+    <div class="input-group input-group-merge">
+        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
+        <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
+            <option value="">ជ្រើសរើស...</option>
+            <?php
+            $sql = "(SELECT DepartmentName AS Name FROM tbldepartments) UNION(SELECT OfficeName AS Name FROM tbloffices) ";
+            $query = $dbh->prepare($sql);
+            $query->execute();
+            $results = $query->fetchAll(PDO::FETCH_OBJ);
+            if ($query->rowCount() > 0) {
+                foreach ($results as $result) { ?>
+                    <option value="<?php echo htmlentities($result->Name); ?>"><?php echo htmlentities($result->Name); ?></option>
+                <?php }
+            } ?>
+        </select>
+    </div>
+</div>
+
                         <div class="mb-3 col-md-6">
                           <label for="document" class="form-label">ប្រភេទឯកសារចេញ</label>
                           <input type="file" class="form-control" id="files" accept=".xlsx,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" name="files" required>
@@ -437,7 +438,7 @@ ob_start();
                                       <input class="form-control" type="text" id="nameofgive" name="nameofgive" value="<?php echo htmlentities($row['NameOfgive']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
+                                      <label for="fromdepartment" class="form-label">មកពីការិយាល័យឬនាយកដ្ឋាន</label>
                                       <input class="form-control" type="text" id="fromdepartment" name="fromdepartment" value="<?php echo htmlentities($row['FromDepartment']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
@@ -563,7 +564,7 @@ ob_start();
                                     </div>
 
                                     <div class="mb-3 col-md-6">
-                                      <label for="fromdepartment" class="form-label">មកពីការិយាល័យ</label>
+                                      <label for="fromdepartment" class="form-label">មកពីការិយាល័យឬនាយកដ្ឋាន</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
                                         <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
