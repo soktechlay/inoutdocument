@@ -137,14 +137,14 @@ if (isset($_GET['delete'])) {
   }
 }
 
-// Construct base SQL query for fetching documents
-$sql = "SELECT * FROM indocument 
-        JOIN tbluser ON indocument.user_id = tbluser.id 
-        WHERE tbluser.id = :userid 
-        AND indocument.isdelete = 0
-         AND indocument.Department = 1";
+// // Construct base SQL query for fetching documents
+// $sql = "SELECT * FROM indocument 
+//         JOIN tbluser ON indocument.user_id = tbluser.id 
+//         WHERE tbluser.id = :userid 
+//         AND indocument.isdelete = 0
+//          AND indocument.Department = 1";
 
-$params = [':userid' => $userId];
+// $params = [':userid' => $userId];
 
 // Handle search functionality
 if (isset($_GET['search'])) {
@@ -253,15 +253,20 @@ if (isset($_POST['edit'])) {
 
 // Finalize SQL query with ORDER BY
 // Corrected SQL query to include JOIN and WHERE conditions
-$sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname , i.NameRecipient AS username
+// Assuming $userId is already defined
+$sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname, i.NameRecipient AS username
         FROM indocument i
-        JOIN tbluser u ON i.user_id = $userId
-        WHERE i.user_id = u.ID
+        JOIN tbluser u ON i.user_id = u.ID
+        WHERE i.isdelete = 0
+        AND i.Department = 1
+        AND i.user_id = :userId
         ORDER BY i.Date DESC";
 
 // Prepare and execute the SQL query
 $query = $dbh->prepare($sql);
-$query->execute(); // No need for $params if there are no placeholders
+$query->bindParam(':userId', $userId, PDO::PARAM_INT);
+$query->execute();
+
 
 // Fetch all results into $searchResults
 $searchResults = $query->fetchAll(PDO::FETCH_ASSOC);

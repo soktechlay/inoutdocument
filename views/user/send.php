@@ -29,9 +29,7 @@ if (isset($_POST["submit"])) {
 
         // Allow certain file formats
         $allowTypes = array('docx', 'pdf', 'pptx');
-        if (in_array($fileType, $allowTypes)) {
-            // Use a unique name for the file to avoid overwriting existing files
-            $targetFilePath = $targetDir1 . uniqid() . '.' . $fileType;
+        
             
             if (move_uploaded_file($_FILES["file2"]["tmp_name"], $targetFilePath)) {
                 $userId = $_SESSION['userid'];
@@ -90,7 +88,7 @@ if (isset($_POST["submit"])) {
     } else {
         $error2 = "Please select a file.";
     }
-}
+
 
 
 
