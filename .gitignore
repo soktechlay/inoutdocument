@@ -61,3 +61,4 @@ gulpfile.tmp.*
 # Package Lock files
 /package-lock.json
 # Package Lock files
+/uploads
