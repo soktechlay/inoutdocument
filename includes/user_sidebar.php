@@ -25,7 +25,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
       <li class="menu-item <?php echo ($activePage === 'dashboard.php') ? 'active' : ''; ?>">
         <a href="dashboard.php" class="menu-link">
           <i class="menu-icon tf-icons bx bxs-dashboard"></i>
-          <div data-i18n="Dashboard"><?php echo translate('Dashboard'); ?></div>
+          <div data-i18n="Dashboard"><?php echo translate('ទំព័រដើម'); ?></div>
         </a>
       </li>
 
