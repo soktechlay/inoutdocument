@@ -85,8 +85,8 @@ if (isset($_POST["submit"])) {
         } else {
             $error2 = "File type not allowed.";
         }
-    } else {
-        $error2 = "Please select a file.";
+    // } else {
+    //     $error2 = "Please select a file.";
     }
 
 

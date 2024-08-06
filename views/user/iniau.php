@@ -36,79 +36,78 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
       header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
       exit();
   } else {
-      if (isset($_FILES['files']) && $_FILES['files']['error'] == UPLOAD_ERR_OK) {
-          // Fetch and sanitize file details
-          $fileTmpPath = $_FILES['files']['tmp_name'];
-          $fileName = $_FILES['files']['name'];
-          $fileSize = $_FILES['files']['size'];
-          $fileError = $_FILES['files']['error'];
-          $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
-          $newFileName = preg_replace("/[^a-zA-Z0-9_\-\.]/", "", pathinfo($fileName, PATHINFO_FILENAME)) . '.' . $fileExtension;
-          $uploadFileDir = '../../uploads/file/in-doc/';
-          $dest_path = $uploadFileDir . $newFileName;
-
-          // Check file upload errors and validate file size
-          if ($fileError === UPLOAD_ERR_OK) {
-              if (!is_dir($uploadFileDir)) {
-                  mkdir($uploadFileDir, 0755, true);
-              }
-
-              $maxFileSize = 100 * 1024 * 1024; // 100MB
-              if ($fileSize > $maxFileSize) {
-                  $error = 'File size exceeds the maximum limit of 100MB.';
-                  header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+    if (isset($_FILES['files']) && $_FILES['files']['error'] == UPLOAD_ERR_OK) {
+      // Fetch and sanitize file details
+      $fileTmpPath = $_FILES['files']['tmp_name'];
+      $fileName = $_FILES['files']['name'];
+      $fileSize = $_FILES['files']['size'];
+      $fileError = $_FILES['files']['error'];
+      $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+      $uploadFileDir = '../../uploads/file/in-doc/';
+      $dest_path = $uploadFileDir . $fileName;
+  
+      // Check file upload errors and validate file size
+      if ($fileError === UPLOAD_ERR_OK) {
+          if (!is_dir($uploadFileDir)) {
+              mkdir($uploadFileDir, 0755, true);
+          }
+  
+          $maxFileSize = 100 * 1024 * 1024; // 100MB
+          if ($fileSize > $maxFileSize) {
+              $error = 'File size exceeds the maximum limit of 100MB.';
+              header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+              exit();
+          }
+  
+          // Move uploaded file
+          if (move_uploaded_file($fileTmpPath, $dest_path)) {
+              $data = [
+                  ':code' => htmlspecialchars(trim($_POST['code'])),
+                  ':type' => htmlspecialchars(trim($_POST['type'])),
+                  ':echonomic' => htmlspecialchars(trim($_POST['echonomic'])),
+                  ':give' => htmlspecialchars(trim($_POST['give'])),
+                  ':recrived' => htmlspecialchars(trim($_POST['recrived'])),
+                  ':file_name' => $fileName,
+                  ':date' => date('Y-m-d H:i:s'),
+                  ':userid' => $userid,
+                  ':department' => 1
+              ];
+  
+              $sql_insert = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
+                             VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid, :department)";
+              $query_insert = $dbh->prepare($sql_insert);
+  
+              try {
+                  $query_insert->execute($data);
+                  $msg = $query_insert->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
+                  header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
                   exit();
-              }
-
-              // Move uploaded file
-              if (move_uploaded_file($fileTmpPath, $dest_path)) {
-                  $data = [
-                      ':code' => $code,
-                      ':type' => htmlspecialchars(trim($_POST['type'])),
-                      ':echonomic' => htmlspecialchars(trim($_POST['echonomic'])),
-                      ':give' => htmlspecialchars(trim($_POST['give'])),
-                      ':recrived' => htmlspecialchars(trim($_POST['recrived'])),
-                      ':file_name' => $newFileName,
-                      ':date' => date('Y-m-d H:i:s'),
-                      ':userid' => $userid,
-                      ':department' => 1
-                  ];
-
-                  $sql_insert = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
-                                 VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid, :department)";
-                  $query_insert = $dbh->prepare($sql_insert);
-
-                  try {
-                      $query_insert->execute($data);
-                      $msg = $query_insert->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-                      header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
-                      exit();
-                  } catch (PDOException $e) {
-                      $error = "Error: " . $e->getMessage();
-                      header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-                      exit();
-                  }
-              } else {
-                  $error = "Error uploading file.";
+              } catch (PDOException $e) {
+                  $error = "Error: " . $e->getMessage();
                   header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
                   exit();
               }
           } else {
-              $error_messages = [
-                  UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
-                  UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
-                  UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
-                  UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
-                  UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
-                  UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
-                  UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.'
-              ];
-
-              $error = isset($error_messages[$fileError]) ? $error_messages[$fileError] : 'Unknown upload error.';
+              $error = "Error uploading file.";
               header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
               exit();
           }
       } else {
+          $error_messages = [
+              UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+              UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+              UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
+              UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
+              UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
+              UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+              UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.'
+          ];
+  
+          $error = isset($error_messages[$fileError]) ? $error_messages[$fileError] : 'Unknown upload error.';
+          header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+          exit();
+      }
+  } else {
           $error = 'No file was uploaded or there was an upload error.';
           header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
           exit();
@@ -149,17 +148,18 @@ if (isset($_GET['delete'])) {
 // Handle search functionality
 if (isset($_GET['search'])) {
   $searchKeyword = '%' . $_GET['search'] . '%';
-  $sql .= " AND (CodeId LIKE :searchKeyword OR Type LIKE :searchKeyword OR DepartmentName LIKE :searchKeyword)";
-  $params[':searchKeyword'] = $searchKeyword;
+  $searchCondition = " AND (i.CodeId LIKE '$searchKeyword' OR i.Type LIKE '$searchKeyword' OR i.DepartmentName LIKE '$searchKeyword')";
+} else {
+  $searchCondition = "";
 }
 
 // Handle form filters and date range
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fromDate'], $_POST['toDate'])) {
   $fromDate = date('Y-m-d 00:00:00', strtotime($_POST['fromDate']));
   $toDate = date('Y-m-d 23:59:59', strtotime($_POST['toDate']));
-  $sql .= " AND indocument.Date BETWEEN :fromDate AND :toDate";
-  $params[':fromDate'] = $fromDate;
-  $params[':toDate'] = $toDate;
+  $dateCondition = " AND i.Date BETWEEN '$fromDate' AND '$toDate'";
+} else {
+  $dateCondition = "";
 }
 if (isset($_POST['edit'])) {
   $id = $_POST['id'];
@@ -259,8 +259,11 @@ $sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname, i.NameReci
         JOIN tbluser u ON i.user_id = u.ID
         WHERE i.isdelete = 0
         AND i.Department = 1
-        AND i.user_id = :userId
-        ORDER BY i.Date DESC";
+        AND i.user_id = :userId"
+        . $searchCondition
+        . $dateCondition
+        . " ORDER BY i.Date DESC";
+
 
 // Prepare and execute the SQL query
 $query = $dbh->prepare($sql);

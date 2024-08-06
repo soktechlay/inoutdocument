@@ -103,9 +103,9 @@ ob_start();
                         <span><i class='bx bx-calendar me-2'></i>ថ្ងៃខែឆ្នាំផ្ញើរឯកសារ :</span>
                         <span class="text-end"><?php echo $created_at; ?></span>
                     </li>
-                    <li class="list-group-item d-flex justify-content-center align-items-center">
+                    <!-- <li class="list-group-item d-flex justify-content-center align-items-center">
                         <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($row['document']); ?>" target="_blank" class="btn-sm  text-primary h5 mb-0"><i class="bi bi-download"></i> Download</a>
-                    </li>
+                    </li> -->
                    
                 </ul>
             </div>
