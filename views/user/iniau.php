@@ -135,16 +135,6 @@ if (isset($_GET['delete'])) {
     exit();
   }
 }
-
-// // Construct base SQL query for fetching documents
-// $sql = "SELECT * FROM indocument 
-//         JOIN tbluser ON indocument.user_id = tbluser.id 
-//         WHERE tbluser.id = :userid 
-//         AND indocument.isdelete = 0
-//          AND indocument.Department = 1";
-
-// $params = [':userid' => $userId];
-
 // Handle search functionality
 if (isset($_GET['search'])) {
   $searchKeyword = '%' . $_GET['search'] . '%';
@@ -191,26 +181,35 @@ if (isset($_POST['edit'])) {
       echo 'There was an error moving the uploaded file.';
     }
   }
-
   // Handle the second file upload
-  if (isset($_FILES['files1']) && $_FILES['files1']['error'] == UPLOAD_ERR_OK) {
-    $fileTmpPath1 = $_FILES['files1']['tmp_name'];
-    $fileName1 = $_FILES['files1']['name'];
-    $fileExtension1 = strtolower(pathinfo($fileName1, PATHINFO_EXTENSION));
+if (isset($_FILES['files1']) && $_FILES['files1']['error'] == UPLOAD_ERR_OK) {
+  $fileTmpPath1 = $_FILES['files1']['tmp_name'];
+  $fileName1 = $_FILES['files1']['name']; // Use the original file name
+  $fileSize1 = $_FILES['files1']['size'];
+  $fileError1 = $_FILES['files1']['error'];
 
-    // Sanitize file name
-    $newFileName1 = preg_replace("/[^a-zA-Z0-9_\-\.]/", "", pathinfo($fileName1, PATHINFO_FILENAME)) . '.' . $fileExtension1;
+  // Directory where you want to save the uploaded file
+  $uploadFileDir1 = '../../uploads/file/note-doc/';
+  $dest_path1 = $uploadFileDir1 . basename($fileName1); // Use the original file name
 
-    // Directory where you want to save the uploaded file
-    $uploadFileDir1 = '../../uploads/file/note-doc/';
-    $dest_path1 = $uploadFileDir1 . $newFileName1;
+  // Check file upload errors and validate file size
+  if ($fileError1 === UPLOAD_ERR_OK) {
+      if ($fileSize1 <= 100 * 1024 * 1024) { // Check file size (e.g., 100MB)
+          if (!is_dir($uploadFileDir1)) mkdir($uploadFileDir1, 0755, true);
 
-    if (move_uploaded_file($fileTmpPath1, $dest_path1)) {
-      $uploadedFile1 = $newFileName1;
-    } else {
-      echo 'There was an error moving the uploaded file.';
-    }
+          if (move_uploaded_file($fileTmpPath1, $dest_path1)) {
+              $uploadedFile1 = basename($fileName1); // Use the original file name
+          } else {
+              echo 'There was an error moving the uploaded file.';
+          }
+      } else {
+          echo 'File size exceeds the maximum limit of 100MB.';
+      }
+  } else {
+      echo 'File upload error: ' . $_FILES['files1']['error'];
   }
+}
+
 
   $edit = "UPDATE indocument SET
               CodeId = ?,

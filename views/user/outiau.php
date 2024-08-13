@@ -13,7 +13,7 @@ include('../../includes/translate.php');
 
 // Page variables
 $pageTitle = "ឯកសារចេញអង្គភាពសវនកម្មផ្ទៃក្នុង";
-$sidebar = "iau";
+$sidebar = "unit";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');

@@ -133,7 +133,7 @@ include('alert.php');
               // Reload the page
               window.location.reload();
               document.getElementById('formAuthentication').submit();
-            }, 2000); // Change the timeout value according to your needs
+            }, 1000); // Change the timeout value according to your needs
           }
         }
       </script>
