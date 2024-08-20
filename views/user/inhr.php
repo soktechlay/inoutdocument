@@ -372,7 +372,9 @@ ob_start();
                                                     <td>
                                                         <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                                                     </td>
-                                                    <td><?php echo $row['DepartmentName'] ?></td>
+                                                    <td>
+                                                        <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo $row['DepartmentName'] ?></div>
+                                                    </td>
                                                     <td><?php echo $row['NameOfgive'] ?></td>
                                                     <td><a href="../../uploads/file/in-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
                                                             ពិនិត្យមើលឯកសារ
@@ -418,7 +420,7 @@ ob_start();
                                                                             <label for="type" class="form-label">កម្មវត្តុ</label>
                                                                             <div class="input-group input-group-merge">
                                                                                 <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-detail'></i></span>
-                                                                                <input class="form-control" type="text" id="type" name="type"  value="<?php echo htmlentities($row['Type']); ?>">
+                                                                                <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>">
                                                                             </div>
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">

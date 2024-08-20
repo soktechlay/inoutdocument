@@ -145,8 +145,15 @@ if (isset($_POST['edit'])) {
   OutDepartment = ?, NameOFReceive = ?, Typedocument = ?, `update` = ?
   WHERE ID = ?");
     $query->execute([
-        $_POST['code'], $_POST['type'], $_POST['fromdepartment'], $_POST['nameofgive'],
-        $_POST['outdepartment'], $_POST['nameofreceive'], $uploadedFile, $update, $id
+        $_POST['code'],
+        $_POST['type'],
+        $_POST['fromdepartment'],
+        $_POST['nameofgive'],
+        $_POST['outdepartment'],
+        $_POST['nameofreceive'],
+        $uploadedFile,
+        $update,
+        $id
     ]);
     if ($query->rowCount() > 0) {
         header("Location: outofaudit1.php?ID=" . urlencode($id) . "&msg=Successfully+Edited&status=success");
@@ -384,7 +391,9 @@ ob_start();
                                                     <td>
                                                         <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                                                     </td>
-                                                    <td><?php echo $row['OutDepartment'] ?></td>
+                                                    <td>
+                                                        <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['OutDepartment']); ?>"><?php echo $row['OutDepartment'] ?></div>
+                                                    </td>
                                                     <td><?php echo $row['NameOFReceive'] ?></td>
                                                     <td><a href="../../uploads/file/out-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
                                                             ពិនិត្យមើលឯកសារ

@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 session_start();
 include('../../config/dbconn.php');
 
@@ -21,6 +23,7 @@ $query = $dbh->prepare($sql);
 $query->execute();
 $results = $query->fetchAll(PDO::FETCH_OBJ);
 $cnt = 1;
+
 
 ?>
 <div class="row g-4 mb-4">
@@ -243,7 +246,168 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </td>
             </tr>
 
-            
+            <!-- Update Modal -->
+            <div class="modal fade" id="update<?php echo htmlentities($result->id ?? ''); ?>" tabindex="-1" aria-labelledby="updateModalLabel<?php echo htmlentities($result->id ?? ''); ?>" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                <div class="modal-content shadow-lg">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="updateModalLabel<?php echo htmlentities($result->id ?? ''); ?>">កែប្រែគណនី</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <form id="formAuthentication" method="POST" enctype="multipart/form-data">
+                      <input type="hidden" name="login_type" value="updateuser">
+                      <input type="hidden" name="userId" value="<?php echo htmlentities($result->id ?? ''); ?>">
+                      <input type="hidden" name="existingProfileImage" value="<?php echo htmlentities($result->Profile ?? ''); ?>">
+
+                      <!-- User Avatar and Upload -->
+                      <div class="text-center mb-4">
+                        <img src="<?php echo htmlentities($result->Profile ?? ''); ?>" alt="user image" id="profileImgPreview" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        <div class="mt-2">
+                          <label for="upload" class="btn btn-primary" tabindex="0">
+                            <i class="bx bx-upload"></i> ប្តូររូបភាព
+                            <input type="file" id="upload" name="profile" class="account-file-input" hidden accept="image/png, image/jpeg" />
+                          </label>
+                        </div>
+                      </div>
+
+                      <!-- Personal Information -->
+                      <div class="row mb-3">
+                        <div class="col-md-4">
+                          <label for="honorific1" class="form-label">គោរមងារ<span class="text-danger fw-bolder">*</span></label>
+                          <select id="honorific1" class="form-select" name="honorific">
+                            <option value="<?php echo htmlentities($result->Honorific ?? ''); ?>"><?php echo htmlentities($result->Honorific ?? ''); ?></option>
+                            <option value="ឯកឧត្តម">ឯកឧត្តម</option>
+                            <option value="លោកជំទាវ">លោកជំទាវ</option>
+                            <option value="លោក">លោក</option>
+                            <option value="លោកស្រី">លោកស្រី</option>
+                            <option value="អ្នកនាង">អ្នកនាង</option>
+                            <option value="កញ្ញា">កញ្ញា</option>
+                          </select>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label" for="firstname1">គោត្តនាម<span class="text-danger fw-bolder">*</span></label>
+                          <input type="text" id="firstname1" name="firstname" class="form-control" value="<?php echo htmlentities($result->FirstName ?? ''); ?>" required>
+                        </div>
+                        <div class="col-md-4">
+                          <label class="form-label" for="lastname1">នាម<span class="text-danger fw-bolder">*</span></label>
+                          <input type="text" id="lastname1" name="lastname" class="form-control" value="<?php echo htmlentities($result->LastName ?? ''); ?>" required>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label class="form-label" for="email1">Email<span class="text-danger fw-bolder">*</span></label>
+                          <input type="email" id="email1" name="email" class="form-control" value="<?php echo htmlentities($result->Email ?? ''); ?>" placeholder="example@gmail.com">
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label" for="contact1">លេខទូរស័ព្ទ<span class="text-danger fw-bolder">*</span></label>
+                          <div class="input-group">
+                            <span class="input-group-text">+855</span>
+                            <input type="text" id="contact1" name="contact" class="form-control phone-number-mask" value="<?php echo htmlentities($result->Contact ?? ''); ?>" required>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label class="form-label" for="status1">ស្ថានភាពគណនី<span class="text-danger fw-bolder">*</span></label>
+                          <select id="status1" name="status" class="form-select">
+                            <option value="<?php echo htmlentities($result->Status ?? ''); ?>"><?php echo htmlentities($result->Status ?? ''); ?></option>
+                            <option value="1">សកម្ម</option>
+                            <option value="0">អសកម្ម</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <label class="form-label" for="dob1">ថ្ងៃខែឆ្នាំកំណើត<span class="text-danger fw-bolder">*</span></label>
+                          <input type="text" id="dob1" name="dob" class="form-control datepicker"
+                            value="<?php echo isset($result->DateofBirth) ? date('d/m/Y', strtotime($result->DateofBirth)) : ''; ?>"
+                            placeholder="DD/MM/YYYY">
+                        </div>
+                      </div>
+
+                      <!-- Additional Information -->
+                      <!-- <div class="row mb-3">
+                        <div class="col-md-6">
+                          <label class="form-label" for="department1">នាយកដ្ឋាន<span class="text-danger fw-bolder">*</span></label>
+                          <select id="department1" name="department" class="form-select">
+
+                            <?php if (isset($result->Department)) { ?>
+                              <option value="<?php echo htmlentities($result->Department); ?>">
+                                <?php echo htmlentities($result->Department); ?>
+                              </option>
+                            <?php } else { ?>
+                              <option value="">Select Department</option>
+                            <?php } ?>
+
+
+                            <?php
+                            $sql = "SELECT * FROM tbldepartments";
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                            $cnt = 1;
+                            if ($query->rowCount() > 0) {
+                              foreach ($results as $result) { ?>
+                                <option value="<?php echo htmlentities($result->id) ?>">
+                                  <?php echo htmlentities($result->DepartmentName) ?>
+                                </option>
+                            <?php }
+                            } ?>
+                          </select>
+                        </div>
+
+                        <div class="col-md-6">
+                          <label class="form-label" for="office1">ការិយាល័យ<span class="text-danger fw-bolder">*</span></label>
+                          <select id="office1" name="office" class="form-select">
+
+                            <?php if (isset($selectedOffice)) { ?>
+                              <option value="<?php echo htmlentities($selectedOffice->id); ?>">
+                                <?php echo htmlentities($selectedOffice->OfficeName); ?>
+                              </option>
+                            <?php } else { ?>
+                              <option value="">Select Office</option>
+                            <?php } ?>
+
+
+                            <?php
+                            $sql = "SELECT * FROM tbloffices";
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $offices = $query->fetchAll(PDO::FETCH_OBJ);
+
+                            if ($query->rowCount() > 0) {
+                              foreach ($offices as $office) { ?>
+                                <option value="<?php echo htmlentities($office->id); ?>">
+                                  <?php echo htmlentities($office->OfficeName); ?>
+                                </option>
+                            <?php }
+                            } ?>
+                          </select>
+                        </div>
+
+                      </div> -->
+                      <!-- Form Actions -->
+                      <div class="modal-footer">
+                        <button type="submit" class="btn btn-primary">រក្សាទុក</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">បោះបង់</button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <script>
+              document.getElementById('upload').addEventListener('change', function(event) {
+                var reader = new FileReader();
+                reader.onload = function() {
+                  var img = document.getElementById('profileImgPreview');
+                  img.src = reader.result;
+                }
+                reader.readAsDataURL(event.target.files[0]);
+              });
+            </script>
+
           <?php endforeach; ?>
         </tbody>
       </table>

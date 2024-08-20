@@ -387,7 +387,9 @@ ob_start();
                           <td>
                             <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                           </td>
-                          <td><?php echo $row['DepartmentName'] ?></td>
+                          <td>
+                            <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo $row['DepartmentName'] ?></div>
+                          </td>
                           <td><?php echo $row['NameOfgive'] ?></td>
                           <td><a class="btn-link link-primary" href="sendoffice.php?ID=<?php echo htmlentities($row['ID']); ?>">ផ្ទេរឯកសារ</a></td>
                           <td><?php echo $row['Date'] ?></td>
@@ -498,9 +500,9 @@ ob_start();
                               <div class="modal-body">
                                 <form id="formAccountSettings" method="post" enctype="multipart/form-data">
                                   <div class="row">
-                                  
+
                                     <input type="hidden" name="current_file1" value="<?php echo htmlentities($row['document']); ?>">
-                                    
+
                                     <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
                                     <input type="hidden" name="current_file" value="<?php echo htmlentities($row['Typedocument']); ?>"> <!-- Hidden input for current file -->
                                     <input type="hidden" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']); ?>"> <!-- Hidden input for received -->

@@ -323,7 +323,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $address = $_POST['address'];
       $permissions = isset($_POST['permissionid']) ? $_POST['permissionid'] : [];
       $profileImage = '';
-      
+
 
       // Handle file upload
       if ($_FILES['profile']['error'] == UPLOAD_ERR_OK) {
@@ -399,8 +399,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $query_insert_user->bindParam(':ofaudit2', $ofaudit2, PDO::PARAM_INT);
         $query_insert_user->bindParam(':ofaudit3', $ofaudit3, PDO::PARAM_INT);
         $query_insert_user->bindParam(':ofaudit4', $ofaudit4, PDO::PARAM_INT);
-        
-        
+
+
 
 
         if ($query_insert_user->execute()) {
@@ -418,188 +418,114 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } catch (PDOException $e) {
       $error = "Database error: " . $e->getMessage();
     }
-  } elseif ($loginType == 'updateuser') {
+  } elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['login_type']) && $_POST['login_type'] === 'updateuser') {
+    // Retrieve form data
+    $userId = $_POST['userId'] ?? '';
+    $honorific = $_POST['honorific'] ?? '';
+    $firstname = $_POST['firstname'] ?? '';
+    $lastname = $_POST['lastname'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $contact = $_POST['contact'] ?? '';
+    $status = $_POST['status'] ?? '';
+    $dob = !empty($_POST['dob']) ? date('Y-m-d', strtotime(str_replace('/', '-', $_POST['dob']))) : null;
+    $department = $_POST['department'] ?? '';
+    $office = $_POST['office'] ?? '';
+
+    // Handle profile image upload
+    $profileImage = $_FILES['profile']['name'] ?? '';
+    $targetDir = "uploads/profiles/";
+    $profilePath = !empty($profileImage) ? $targetDir . basename($profileImage) : $_POST['existingProfileImage'] ?? '';
+
+    if (!empty($profileImage)) {
+        if (move_uploaded_file($_FILES['profile']['tmp_name'], $profilePath)) {
+            // Image uploaded successfully
+        } else {
+            $_SESSION['error'] = "File upload failed!";
+            header("Location: your_form_page.php");
+            exit();
+        }
+    }
+
     try {
-      // Retrieve form data
-      $userId = $_POST['userId']; // Assuming user ID is sent in the form
-      $honorific = $_POST['honorific'];
-      $firstname = $_POST['firstname'];
-      $lastname = $_POST['lastname'];
-      $gender = $_POST['gender'];
-      $contact = $_POST['contact'];
-      $username = $_POST['username'];
-      $email = $_POST['email'];
-      $password = $_POST['password'];
-      $status = $_POST['status'];
-      $dob = $_POST['dob'];
-      $department = $_POST['department'];
-      $office = $_POST['office'];
-      $role = $_POST['role'];
-      $address = $_POST['address'];
-      $permissions = isset($_POST['permissionid']) ? $_POST['permissionid'] : [];
-      $profileImage = '';
-  
-      // Handle file upload
-      if (isset($_FILES['profile']) && $_FILES['profile']['error'] == UPLOAD_ERR_OK) {
-          $tmp_name = $_FILES["profile"]["tmp_name"];
-          $name = basename($_FILES["profile"]["name"]);
-          $target_dir = __DIR__ . "/../../assets/img/avatars/";
-          $target_file = $target_dir . $name;
-          $relative_path = "../../assets/img/avatars/" . $name;
-  
-          if (move_uploaded_file($tmp_name, $target_file)) {
-              $profileImage = $relative_path;
-          } else {
-              $error = "Failed to upload profile image.";
-          }
-      }
-  
-      // Check for duplicate email and contact for other users
-      $sql_check_duplicate = "SELECT * FROM tbluser WHERE (Email = :email OR Contact = :contact) AND UserID != :userId";
-      $stmt_check_duplicate = $dbh->prepare($sql_check_duplicate);
-      $stmt_check_duplicate->bindParam(':email', $email, PDO::PARAM_STR);
-      $stmt_check_duplicate->bindParam(':contact', $contact, PDO::PARAM_STR);
-      $stmt_check_duplicate->bindParam(':userId', $userId, PDO::PARAM_INT);
-      $stmt_check_duplicate->execute();
-  
-      if ($stmt_check_duplicate->rowCount() > 0) {
-          $error = "Another user with the same Email or Contact already exists.";
-      } else {
-          // Hash the password if it was changed
-          $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-  
-          // Prepare permission values
-          $iau = in_array('iau', $permissions) ? 1 : 0;
-          $general = in_array('general', $permissions) ? 1 : 0;
-          $audit1 = in_array('audit1', $permissions) ? 1 : 0;
-          $audit2 = in_array('audit2', $permissions) ? 1 : 0;
-          $hr = in_array('hr', $permissions) ? 1 : 0;
-          $training = in_array('training', $permissions) ? 1 : 0;
-          $it = in_array('it', $permissions) ? 1 : 0;
-          $ofaudit1 = in_array('ofaudit1', $permissions) ? 1 : 0;
-          $ofaudit2 = in_array('ofaudit2', $permissions) ? 1 : 0;
-          $ofaudit3 = in_array('ofaudit3', $permissions) ? 1 : 0;
-          $ofaudit4 = in_array('ofaudit4', $permissions) ? 1 : 0;
-  
-          // SQL query to update data in tbluser
-          $sql_update_user = "UPDATE tbluser SET 
-                              Honorific = :honorific, 
-                              FirstName = :firstname, 
-                              LastName = :lastname, 
-                              Gender = :gender, 
-                              Contact = :contact, 
-                              UserName = :username, 
-                              Email = :email, 
-                              Password = :password, 
-                              Status = :status, 
-                              DateofBirth = :dob, 
-                              Department = :department, 
-                              Office = :office, 
-                              RoleId = :role, 
-                              Address = :address, 
-                              Profile = :profileImage, 
-                              iau = :iau, 
-                              general = :general, 
-                              audit1 = :audit1, 
-                              audit2 = :audit2, 
-                              hr = :hr, 
-                              training = :training, 
-                              it = :it, 
-                              ofaudit1 = :ofaudit1, 
-                              ofaudit2 = :ofaudit2, 
-                              ofaudit3 = :ofaudit3, 
-                              ofaudit4 = :ofaudit4, 
-                              UpdateAt = NOW() 
-                              WHERE UserID = :userId";
-  
-          $query_update_user = $dbh->prepare($sql_update_user);
-  
-          // Bind parameters and execute query
-          $query_update_user->bindParam(':honorific', $honorific, PDO::PARAM_STR);
-          $query_update_user->bindParam(':firstname', $firstname, PDO::PARAM_STR);
-          $query_update_user->bindParam(':lastname', $lastname, PDO::PARAM_STR);
-          $query_update_user->bindParam(':gender', $gender, PDO::PARAM_STR);
-          $query_update_user->bindParam(':contact', $contact, PDO::PARAM_STR);
-          $query_update_user->bindParam(':username', $username, PDO::PARAM_STR);
-          $query_update_user->bindParam(':email', $email, PDO::PARAM_STR);
-          $query_update_user->bindParam(':password', $hashedPassword, PDO::PARAM_STR); // Using hashed password
-          $query_update_user->bindParam(':status', $status, PDO::PARAM_INT);
-          $query_update_user->bindParam(':dob', $dob, PDO::PARAM_STR);
-          $query_update_user->bindParam(':department', $department, PDO::PARAM_STR);
-          $query_update_user->bindParam(':office', $office, PDO::PARAM_STR);
-          $query_update_user->bindParam(':role', $role, PDO::PARAM_INT);
-          $query_update_user->bindParam(':address', $address, PDO::PARAM_STR);
-          $query_update_user->bindParam(':profileImage', $profileImage, PDO::PARAM_STR);
-          $query_update_user->bindParam(':iau', $iau, PDO::PARAM_INT);
-          $query_update_user->bindParam(':general', $general, PDO::PARAM_INT);
-          $query_update_user->bindParam(':audit1', $audit1, PDO::PARAM_INT);
-          $query_update_user->bindParam(':audit2', $audit2, PDO::PARAM_INT);
-          $query_update_user->bindParam(':hr', $hr, PDO::PARAM_INT);
-          $query_update_user->bindParam(':training', $training, PDO::PARAM_INT);
-          $query_update_user->bindParam(':it', $it, PDO::PARAM_INT);
-          $query_update_user->bindParam(':ofaudit1', $ofaudit1, PDO::PARAM_INT);
-          $query_update_user->bindParam(':ofaudit2', $ofaudit2, PDO::PARAM_INT);
-          $query_update_user->bindParam(':ofaudit3', $ofaudit3, PDO::PARAM_INT);
-          $query_update_user->bindParam(':ofaudit4', $ofaudit4, PDO::PARAM_INT);
-          $query_update_user->bindParam(':userId', $userId, PDO::PARAM_INT);
-  
-          if ($query_update_user->execute()) {
-              $msg = "User updated successfully.";
-          } else {
-              $error = "Error updating user.";
-          }
-      }
-  } catch (PDOException $e) {
-      $error = "Database error: " . $e->getMessage();
-  }
-  
-  } elseif ($loginType== 'update-permission') {
+        $sql = "UPDATE tbluser SET Honorific = :honorific, FirstName = :firstname, LastName = :lastname, 
+                Email = :email, Contact = :contact, Status = :status, DateofBirth = :dob, 
+                Department = :department, Office = :office, Profile = :profile WHERE id = :userId";
+
+        $query = $dbh->prepare($sql);
+        $query->bindParam(':honorific', $honorific);
+        $query->bindParam(':firstname', $firstname);
+        $query->bindParam(':lastname', $lastname);
+        $query->bindParam(':email', $email);
+        $query->bindParam(':contact', $contact);
+        $query->bindParam(':status', $status);
+        $query->bindParam(':dob', $dob);
+        $query->bindParam(':department', $department);
+        $query->bindParam(':office', $office);
+        $query->bindParam(':profile', $profilePath);
+        $query->bindParam(':userId', $userId);
+
+        if ($query->execute()) {
+            $_SESSION['success'] = "User updated successfully!";
+        } else {
+            $errorInfo = $query->errorInfo();
+            $_SESSION['error'] = "User update failed: " . htmlentities($errorInfo[2]);
+        }
+    } catch (PDOException $e) {
+        $_SESSION['error'] = "Database error: " . htmlentities($e->getMessage());
+    }
+
+    // Redirect back to the user list or any other page
+    header("Location: all-users.php");
+    exit();
+
+}
+ elseif ($loginType == 'update-permission') {
     try {
-        // Assuming $getid contains the user ID
-        $userId = $_POST['updateinout'];
+      // Assuming $getid contains the user ID
+      $userId = $_POST['updateinout'];
 
-        // Initialize the pid array if it doesn't exist
-        $pidArray = isset($_POST['pid']) ? $_POST['pid'] : [];
+      // Initialize the pid array if it doesn't exist
+      $pidArray = isset($_POST['pid']) ? $_POST['pid'] : [];
 
-        // Determine checkbox states
-        $iauChecked = in_array('iau', $pidArray) ? 1 : 0;
-        $generalChecked = in_array('general', $pidArray) ? 1 : 0;
-        $audit1Checked = in_array('audit1', $pidArray) ? 1 : 0;
-        $audit2Checked = in_array('audit2', $pidArray) ? 1 : 0;
-        $hrChecked = in_array('hr', $pidArray) ? 1 : 0;
-        $trainingChecked = in_array('training', $pidArray) ? 1 : 0;
-        $itChecked = in_array('it', $pidArray) ? 1 : 0;
-        $ofaudit1Checked = in_array('ofaudit1', $pidArray) ? 1 : 0;
-        $ofaudit2Checked = in_array('ofaudit2', $pidArray) ? 1 : 0;
-        $ofaudit3Checked = in_array('ofaudit3', $pidArray) ? 1 : 0;
-        $ofaudit4Checked = in_array('ofaudit4', $pidArray) ? 1 : 0;
+      // Determine checkbox states
+      $iauChecked = in_array('iau', $pidArray) ? 1 : 0;
+      $generalChecked = in_array('general', $pidArray) ? 1 : 0;
+      $audit1Checked = in_array('audit1', $pidArray) ? 1 : 0;
+      $audit2Checked = in_array('audit2', $pidArray) ? 1 : 0;
+      $hrChecked = in_array('hr', $pidArray) ? 1 : 0;
+      $trainingChecked = in_array('training', $pidArray) ? 1 : 0;
+      $itChecked = in_array('it', $pidArray) ? 1 : 0;
+      $ofaudit1Checked = in_array('ofaudit1', $pidArray) ? 1 : 0;
+      $ofaudit2Checked = in_array('ofaudit2', $pidArray) ? 1 : 0;
+      $ofaudit3Checked = in_array('ofaudit3', $pidArray) ? 1 : 0;
+      $ofaudit4Checked = in_array('ofaudit4', $pidArray) ? 1 : 0;
 
-        // Update permissions in tbluser
-        $sql = "UPDATE tbluser 
+      // Update permissions in tbluser
+      $sql = "UPDATE tbluser 
                 SET iau = :iau, general = :general, audit1 = :audit1, audit2 = :audit2, hr = :hr, training = :training, it = :it,
                     ofaudit1 = :ofaudit1, ofaudit2 = :ofaudit2, ofaudit3 = :ofaudit3, ofaudit4 = :ofaudit4 
                 WHERE id = :userId";
-        $stmt = $dbh->prepare($sql);
-        $stmt->bindParam(':iau', $iauChecked, PDO::PARAM_INT);
-        $stmt->bindParam(':general', $generalChecked, PDO::PARAM_INT);
-        $stmt->bindParam(':audit1', $audit1Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':audit2', $audit2Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':hr', $hrChecked, PDO::PARAM_INT);
-        $stmt->bindParam(':training', $trainingChecked, PDO::PARAM_INT);
-        $stmt->bindParam(':it', $itChecked, PDO::PARAM_INT);
-        $stmt->bindParam(':ofaudit1', $ofaudit1Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':ofaudit2', $ofaudit2Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':ofaudit3', $ofaudit3Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':ofaudit4', $ofaudit4Checked, PDO::PARAM_INT);
-        $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
+      $stmt = $dbh->prepare($sql);
+      $stmt->bindParam(':iau', $iauChecked, PDO::PARAM_INT);
+      $stmt->bindParam(':general', $generalChecked, PDO::PARAM_INT);
+      $stmt->bindParam(':audit1', $audit1Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':audit2', $audit2Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':hr', $hrChecked, PDO::PARAM_INT);
+      $stmt->bindParam(':training', $trainingChecked, PDO::PARAM_INT);
+      $stmt->bindParam(':it', $itChecked, PDO::PARAM_INT);
+      $stmt->bindParam(':ofaudit1', $ofaudit1Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':ofaudit2', $ofaudit2Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':ofaudit3', $ofaudit3Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':ofaudit4', $ofaudit4Checked, PDO::PARAM_INT);
+      $stmt->bindParam(':userId', $userId, PDO::PARAM_INT);
 
-        if ($stmt->execute()) {
-            $msg = "Permissions updated successfully.";
-        } else {
-            $error = "Failed to update permissions.";
-        }
+      if ($stmt->execute()) {
+        $msg = "Permissions updated successfully.";
+      } else {
+        $error = "Failed to update permissions.";
+      }
     } catch (PDOException $e) {
-        $error = "Database error: " . $e->getMessage();
+      $error = "Database error: " . $e->getMessage();
     }
   } elseif ($loginType == 'updatepass') {
     $msg = $error = '';

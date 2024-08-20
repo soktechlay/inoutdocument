@@ -372,7 +372,9 @@ ob_start();
                                                     <td>
                                                         <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                                                     </td>
-                                                    <td><?php echo $row['DepartmentName'] ?></td>
+                                                    <td>
+                                                        <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo $row['DepartmentName'] ?></div>
+                                                    </td>
                                                     <td><?php echo $row['NameOfgive'] ?></td>
                                                     <td><a href="../../uploads/file/in-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
                                                             ពិនិត្យមើលឯកសារ

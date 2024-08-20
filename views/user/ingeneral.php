@@ -390,7 +390,9 @@ ob_start();
                           <td>
                             <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                           </td>
-                          <td><?php echo $row['DepartmentName'] ?></td>
+                          <td>
+                            <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo $row['DepartmentName'] ?></div>
+                          </td>
                           <td><?php echo $row['NameOfgive'] ?></td>
                           <td><a class="btn-link link-primary" href="sendoffice.php?ID=<?php echo htmlentities($row['ID']); ?>">ផ្ទេរឯកសារ</a></td>
                           <td><?php echo $row['Date'] ?></td>
