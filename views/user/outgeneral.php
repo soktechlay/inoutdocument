@@ -47,6 +47,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
       ':file_name' => $_FILES['files']['name'],
       ':date' => $date,
       ':department' => 1,  // Adjust according to your department value logic
+      ':permissions' => 2
     ];
 
     // File handling
@@ -56,8 +57,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     // Move uploaded file to destination
     if (move_uploaded_file($file_tmp, $destination)) {
       // Prepare SQL statement for insertion
-      $sql = "INSERT INTO outdocument (CodeId, Type, OutDepartment, NameOfgive, Typedocument, NameOFReceive, FromDepartment, Date, user_id, Department)
-                VALUES (:code, :type, :outdepartment, :nameofgive, :file_name, :nameofreceive, :fromdepartment, :date, :userid, :department)";
+      $sql = "INSERT INTO outdocument (CodeId, Type, OutDepartment, NameOfgive, Typedocument, NameOFReceive, FromDepartment, Date, user_id, Department, permissions)
+                VALUES (:code, :type, :outdepartment, :nameofgive, :file_name, :nameofreceive, :fromdepartment, :date, :userid, :department, :permissions)";
       $query = $dbh->prepare($sql);
 
       // Execute SQL query with data array

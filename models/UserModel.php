@@ -12,7 +12,7 @@ class UserModel
   public function getUserByUsername($username)
   {
     $query = "SELECT u.id, u.UserName, u.Password, u.Status, u.authenticator_enabled, u.TwoFASecret,
-                       u.Honorific, u.FirstName, u.LastName, r.RoleName
+                       u.Honorific, u.FirstName, u.LastName, r.RoleName, u.Office, u.PermissionId
                 FROM tbluser u
                 INNER JOIN tblrole r ON u.RoleId = r.id
                 WHERE u.UserName = :username";

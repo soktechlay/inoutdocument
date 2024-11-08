@@ -150,7 +150,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <div class="d-flex align-items-center justify-content-between mb-2">
       <h5 class="card-title">តម្រងស្វែងរក</h5>
       <!-- Button trigger modal -->
-      <button class="btn btn-secondary add-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0" type="button" data-bs-target="#editUser" data-bs-toggle="modal">
+      <button class="btn btn-secondary add-new btn-primary" tabindex="0" aria-controls="DataTables_Table_0"
+        type="button" data-bs-target="#editUser" data-bs-toggle="modal">
         <span><i class=" bx bx-plus me-0 me-sm-1"></i>
           <span class="d-none d-sm-inline-block">បង្កើតគណនីថ្មី</span>
         </span>
@@ -162,13 +163,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="col-md-5 position-relative">
           <div class="input-group input-group-merge">
             <span class="input-group-text" id="basic-addon-search31"><i class="bx bx-search"></i></span>
-            <input type="text" name="user_name" class="form-control" placeholder="ស្វែងរក..." value="<?php echo isset($_POST['user_name']) ? $_POST['user_name'] : ''; ?>" aria-label="ស្វែងរក..." aria-describedby="basic-addon-search31">
+            <input type="text" name="user_name" class="form-control" placeholder="ស្វែងរក..."
+              value="<?php echo isset($_POST['user_name']) ? $_POST['user_name'] : ''; ?>" aria-label="ស្វែងរក..."
+              aria-describedby="basic-addon-search31">
           </div>
         </div>
         <div class="col-md-5 user_role">
           <select id="UserRole" name="user_role" class="select2 form-select text-capitalize">
             <option value=""> ជ្រើសរើសតួនាទី </option>
-            <?php foreach ($uniqueRoles as $role) : ?>
+            <?php foreach ($uniqueRoles as $role): ?>
               <option value="<?php echo $role; ?>" <?php echo (isset($_POST['user_role']) && $_POST['user_role'] == $role) ? 'selected' : ''; ?>><?php echo $role; ?></option>
             <?php endforeach; ?>
           </select>
@@ -180,9 +183,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </form>
   </div>
 
-  <?php if (!empty($results)) : ?>
+  <?php if (!empty($results)): ?>
     <div class="card-datatable table-responsive">
-      <table id="notificationsTable" class="dt-responsive table border-top table-striped dataTable no-footer dtr-inline collapsed" aria-describedby="notificationsTable_info">
+      <table id="notificationsTable"
+        class="dt-responsive table border-top table-striped dataTable no-footer dtr-inline collapsed"
+        aria-describedby="notificationsTable_info">
         <thead class='thead-dark'>
           <tr>
             <th scope='col'>ID</th>
@@ -196,30 +201,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           </tr>
         </thead>
         <tbody class='table-border-bottom-0'>
-          <?php foreach ($results as $result) : ?>
+          <?php foreach ($results as $result): ?>
             <tr>
               <td><?php echo $result->id; ?></td>
               <td class="sorting_1">
                 <div class="d-flex justify-content-start align-items-center user-name">
                   <div class="avatar-wrapper">
                     <div class="avatar avatar-sm me-3">
-                      <?php if (!empty($result->Profile)) : ?>
-                        <img src="<?php echo htmlentities($result->Profile ?? ''); ?>" alt="រូបភាពអក្សរ" class="rounded-circle" style="object-fit: cover;" />
-                      <?php else : ?>
-                        <span class="avatar-initial rounded-circle bg-label-success"><?php echo substr($result->UserName ?? '', 0, 2); ?></span>
+                      <?php if (!empty($result->Profile)): ?>
+                        <img src="<?php echo htmlentities($result->Profile ?? ''); ?>" alt="រូបភាពអក្សរ"
+                          class="rounded-circle" style="object-fit: cover;" />
+                      <?php else: ?>
+                        <span
+                          class="avatar-initial rounded-circle bg-label-success"><?php echo substr($result->UserName ?? '', 0, 2); ?></span>
                       <?php endif; ?>
                     </div>
                   </div>
                   <div class="d-flex flex-column">
-                    <a href="all-users-detail.php?uid=<?php echo htmlentities($result->id ?? ''); ?>" class="text-body text-truncate">
-                      <span class="fw-medium"><?php echo htmlentities($result->Honorific ?? '') . " " . htmlentities($result->FirstName ?? '') . " " . htmlentities($result->LastName ?? ''); ?></span>
+                    <a href="all-users-detail.php?uid=<?php echo htmlentities($result->id ?? ''); ?>"
+                      class="text-body text-truncate">
+                      <span
+                        class="fw-medium"><?php echo htmlentities($result->Honorific ?? '') . " " . htmlentities($result->FirstName ?? '') . " " . htmlentities($result->LastName ?? ''); ?></span>
                     </a>
                     <small class="text-muted"><?php echo htmlentities($result->Email ?? ''); ?></small>
                   </div>
                 </div>
               </td>
               <td>
-                <span class="fw-medium head-of-department badge <?php echo htmlentities($result->Colors ?? ''); ?>"><?php echo htmlentities($result->RoleName ?? ''); ?></span>
+                <span
+                  class="fw-medium head-of-department badge <?php echo htmlentities($result->Colors ?? ''); ?>"><?php echo htmlentities($result->RoleName ?? ''); ?></span>
               </td>
               <td><?php echo htmlentities($result->Position ?? ''); ?></td>
               <td><?php echo htmlentities($result->CreationDate ?? ''); ?></td>
@@ -227,18 +237,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               <td><?php echo htmlentities($result->Status ?? ''); ?></td>
               <td class='text-end'>
                 <div>
-                  <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top" data-bs-html="true" title="លម្អិត">
+                  <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top"
+                    data-bs-html="true" title="លម្អិត">
                     <a href="all-users-detail.php?uid=<?php echo htmlentities($result->id ?? ''); ?>">
                       <i class="bx bx-show-alt"></i>
                     </a>
                   </button>
-                  <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top" data-bs-html="true" title="កែប្រែ">
-                    <a href="javascript:;" data-bs-toggle="modal" data-bs-target="#update<?php echo htmlentities($result->id ?? ''); ?>" data-id="<?php echo htmlentities($result->id ?? ''); ?>">
+                  <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top"
+                    data-bs-html="true" title="កែប្រែ">
+                    <a href="javascript:;" data-bs-toggle="modal"
+                      data-bs-target="#update<?php echo htmlentities($result->id ?? ''); ?>"
+                      data-id="<?php echo htmlentities($result->id ?? ''); ?>">
                       <i class="bx bx-edit-alt"></i>
                     </a>
                   </button>
-                  <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top" data-bs-html="true" title="លុប">
-                    <a href="javascript:;" class="text-danger" data-bs-toggle="modal" onclick="openDeleteModal(<?php echo htmlentities($result->id ?? ''); ?>)" data-bs-target="#deleteModal">
+                  <button class="btn p-0" data-bs-toggle="tooltip" data-bs-offset="0,8" data-bs-placement="top"
+                    data-bs-html="true" title="លុប">
+                    <a href="javascript:;" class="text-danger" data-bs-toggle="modal"
+                      onclick="openDeleteModal(<?php echo htmlentities($result->id ?? ''); ?>)"
+                      data-bs-target="#deleteModal">
                       <i class="bx bx-trash-alt"></i>
                     </a>
                   </button>
@@ -247,26 +264,32 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </tr>
 
             <!-- Update Modal -->
-            <div class="modal fade" id="update<?php echo htmlentities($result->id ?? ''); ?>" tabindex="-1" aria-labelledby="updateModalLabel<?php echo htmlentities($result->id ?? ''); ?>" aria-hidden="true">
+            <div class="modal fade" id="update<?php echo htmlentities($result->id ?? ''); ?>" tabindex="-1"
+              aria-labelledby="updateModalLabel<?php echo htmlentities($result->id ?? ''); ?>" aria-hidden="true">
               <div class="modal-dialog modal-lg">
                 <div class="modal-content shadow-lg">
                   <div class="modal-header">
-                    <h5 class="modal-title" id="updateModalLabel<?php echo htmlentities($result->id ?? ''); ?>">កែប្រែគណនី</h5>
+                    <h5 class="modal-title" id="updateModalLabel<?php echo htmlentities($result->id ?? ''); ?>">កែប្រែគណនី
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>
                   <div class="modal-body">
                     <form id="formAuthentication" method="POST" enctype="multipart/form-data">
                       <input type="hidden" name="login_type" value="updateuser">
                       <input type="hidden" name="userId" value="<?php echo htmlentities($result->id ?? ''); ?>">
-                      <input type="hidden" name="existingProfileImage" value="<?php echo htmlentities($result->Profile ?? ''); ?>">
+                      <input type="hidden" name="existingProfileImage"
+                        value="<?php echo htmlentities($result->Profile ?? ''); ?>">
 
                       <!-- User Avatar and Upload -->
                       <div class="text-center mb-4">
-                        <img src="<?php echo htmlentities($result->Profile ?? ''); ?>" alt="user image" id="profileImgPreview" class="img-fluid rounded-circle" style="width: 150px; height: 150px; object-fit: cover;">
+                        <img src="<?php echo htmlentities($result->Profile ?? ''); ?>" alt="user image"
+                          id="profileImgPreview" class="img-fluid rounded-circle"
+                          style="width: 150px; height: 150px; object-fit: cover;">
                         <div class="mt-2">
                           <label for="upload" class="btn btn-primary" tabindex="0">
                             <i class="bx bx-upload"></i> ប្តូររូបភាព
-                            <input type="file" id="upload" name="profile" class="account-file-input" hidden accept="image/png, image/jpeg" />
+                            <input type="file" id="upload" name="profile" class="account-file-input" hidden
+                              accept="image/png, image/jpeg" />
                           </label>
                         </div>
                       </div>
@@ -274,9 +297,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                       <!-- Personal Information -->
                       <div class="row mb-3">
                         <div class="col-md-4">
-                          <label for="honorific1" class="form-label">គោរមងារ<span class="text-danger fw-bolder">*</span></label>
+                          <label for="honorific1" class="form-label">គោរមងារ<span
+                              class="text-danger fw-bolder">*</span></label>
                           <select id="honorific1" class="form-select" name="honorific">
-                            <option value="<?php echo htmlentities($result->Honorific ?? ''); ?>"><?php echo htmlentities($result->Honorific ?? ''); ?></option>
+                            <option value="<?php echo htmlentities($result->Honorific ?? ''); ?>">
+                              <?php echo htmlentities($result->Honorific ?? ''); ?>
+                            </option>
                             <option value="ឯកឧត្តម">ឯកឧត្តម</option>
                             <option value="លោកជំទាវ">លោកជំទាវ</option>
                             <option value="លោក">លោក</option>
@@ -286,108 +312,83 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                           </select>
                         </div>
                         <div class="col-md-4">
-                          <label class="form-label" for="firstname1">គោត្តនាម<span class="text-danger fw-bolder">*</span></label>
-                          <input type="text" id="firstname1" name="firstname" class="form-control" value="<?php echo htmlentities($result->FirstName ?? ''); ?>" required>
+                          <label class="form-label" for="firstname1">គោត្តនាម<span
+                              class="text-danger fw-bolder">*</span></label>
+                          <input type="text" id="firstname1" name="firstname" class="form-control"
+                            value="<?php echo htmlentities($result->FirstName ?? ''); ?>" required>
                         </div>
                         <div class="col-md-4">
                           <label class="form-label" for="lastname1">នាម<span class="text-danger fw-bolder">*</span></label>
-                          <input type="text" id="lastname1" name="lastname" class="form-control" value="<?php echo htmlentities($result->LastName ?? ''); ?>" required>
+                          <input type="text" id="lastname1" name="lastname" class="form-control"
+                            value="<?php echo htmlentities($result->LastName ?? ''); ?>" required>
                         </div>
                       </div>
 
                       <div class="row mb-3">
                         <div class="col-md-6">
                           <label class="form-label" for="email1">Email<span class="text-danger fw-bolder">*</span></label>
-                          <input type="email" id="email1" name="email" class="form-control" value="<?php echo htmlentities($result->Email ?? ''); ?>" placeholder="example@gmail.com">
+                          <input type="email" id="email1" name="email" class="form-control"
+                            value="<?php echo htmlentities($result->Email ?? ''); ?>" placeholder="example@gmail.com">
                         </div>
                         <div class="col-md-6">
-                          <label class="form-label" for="contact1">លេខទូរស័ព្ទ<span class="text-danger fw-bolder">*</span></label>
+                          <label class="form-label" for="contact1">លេខទូរស័ព្ទ<span
+                              class="text-danger fw-bolder">*</span></label>
                           <div class="input-group">
                             <span class="input-group-text">+855</span>
-                            <input type="text" id="contact1" name="contact" class="form-control phone-number-mask" value="<?php echo htmlentities($result->Contact ?? ''); ?>" required>
+                            <input type="text" id="contact1" name="contact" class="form-control phone-number-mask"
+                              value="<?php echo htmlentities($result->Contact ?? ''); ?>" required>
                           </div>
                         </div>
                       </div>
 
                       <div class="row mb-3">
                         <div class="col-md-6">
-                          <label class="form-label" for="status1">ស្ថានភាពគណនី<span class="text-danger fw-bolder">*</span></label>
+                          <label class="form-label" for="status1">ស្ថានភាពគណនី<span
+                              class="text-danger fw-bolder">*</span></label>
                           <select id="status1" name="status" class="form-select">
-                            <option value="<?php echo htmlentities($result->Status ?? ''); ?>"><?php echo htmlentities($result->Status ?? ''); ?></option>
+                            <option value="<?php echo htmlentities($result->Status ?? ''); ?>">
+                              <?php echo htmlentities($result->Status ?? ''); ?>
+                            </option>
                             <option value="1">សកម្ម</option>
                             <option value="0">អសកម្ម</option>
                           </select>
                         </div>
                         <div class="col-md-6">
-                          <label class="form-label" for="dob1">ថ្ងៃខែឆ្នាំកំណើត<span class="text-danger fw-bolder">*</span></label>
+                          <label class="form-label" for="dob1">ថ្ងៃខែឆ្នាំកំណើត<span
+                              class="text-danger fw-bolder">*</span></label>
                           <input type="text" id="dob1" name="dob" class="form-control datepicker"
                             value="<?php echo isset($result->DateofBirth) ? date('d/m/Y', strtotime($result->DateofBirth)) : ''; ?>"
                             placeholder="DD/MM/YYYY">
                         </div>
                       </div>
-
-                      <!-- Additional Information -->
-                      <!-- <div class="row mb-3">
-                        <div class="col-md-6">
-                          <label class="form-label" for="department1">នាយកដ្ឋាន<span class="text-danger fw-bolder">*</span></label>
-                          <select id="department1" name="department" class="form-select">
-
-                            <?php if (isset($result->Department)) { ?>
-                              <option value="<?php echo htmlentities($result->Department); ?>">
-                                <?php echo htmlentities($result->Department); ?>
+                      <div class="row mb-3">
+                        <div class="mb-3 col-md-6">
+                          <label for="permission" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                          <div class="input-group input-group-merge">
+                            <span id="basic-icon-default-company2" class="input-group-text"><i
+                                class='bx bx-user'></i></span>
+                            <select name="permission" id="permission" class="form-select form-control">
+                              <option value="<?php echo htmlentities($result->PermissionId ?? ''); ?>">
+                                <?php echo htmlentities($result->PermissionId ?? ''); ?>
                               </option>
-                            <?php } else { ?>
-                              <option value="">Select Department</option>
-                            <?php } ?>
-
-
-                            <?php
-                            $sql = "SELECT * FROM tbldepartments";
-                            $query = $dbh->prepare($sql);
-                            $query->execute();
-                            $results = $query->fetchAll(PDO::FETCH_OBJ);
-                            $cnt = 1;
-                            if ($query->rowCount() > 0) {
-                              foreach ($results as $result) { ?>
-                                <option value="<?php echo htmlentities($result->id) ?>">
-                                  <?php echo htmlentities($result->DepartmentName) ?>
-                                </option>
-                            <?php }
-                            } ?>
-                          </select>
+                              <?php
+                              $sql = "SELECT * FROM permissions";
+                              $query = $dbh->prepare($sql);
+                              $query->execute();
+                              $permissions = $query->fetchAll(PDO::FETCH_OBJ);
+                              if ($query->rowCount() > 0) {
+                                foreach ($permissions as $permission) {
+                                  ?>
+                                  <option value="<?php echo htmlentities($permission->id); ?>">
+                                    <?php echo htmlentities($permission->name); ?>
+                                  </option>
+                                <?php }
+                              } ?>
+                            </select>
+                          </div>
                         </div>
+                      </div>
 
-                        <div class="col-md-6">
-                          <label class="form-label" for="office1">ការិយាល័យ<span class="text-danger fw-bolder">*</span></label>
-                          <select id="office1" name="office" class="form-select">
-
-                            <?php if (isset($selectedOffice)) { ?>
-                              <option value="<?php echo htmlentities($selectedOffice->id); ?>">
-                                <?php echo htmlentities($selectedOffice->OfficeName); ?>
-                              </option>
-                            <?php } else { ?>
-                              <option value="">Select Office</option>
-                            <?php } ?>
-
-
-                            <?php
-                            $sql = "SELECT * FROM tbloffices";
-                            $query = $dbh->prepare($sql);
-                            $query->execute();
-                            $offices = $query->fetchAll(PDO::FETCH_OBJ);
-
-                            if ($query->rowCount() > 0) {
-                              foreach ($offices as $office) { ?>
-                                <option value="<?php echo htmlentities($office->id); ?>">
-                                  <?php echo htmlentities($office->OfficeName); ?>
-                                </option>
-                            <?php }
-                            } ?>
-                          </select>
-                        </div>
-
-                      </div> -->
-                      <!-- Form Actions -->
                       <div class="modal-footer">
                         <button type="submit" class="btn btn-primary">រក្សាទុក</button>
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">បោះបង់</button>
@@ -398,9 +399,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               </div>
             </div>
             <script>
-              document.getElementById('upload').addEventListener('change', function(event) {
+              document.getElementById('upload').addEventListener('change', function (event) {
                 var reader = new FileReader();
-                reader.onload = function() {
+                reader.onload = function () {
                   var img = document.getElementById('profileImgPreview');
                   img.src = reader.result;
                 }
@@ -412,7 +413,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </tbody>
       </table>
     </div>
-  <?php else : ?>
+  <?php else: ?>
     <div class="text-center">
       <img src="../../assets/img/illustrations/empty-box.png" class="avatar avatar-xl mt-4" alt="">
       <h6 class="mt-4">រកមិនឃើញកំណត់ត្រាត្រូវគ្នាទេ!</h6>
@@ -421,7 +422,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </div>
 
 <!-- Delete Confirmation Modal -->
-<div class="modal animate__animated animate__bounceIn" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal animate__animated animate__bounceIn" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-dialog-centered">
     <div class="modal-content">
       <div class="modal-header">
@@ -450,8 +452,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   }
 
   // Auto dismiss toast alerts
-  $(document).ready(function() {
-    setTimeout(function() {
+  $(document).ready(function () {
+    setTimeout(function () {
       $('.toast').toast('hide');
     }, 5000); // Adjust timing as needed
 
@@ -472,12 +474,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <form id="formAuthentication" class="row g-3 mb-3" method="POST" enctype="multipart/form-data">
           <input type="hidden" name="login_type" value="adduser">
           <div class="d-flex flex-column align-items-center align-items-sm-center gap-4">
-            <img src="../../assets/img/avatars/no-image.jpg" alt="user-avatar" class="d-block rounded" height="150" width="150" id="uploadedAvatar" style="object-fit: cover;" />
+            <img src="../../assets/img/avatars/no-image.jpg" alt="user-avatar" class="d-block rounded" height="150"
+              width="150" id="uploadedAvatar" style="object-fit: cover;" />
             <div class="button-wrapper">
               <label for="upload" class="btn btn-primary me-2 mb-4" tabindex="0">
                 <span class="d-none d-sm-block"><i class="bx bx-photo-album"></i>ប្តូររូបភាព</span>
                 <i class="bx bx-upload d-block d-sm-none"></i>
-                <input type="file" id="upload" name="profile" class="account-file-input" hidden accept="image/png, image/jpeg" />
+                <input type="file" id="upload" name="profile" class="account-file-input" hidden
+                  accept="image/png, image/jpeg" />
               </label>
             </div>
           </div>
@@ -485,7 +489,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label for="honorific" class="form-label">គោរមងារ
               <span class="text-danger fw-bolder">*</span>
             </label>
-            <select id="honorific" class="select2 form-select form-select-lg select2-hidden-accessible" data-allow-clear="false" tabindex="-1" aria-hidden="true" name="honorific">
+            <select id="honorific" class="select2 form-select form-select-lg select2-hidden-accessible"
+              data-allow-clear="false" tabindex="-1" aria-hidden="true" name="honorific">
               <option select="">ជ្រើសរើស</option>
               <option value="ឯកឧត្តម" data-select2-id="2">ឯកឧត្តម</option>
               <option value="លោកជំទាវ" data-select2-id="3">លោកជំទាវ</option>
@@ -499,7 +504,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label class="form-label" for="firstname">គោត្តនាម
               <span class="text-danger fw-bolder">*</span>
             </label>
-            <input type="text" id="firstname" name="firstname" class="form-control" placeholder="គោត្តនាម" autofocus required>
+            <input type="text" id="firstname" name="firstname" class="form-control" placeholder="គោត្តនាម" autofocus
+              required>
             <div class="fv-plugins-message-container fv-plugins-message-container--enabled invalid-feedback">
             </div>
           </div>
@@ -533,7 +539,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </label>
             <div class="input-group input-group-merge">
               <span class="input-group-text">+855</span>
-              <input type="phonenumber" id="contact" name="contact" class="form-control phone-number-mask" placeholder="098 765 4321" required>
+              <input type="phonenumber" id="contact" name="contact" class="form-control phone-number-mask"
+                placeholder="098 765 4321" required>
             </div>
           </div>
 
@@ -564,7 +571,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <label class="form-label" for="password">ពាក្យសម្ងាត់
               <span class="text-danger fw-bolder">*</span>
             </label>
-            <input type="password" id="password" name="password" class="form-control" placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" aria-describedby="password" required>
+            <input type="password" id="password" name="password" class="form-control"
+              placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+              aria-describedby="password" required>
           </div>
 
           <div class="col-12 col-md-6">
@@ -582,7 +591,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <div class="col-12 col-md-6">
             <label class="form-label" for="dob">ថ្ងៃខែឆ្នាំកំណើត
               <span class="text-danger fw-bolder">*</span></label>
-            <input type="text" id="formValidationDob" name="dob" class="form-control phone-number-mask" placeholder="ថ្ងៃខែឆ្នាំកំណើត" required>
+            <input type="text" id="formValidationDob" name="dob" class="form-control phone-number-mask"
+              placeholder="ថ្ងៃខែឆ្នាំកំណើត" required>
           </div>
 
           <div class="col-12 col-md-6">
@@ -602,7 +612,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <option value="<?php echo htmlentities($result->id) ?>">
                     <?php echo htmlentities($result->DepartmentName) ?>
                   </option>
-              <?php }
+                <?php }
               } ?>
             </select>
           </div>
@@ -624,7 +634,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <option value="<?php echo htmlentities($result->id) ?>">
                     <?php echo htmlentities($result->OfficeName) ?>
                   </option>
-              <?php }
+                <?php }
               } ?>
             </select>
           </div>
@@ -645,7 +655,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <option value="<?php echo htmlentities($result->id) ?>">
                     <?php echo htmlentities($result->RoleName) ?>
                   </option>
-              <?php }
+                <?php }
               } ?>
             </select>
           </div>
@@ -667,7 +677,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
               }
               ?>
             </select> -->
-            <select id="permissionid" name="permissionid[]" class="select2 form-select" aria-label="Default select example" multiple>
+            <select id="permissionid" name="permissionid[]" class="select2 form-select"
+              aria-label="Default select example" multiple>
               <option value="iau">អង្គភាពសវនកម្មការផ្ទៃក្នុង</option>
               <option value="general">នាយកដ្ឋានកិច្ចការទូទៅ</option>
               <option value="audit1">នាយកដ្ឋានសវនកម្មទី១</option>
@@ -686,13 +697,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
           <div class="col-12">
             <label class="form-label" for="address">អាសយដ្ឋានបច្ចុប្បន្ន</label>
             <div class="position-relative">
-              <textarea name="address" class="form-control" id="address" rows="4" placeholder="អាសយដ្ឋានបច្ចុប្បន្ន"></textarea>
+              <textarea name="address" class="form-control" id="address" rows="4"
+                placeholder="អាសយដ្ឋានបច្ចុប្បន្ន"></textarea>
             </div>
           </div>
 
           <div class="col-12 text-center">
             <button type="submit" id="submitForm" class="btn btn-primary me-sm-3 me-1">រក្សាទុក</button>
-            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal" aria-label="Close">មិនទាន់</button>
+            <button type="reset" class="btn btn-label-secondary" data-bs-dismiss="modal"
+              aria-label="Close">មិនទាន់</button>
           </div>
         </form>
       </div>
@@ -700,7 +713,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
   </div>
 </div>
 <script>
-  document.getElementById('honorific').addEventListener('change', function() {
+  document.getElementById('honorific').addEventListener('change', function () {
     var selectedHonorific = this.value;
     var genderRadio = document.getElementsByName('gender');
 

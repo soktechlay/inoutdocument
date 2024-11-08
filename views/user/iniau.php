@@ -19,102 +19,81 @@ $date = date('Y-m-d H:i:s');
 
 // Fetch the submitted code from the form
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-  // Ensure file upload configuration allows large files
   $code = htmlspecialchars(trim($_POST['code']));
-  $userid = isset($_SESSION['userid']) ? intval($_SESSION['userid']) : 0;
+  $userid = $_SESSION['userid'] ?? 0;
 
-  // Check if the code already exists in the database
-  $sql_check = "SELECT * FROM indocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
-  $query_check = $dbh->prepare($sql_check);
-  $query_check->bindParam(':code', $code, PDO::PARAM_STR);
-  $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
-  $query_check->execute();
+  // Check if the code already exists
+  $query_check = $dbh->prepare("SELECT * FROM indocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid");
+  $query_check->execute([':code' => $code, ':userid' => $userid]);
 
   if ($query_check->rowCount() > 0) {
-    // Redirect with an error message
-    $error = "លេខឯកសារនេះបានបញ្ចូលរួចហើយ។";
-    header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-    exit();
-  } else {
-    if (isset($_FILES['files']) && $_FILES['files']['error'] == UPLOAD_ERR_OK) {
-      // Fetch and sanitize file details
+      header("Location: iniau.php?msg=" . urlencode("លេខឯកសារនេះបានបញ្ចូលរួចហើយ។") . "&status=error");
+      exit();
+  }
+
+  if (isset($_FILES['files']) && $_FILES['files']['error'] == UPLOAD_ERR_OK) {
       $fileTmpPath = $_FILES['files']['tmp_name'];
       $fileName = $_FILES['files']['name'];
       $fileSize = $_FILES['files']['size'];
-      $fileError = $_FILES['files']['error'];
-      $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
+      // Check file size
+      if ($fileSize > 100 * 1024 * 1024) { // 100MB
+          header("Location: iniau.php?msg=" . urlencode('File size exceeds the 100MB limit.') . "&status=error");
+          exit();
+      }
+
       $uploadFileDir = '../../uploads/file/in-doc/';
+      if (!is_dir($uploadFileDir)) mkdir($uploadFileDir, 0755, true);
       $dest_path = $uploadFileDir . $fileName;
 
-      // Check file upload errors and validate file size
-      if ($fileError === UPLOAD_ERR_OK) {
-        if (!is_dir($uploadFileDir)) {
-          mkdir($uploadFileDir, 0755, true);
-        }
-
-        $maxFileSize = 100 * 1024 * 1024; // 100MB
-        if ($fileSize > $maxFileSize) {
-          $error = 'File size exceeds the maximum limit of 100MB.';
-          header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-          exit();
-        }
-
-        // Move uploaded file
-        if (move_uploaded_file($fileTmpPath, $dest_path)) {
+      if (move_uploaded_file($fileTmpPath, $dest_path)) {
           $data = [
-            ':code' => htmlspecialchars(trim($_POST['code'])),
-            ':type' => htmlspecialchars(trim($_POST['type'])),
-            ':echonomic' => htmlspecialchars(trim($_POST['echonomic'])),
-            ':give' => htmlspecialchars(trim($_POST['give'])),
-            ':recrived' => htmlspecialchars(trim($_POST['recrived'])),
-            ':file_name' => $fileName,
-            ':date' => date('Y-m-d H:i:s'),
-            ':userid' => $userid,
-            ':department' => 1
+              ':code' => $code,
+              ':type' => htmlspecialchars(trim($_POST['type'])),
+              ':echonomic' => htmlspecialchars(trim($_POST['echonomic'])),
+              ':give' => htmlspecialchars(trim($_POST['give'])),
+              ':recrived' => htmlspecialchars(trim($_POST['recrived'])),
+              ':file_name' => $fileName,
+              ':date' => date('Y-m-d H:i:s'),
+              ':userid' => $userid,
+              ':department' => 1,
+              ':permissions' => 1
           ];
 
-          $sql_insert = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department)
-                             VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid, :department)";
+          // Insert into indocument
+          $sql_insert = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department, permissions)
+                         VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid, :department, :permissions)";
           $query_insert = $dbh->prepare($sql_insert);
 
           try {
-            $query_insert->execute($data);
-            $msg = $query_insert->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-            header("Location: iniau.php?msg=" . urlencode($msg) . "&status=success");
-            exit();
+              $query_insert->execute($data);
+              header("Location: iniau.php?msg=" . urlencode("Successfully submitted!") . "&status=success");
           } catch (PDOException $e) {
-            $error = "Error: " . $e->getMessage();
-            header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-            exit();
+              header("Location: iniau.php?msg=" . urlencode("Error: " . $e->getMessage()) . "&status=error");
           }
-        } else {
-          $error = "Error uploading file.";
-          header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
           exit();
-        }
       } else {
-        $error_messages = [
-          UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
-          UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
-          UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
-          UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
-          UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
-          UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
-          UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.'
-        ];
-
-        $error = isset($error_messages[$fileError]) ? $error_messages[$fileError] : 'Unknown upload error.';
-        header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-        exit();
+          header("Location: iniau.php?msg=" . urlencode("Error uploading file.") . "&status=error");
+          exit();
       }
-    } else {
-      $error = 'No file was uploaded or there was an upload error.';
-      header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
-      exit();
-    }
   }
-}
 
+  // Handle file upload errors
+  $error_messages = [
+      UPLOAD_ERR_INI_SIZE => 'The uploaded file exceeds the upload_max_filesize directive in php.ini.',
+      UPLOAD_ERR_FORM_SIZE => 'The uploaded file exceeds the MAX_FILE_SIZE directive that was specified in the HTML form.',
+      UPLOAD_ERR_PARTIAL => 'The uploaded file was only partially uploaded.',
+      UPLOAD_ERR_NO_FILE => 'No file was uploaded.',
+      UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder.',
+      UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk.',
+      UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload.'
+  ];
+  
+  $fileError = $_FILES['files']['error'];
+  $error = $error_messages[$fileError] ?? 'Unknown upload error.';
+  header("Location: iniau.php?msg=" . urlencode($error) . "&status=error");
+  exit();
+}
 
 // Handle document deletion
 if (isset($_GET['delete'])) {
@@ -258,6 +237,7 @@ $sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname, i.NameReci
         JOIN tbluser u ON i.user_id = u.ID
         WHERE i.isdelete = 0
         AND i.Department = 1
+        -- AND i.permissions = 1
         AND i.user_id = :userId"
   . $searchCondition
   . $dateCondition
@@ -440,13 +420,13 @@ ob_start();
                         <tr>
                           <td class="text-sm font-weight-bold text-center mb-0"><b><?php echo htmlentities($cnt); ?></b></td>
                           <td>
-                            <div class=" d-inline-block text-truncate" style="max-width:180px;"><?php echo htmlentities($row['CodeId']); ?>
+                            <div class=" d-inline-block text-truncate" style="max-width:150px;"><?php echo htmlentities($row['CodeId']); ?>
                           </td>
                           <td>
-                            <div class="d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo htmlentities($row['Type']); ?></div>
+                            <div class="d-inline-block text-truncate" style="max-width:150px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo htmlentities($row['Type']); ?></div>
                           </td>
                           <td>
-                            <div class="d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo htmlentities($row['DepartmentName']); ?></div>
+                            <div class="d-inline-block text-truncate" style="max-width:150px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo htmlentities($row['DepartmentName']); ?></div>
                           </td>
                           <td><?php echo htmlentities($row['NameOfgive']); ?></td>
                           <td><a class="btn-link link-primary" href="send.php?ID=<?php echo htmlentities($row['ID']); ?>">ផ្ទេរឯកសារ</a></td>

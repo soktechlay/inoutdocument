@@ -430,6 +430,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dob = !empty($_POST['dob']) ? date('Y-m-d', strtotime(str_replace('/', '-', $_POST['dob']))) : null;
     $department = $_POST['department'] ?? '';
     $office = $_POST['office'] ?? '';
+    $permission = $_POST['permission'] ?? '';
 
     // Handle profile image upload
     $profileImage = $_FILES['profile']['name'] ?? '';
@@ -437,49 +438,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $profilePath = !empty($profileImage) ? $targetDir . basename($profileImage) : $_POST['existingProfileImage'] ?? '';
 
     if (!empty($profileImage)) {
-        if (move_uploaded_file($_FILES['profile']['tmp_name'], $profilePath)) {
-            // Image uploaded successfully
-        } else {
-            $_SESSION['error'] = "File upload failed!";
-            header("Location: your_form_page.php");
-            exit();
-        }
+      if (move_uploaded_file($_FILES['profile']['tmp_name'], $profilePath)) {
+        // Image uploaded successfully
+      } else {
+        $_SESSION['error'] = "File upload failed!";
+        header("Location: your_form_page.php");
+        exit();
+      }
     }
 
     try {
-        $sql = "UPDATE tbluser SET Honorific = :honorific, FirstName = :firstname, LastName = :lastname, 
-                Email = :email, Contact = :contact, Status = :status, DateofBirth = :dob, 
+      $sql = "UPDATE tbluser SET Honorific = :honorific, FirstName = :firstname, LastName = :lastname, 
+                Email = :email, Contact = :contact, Status = :status, DateofBirth = :dob, PermissionId = :permission ,
                 Department = :department, Office = :office, Profile = :profile WHERE id = :userId";
 
-        $query = $dbh->prepare($sql);
-        $query->bindParam(':honorific', $honorific);
-        $query->bindParam(':firstname', $firstname);
-        $query->bindParam(':lastname', $lastname);
-        $query->bindParam(':email', $email);
-        $query->bindParam(':contact', $contact);
-        $query->bindParam(':status', $status);
-        $query->bindParam(':dob', $dob);
-        $query->bindParam(':department', $department);
-        $query->bindParam(':office', $office);
-        $query->bindParam(':profile', $profilePath);
-        $query->bindParam(':userId', $userId);
+      $query = $dbh->prepare($sql);
+      $query->bindParam(':honorific', $honorific);
+      $query->bindParam(':firstname', $firstname);
+      $query->bindParam(':lastname', $lastname);
+      $query->bindParam(':email', $email);
+      $query->bindParam(':contact', $contact);
+      $query->bindParam(':status', $status);
+      $query->bindParam(':dob', $dob);
+      $query->bindParam(':department', $department);
+      $query->bindParam(':office', $office);
+      $query->bindParam(':profile', $profilePath);
+      $query->bindParam(':permission', $permission);
+      $query->bindParam(':userId', $userId);
 
-        if ($query->execute()) {
-            $_SESSION['success'] = "User updated successfully!";
-        } else {
-            $errorInfo = $query->errorInfo();
-            $_SESSION['error'] = "User update failed: " . htmlentities($errorInfo[2]);
-        }
+      if ($query->execute()) {
+        $_SESSION['success'] = "User updated successfully!";
+      } else {
+        $errorInfo = $query->errorInfo();
+        $_SESSION['error'] = "User update failed: " . htmlentities($errorInfo[2]);
+      }
     } catch (PDOException $e) {
-        $_SESSION['error'] = "Database error: " . htmlentities($e->getMessage());
+      $_SESSION['error'] = "Database error: " . htmlentities($e->getMessage());
     }
 
     // Redirect back to the user list or any other page
     header("Location: all-users.php");
     exit();
 
-}
- elseif ($loginType == 'update-permission') {
+  } elseif ($loginType == 'update-permission') {
     try {
       // Assuming $getid contains the user ID
       $userId = $_POST['updateinout'];

@@ -28,7 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     ':recrived' => $_POST['recrived'],
     ':file_name' => $_FILES['files']['name'],
     ':date' => $date,
-    ':office' => 1  // Adding offices value
+    ':office' => 1 , // Adding offices value
+    ':permissions' => 6
   ];
 
   // Destination path for uploaded file
@@ -38,8 +39,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
   // Upload file and insert data into database
   if (move_uploaded_file($file_tmp, $destination)) {
     // Database insertion query
-    $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, office)
-                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid ,:office)";
+    $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, office, permissions)
+                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid ,:office, :permissions)";
     $query = $dbh->prepare($sql);
 
     try {
