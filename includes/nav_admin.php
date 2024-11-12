@@ -182,13 +182,13 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
                             <a class="dropdown-item"
                                 href="pages-profile-user.php?uid=<?php echo $_SESSION['userid']; ?>">
                                 <i class="bx bx-user me-2"></i>
-                                <span class="align-middle">My Account</span>
+                                <span class="align-middle">គណនី​របស់​ខ្ញុំ</span>
                             </a>
                         </li>
                         <li>
                             <a class="dropdown-item" href="pages-account-settings-account.html">
                                 <i class="bx bx-cog me-2"></i>
-                                <span class="align-middle">Settings</span>
+                                <span class="align-middle">ការកំណត់</span>
                             </a>
                         </li>
                         <li>
@@ -197,7 +197,7 @@ $notificationCount = $stmtNotifications->fetch(PDO::FETCH_ASSOC)['notification_c
                         <li>
                             <a class="dropdown-item" href="../../includes/logout.php">
                                 <i class="bx bx-power-off me-2"></i>
-                                <span class="align-middle">Logout</span>
+                                <span class="align-middle">ចាកចេញ</span>
                             </a>
                         </li>
                     </ul>

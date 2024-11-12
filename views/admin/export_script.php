@@ -10,6 +10,7 @@ if (!isset($_SESSION['userid'])) {
     header('Location: ../../index.php');
     exit();
 }
+$userId = $_SESSION['userid'];
 
 // Determine which document type to filter and export
 $documentType = $_POST['documentType'] ?? '';
@@ -25,46 +26,32 @@ if (!$documentType || !$fromDate || !$toDate) {
 $fromDateFormatted = date('Y-m-d 00:00:00', strtotime($fromDate));
 $toDateFormatted = date('Y-m-d 23:59:59', strtotime($toDate));
 
-// Fetch permissions for the current user
-$stmt = $dbh->prepare("SELECT PermissionId FROM tbluser WHERE id = ?");
-$stmt->execute([$_SESSION['userid']]);
-$data = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$data || !isset($data['PermissionId'])) {
-    die("No permissions found for this user.");
-}
-
-// Process the PermissionId into an array of allowed department IDs
-$departmentIds = array_map('trim', explode(',', $data['PermissionId']));
-
-// Prepare placeholders for department permissions
-$permissionsPlaceholders = implode(',', array_fill(0, count($departmentIds), '?'));
+// Prepare parameters
+$params = [
+    ':fromDate' => $fromDateFormatted,
+    ':toDate' => $toDateFormatted
+];
 
 // Set up SQL and headers based on document type
 if ($documentType === 'outdocument') {
     $sql = "SELECT * FROM outdocument 
-            INNER JOIN tbluser ON outdocument.user_id = tbluser.id
+            INNER JOIN tbluser ON outdocument.user_id = tbluser.id 
             WHERE outdocument.isdelete = 0 
             AND outdocument.Department = 1 
-            AND outdocument.permissions IN ($permissionsPlaceholders) 
-            AND outdocument.Date BETWEEN ? AND ? 
+            AND outdocument.Date BETWEEN :fromDate AND :toDate 
             ORDER BY outdocument.id DESC";
     $header = ['**ល.រ**', '**លេខឯកសារ**', '**កម្មវត្តុ**', '**ចេញទៅស្ថាប័នឬក្រសួង**', '**ឈ្មោះមន្រ្តីទទួល**', '**ឈ្មោះមន្រ្តីប្រគល់**', '**ចេញពីនាយកដ្ឋាន**', '**ប្រភេទឯកសារចេញ**', '**កាលបរិច្ឆេទ**'];
 } elseif ($documentType === 'indocument') {
     $sql = "SELECT * FROM indocument 
-            INNER JOIN tbluser ON indocument.user_id = tbluser.id
+            INNER JOIN tbluser ON indocument.user_id = tbluser.id 
             WHERE indocument.isdelete = 0 
             AND indocument.Department = 1 
-            AND indocument.permissions IN ($permissionsPlaceholders) 
-            AND indocument.Date BETWEEN ? AND ? 
+            AND indocument.Date BETWEEN :fromDate AND :toDate 
             ORDER BY indocument.id DESC";
     $header = ['**ល.រ**', '**លេខឯកសារ**', '**កម្មវត្តុ**', '**មកពីស្ថាប័នឬក្រសួង**', '**ឈ្មោះមន្រ្តីប្រគល់**', '**ឈ្មោះមន្រ្តីទទួល**', '**ប្រភេទឯកសារចូល**', '**ប្រភេទឯកសារចំណារ**', '**ឈ្មោះនាយកដ្ឋានទទួលបន្ទុកឬការិយាល័យទទួលបន្ទុក**', '**ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត**', '**កាលបរិច្ឆេទ**'];
 } else {
     die("Invalid document type.");
 }
-
-// Prepare parameters: merge departmentIds with date range in correct order
-$params = array_merge($departmentIds, [$fromDateFormatted, $toDateFormatted]);
 
 // Execute the query
 $query = $dbh->prepare($sql);

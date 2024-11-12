@@ -21,16 +21,14 @@ ob_start();
 ?>
 
 <div class="col-12 d-flex align-items-center justify-content-between mb-3">
-    <h3 class="mb-0"><?php echo translate('welcome') ?>,<span
-            class="mef2 text-primary mx-2 me-0 mb-0"><?php echo $_SESSION['username'] ?></span></h3>
     <div class="dropdown">
         <?php
         date_default_timezone_set('Asia/Bangkok');
         ?>
-        <button class="btn btn-primary">
+        <div class=" text-primary">
             <i class="bx bx-calendar me-2"></i>
             <span id="real-time-clock"><?php echo date('D-m-Y h:i:s A'); ?></span>
-        </button>
+        </div>
     </div>
 </div>
 <script>
@@ -77,16 +75,6 @@ ob_start();
     // Initial update.
     updateDateTime();
 </script>
-<?php
-// Start session if it's not already started
-
-
-if (!isset($_SESSION['userid'])) {
-    echo "You are not logged in.";
-} else {
-    echo "Welcome, " . $_SESSION['username'] . ". Your office is: " . ($_SESSION['permission'] ?? "N/A");
-}
-?>
 
 <?php
 
@@ -101,189 +89,190 @@ $stmt->execute([$_SESSION['userid']]);
 // Fetch the permission data
 $data = $stmt->fetch(PDO::FETCH_ASSOC);
 
-// Debug output to confirm fetched PermissionId
-echo "<pre>";
-print_r($data); // Check the fetched data
-echo "</pre>";
 
 if ($data && isset($data['PermissionId'])) {
     // Process the PermissionId into an array
     $departmentIds = explode(',', $data['PermissionId']);
     $departmentIds = array_map('trim', $departmentIds); // Remove any extra spaces
-    
-    // Debug output to verify the department IDs
-    echo "<pre>";
-    print_r($departmentIds); // Check if department IDs are being split correctly
-    echo "</pre>";
-} else {
-    echo "No department data found for the user.";
+
+
 }
 
 // Check if the user's permission is in the allowed departments list
 if (in_array($_SESSION['permission'], $departmentIds)):
-?>
+    ?>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-xl-2 g-4">
-    <!-- Incoming Documents Card -->
-    <div class="col">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center mb-3">
-                <h5 class="card-title me-2 mb-0" id="documentCount">សកម្មភាពឯកសារចូលថ្ងៃនេះ (0)</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table border-top mb-1 table-striped" id="documentsTable">
-                        <thead>
-                            <tr>
-                                <th>លេខឯកសារ</th>
-                                <th>មកពីស្ថាប័នឬក្រសួង</th>
-                                <th>ឈ្មោះមន្រ្តីប្រគល់</th>
-                                <th>កាលបរិច្ឆេទ</th>
-                                <th>ឯកសារ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="documentRows"></tbody>
-                    </table>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-2 g-4">
+        <!-- Incoming Documents Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title me-2 mb-0" id="documentCount">សកម្មភាពឯកសារចូលថ្ងៃនេះ (0)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table border-top mb-1 table-striped" id="documentsTable">
+                            <thead>
+                                <tr>
+                                    <th>លេខឯកសារ</th>
+                                    <th>មកពីស្ថាប័នឬក្រសួង</th>
+                                    <th>ឈ្មោះមន្រ្តីប្រគល់</th>
+                                    <th>កាលបរិច្ឆេទ</th>
+                                    <th>ឯកសារ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="documentRows"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Outgoing Documents Card -->
-    <div class="col">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center mb-3">
-                <h5 class="card-title me-2 mb-0" id="outdocumentCount">សកម្មភាពឯកសារចេញថ្ងៃនេះ (0)</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table border-top mb-1 table-striped" id="outdocumentsTable">
-                        <thead>
-                            <tr>
-                                <th>លេខឯកសារ</th>
-                                <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
-                                <th>ឈ្មោះមន្រ្តីទទួល</th>
-                                <th>កាលបរិច្ឆេទ</th>
-                                <th>ឯកសារ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="outdocumentRows"></tbody>
-                    </table>
+        <!-- Outgoing Documents Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title me-2 mb-0" id="outdocumentCount">សកម្មភាពឯកសារចេញថ្ងៃនេះ (0)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table border-top mb-1 table-striped" id="outdocumentsTable">
+                            <thead>
+                                <tr>
+                                    <th>លេខឯកសារ</th>
+                                    <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
+                                    <th>ឈ្មោះមន្រ្តីទទួល</th>
+                                    <th>កាលបរិច្ឆេទ</th>
+                                    <th>ឯកសារ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="outdocumentRows"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script>
+    $(document).ready(function () {
+        function fetchDocuments() {
+            // Fetch incoming documents
+            $.ajax({
+                url: 'realtime.php?type=in',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.error) {
+                        console.error(data.error);
+                        return;
+                    }
+                    $('#documentCount').text('សកម្មភាពឯកសារចូលថ្ងៃនេះ (' + (data.count || 0) + ')');
+
+                    let rows = '';
+                    if (data.documents && data.documents.length > 0) {
+                        // Loop through documents and populate rows
+                        data.documents.forEach(function (doc) {
+                            rows += `<tr>
+                                <td class="truncate-cell">${htmlspecialchars(doc.CodeId)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.DepartmentName)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.NameOfgive)}</td>
+                                <td>${doc.formattedDate}</td>
+                                <td class="truncate-cell">
+                                    <a href="../../uploads/file/in-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye text-success">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                            <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>`;
+                        });
+                    } else {
+                        rows = `<tr>
+                            <td colspan='5'>
+                                <div class='text-center'>
+                                    <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
+                                    <h5 class='text-muted mt-3'>No recent activities found.</h5>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }
+                    // Update the document rows
+                    $('#documentRows').html(rows);
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX error: ', status, error);
+                }
+            });
+
+            // Fetch outgoing documents (repeat similar structure)
+            $.ajax({
+                url: 'realtime.php?type=out',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    if (data.error) {
+                        console.error(data.error);
+                        return;
+                    }
+                    $('#outdocumentCount').text('សកម្មភាពឯកសារចេញថ្ងៃនេះ (' + (data.count || 0) + ')');
+
+                    let rows = '';
+                    if (data.documents && data.documents.length > 0) {
+                        data.documents.forEach(function (doc) {
+                            rows += `<tr>
+                                <td class="truncate-cell">${htmlspecialchars(doc.CodeId)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.OutDepartment)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.NameOFReceive)}</td>
+                                <td>${doc.formattedDate}</td>
+                                <td class="truncate-cell">
+                                    <a href="../../uploads/file/out-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye text-success">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                            <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>`;
+                        });
+                    } else {
+                        rows = `<tr>
+                            <td colspan='5'>
+                                <div class='text-center'>
+                                    <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
+                                    <h5 class='text-muted mt-3'>No recent activities found.</h5>
+                                </div>
+                            </td>
+                        </tr>`;
+                    }
+                    $('#outdocumentRows').html(rows);
+                },
+                error: function (xhr, status, error) {
+                    console.error('AJAX error: ', status, error);
+                }
+            });
+        }
+
+        // Initialize fetch
+        fetchDocuments();
+        // Set interval to fetch documents every 5 seconds
+        setInterval(fetchDocuments, 5000);
+
+        // HTML escape function to prevent XSS
+        function htmlspecialchars(string) {
+            return string.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+    });
+</script>
+
     </div>
-
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        
-            $(document).ready(function () {
-    function fetchDocuments() {
-        // Fetch incoming documents
-        $.ajax({
-            url: 'realtime.php?type=in',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                if (data.error) {
-                    console.error(data.error);
-                    return;
-                }
-                $('#documentCount').text('សកម្មភាពឯកសារចូលថ្ងៃនេះ (' + (data.count || 0) + ')');
-
-                let rows = '';
-                if (data.documents && data.documents.length > 0) {
-                    // Loop through documents and populate rows
-                    data.documents.forEach(function (doc) {
-                        rows += `<tr>
-                        <td class="text-truncate" style="max-width:100px;">${htmlspecialchars(doc.CodeId)}</td>
-                        <td class="text-truncate" style="max-width:100px;">${htmlspecialchars(doc.DepartmentName)}</td>
-                        <td class="text-truncate" style="max-width:100px;">${htmlspecialchars(doc.NameOfgive)}</td>
-                        <td>${doc.formattedDate}</td>
-                        <td class="text-truncate" style="max-width:100px;">
-                            <a href="../../uploads/file/in-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank">Download</a>
-                        </td>
-                    </tr>`;
-                    });
-                } else {
-                    // If no documents, display the "No recent activities" message
-                    rows = `<tr>
-                        <td colspan='5'>
-                            <div class='text-center'>
-                                <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
-                                <h5 class='text-muted mt-3'>No recent activities found.</h5>
-                            </div>
-                        </td>
-                    </tr>`;
-                }
-                // Update the document rows
-                $('#documentRows').html(rows);
-            },
-            error: function (xhr, status, error) {
-                console.error('AJAX error: ', status, error);
-            }
-        });
-
-        // Fetch outgoing documents (repeat similar structure)
-        $.ajax({
-            url: 'realtime.php?type=out',
-            type: 'GET',
-            dataType: 'json',
-            success: function (data) {
-                if (data.error) {
-                    console.error(data.error);
-                    return;
-                }
-                $('#outdocumentCount').text('សកម្មភាពឯកសារចេញថ្ងៃនេះ (' + (data.count || 0) + ')');
-
-                let rows = '';
-                if (data.documents && data.documents.length > 0) {
-                    data.documents.forEach(function (doc) {
-                        rows += `<tr>
-                        <td class="text-truncate" style="max-width:100px;">${htmlspecialchars(doc.CodeId)}</td>
-                        <td class="text-truncate" style="max-width:100px;">${htmlspecialchars(doc.OutDepartment)}</td>
-                        <td class="text-truncate" style="max-width:100px;">${htmlspecialchars(doc.NameOFReceive)}</td>
-                        <td>${doc.formattedDate}</td>
-                        <td class="text-truncate" style="max-width:100px;">
-                            <a href="../../uploads/file/out-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank">Download</a>
-                        </td>
-                    </tr>`;
-                    });
-                } else {
-                    rows = `<tr>
-                        <td colspan='5'>
-                            <div class='text-center'>
-                                <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
-                                <h5 class='text-muted mt-3'>No recent activities found.</h5>
-                            </div>
-                        </td>
-                    </tr>`;
-                }
-                $('#outdocumentRows').html(rows);
-            },
-            error: function (xhr, status, error) {
-                console.error('AJAX error: ', status, error);
-            }
-        });
-    }
-
-    // Initialize fetch
-    fetchDocuments();
-    // Set interval to fetch documents every 5 seconds
-    setInterval(fetchDocuments, 5000);
-
-    // HTML escape function to prevent XSS
-    function htmlspecialchars(string) {
-        return string.replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-    }
-});
-
-    </script>
-</div>
 <?php endif; ?>
 
 <?php $content = ob_get_clean(); ?>

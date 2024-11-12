@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
     if (move_uploaded_file($file_tmp, $destination)) {
       // Database insertion query
       $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, Department, permissions)
-                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid, :Department, :permissions)";
+                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid, :department, :permissions)";
       $query = $dbh->prepare($sql);
 
       try {

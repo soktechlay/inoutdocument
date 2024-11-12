@@ -301,13 +301,13 @@ ORDER BY n.id DESC";
             <li>
               <a class="dropdown-item" href="pages-profile-user.php?uid=<?php echo $_SESSION['userid']; ?>">
                 <i class="bx bx-user me-2"></i>
-                <span class="align-middle"><?php echo translate('My Account'); ?></span>
+                <span class="align-middle">គណនី​របស់​ខ្ញុំ</span>
               </a>
             </li>
             <li>
               <a class="dropdown-item" href="all-users-security.php?uid=<?php echo $_SESSION['userid']; ?>">
                 <i class="bx bx-cog me-2"></i>
-                <span class="align-middle"><?php echo translate('Settings'); ?></span>
+                <span class="align-middle">ការកំណត់</span>
               </a>
             </li>
             <li>
@@ -316,7 +316,7 @@ ORDER BY n.id DESC";
             <li>
               <a class="dropdown-item" href="../../includes/logout.php">
                 <i class="bx bx-power-off me-2"></i>
-                <span class="align-middle"><?php echo translate('Logout'); ?></span>
+                <span class="align-middle">ចាកចេញ</span>
               </a>
             </li>
           </ul>

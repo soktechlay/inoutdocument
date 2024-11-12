@@ -77,18 +77,6 @@ setInterval(updateDateTime, 1000);
 updateDateTime();
 </script>
 
-<?php
-// Start session if it's not already started
-
-
-if (!isset($_SESSION['userid'])) {
-    echo "You are not logged in.";
-} else {
-    echo "Welcome, " . $_SESSION['username'] . ". Your office is: " . ($_SESSION['permission'] ?? "N/A");
-}
-?>
-
-
 
 <div class="row row-cols-1 row-cols-md-2 row-cols-xl-2 g-4">
     <!-- Activity Card -->

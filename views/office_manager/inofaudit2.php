@@ -2,118 +2,96 @@
 session_start();
 include('../../config/dbconn.php');
 
-// Redirect to login page if user is not logged in
+// Redirect if user is not logged in
 if (!isset($_SESSION['userid'])) {
     header('Location: ../../index.php');
     exit();
 }
 
-// Include translation if needed
+// Include translation functionality
 include('../../includes/translate.php');
 
-// Page variables
-$pageTitle = "ឯកសារចេញអង្គភាពសវនកម្មផ្ទៃក្នុង";
-$sidebar = "iau";
+$pageTitle = "ឯកសារចូលការិយាល័យសវនកម្មទី២";
+$sidebar = "inofaudit2";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
-// Handle form submission
+// Handle form submission for adding new document
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["submit"])) {
-    // Fetch the submitted code from the form
-    $code = $_POST['code'];
-    $userid = $_SESSION['userid']; // Assuming the user ID is stored in the session
 
-    // Check if the code already exists in the database for the specific user
-    $sql_check = "SELECT * FROM outdocument WHERE CodeId = :code AND isdelete = 0 AND user_id = :userid";
-    $query_check = $dbh->prepare($sql_check);
-    $query_check->bindParam(':code', $code, PDO::PARAM_STR);
-    $query_check->bindParam(':userid', $userid, PDO::PARAM_INT);
-    $query_check->execute();
-    if ($query_check->rowCount() > 0) {
-        // Code already exists, handle the error or display a message
-        $error = "លេខឯកសារនេះបានបញ្ចូលរួចហើយ។";
-        // Redirect with error message
-        header("Location: outiau.php?msg=" . urlencode($error) . "&status=error");
-        exit();
-    } else {
-        // Prepare data array for insertion
-        $data = [
-            ':userid' => $userId,
-            ':code' => $_POST['code'],
-            ':type' => $_POST['type'],
-            ':fromdepartment' => $_POST['fromdepartment'],
-            ':nameofgive' => $_POST['nameofgive'],
-            ':outdepartment' => $_POST['outdepartment'],
-            ':nameofreceive' => $_POST['nameofreceive'],
-            ':file_name' => $_FILES['files']['name'],
-            ':date' => $date,
-            ':department' => 1,  // Adjust according to your department value logic
-        ];
+    $data = [
+        ':userid' => $userId,
+        ':code' => $_POST['code'],
+        ':type' => $_POST['type'],
+        ':echonomic' => $_POST['echonomic'],
+        ':give' => $_POST['give'],
+        ':recrived' => $_POST['recrived'],
+        ':file_name' => $_FILES['files']['name'],
+        ':date' => $date,
+        ':office' => 1 , // Adding offices value
+        ':permissions' => 9
+    ];
 
-        // File handling
-        $file_tmp = $_FILES['files']['tmp_name'];
-        $destination = "../../uploads/file/out-doc/" . $data[':file_name'];
+    // Destination path for uploaded file
+    $file_tmp = $_FILES['files']['tmp_name'];
+    $destination = "../../uploads/file/in-doc/" . $data[':file_name'];
 
-        // Move uploaded file to destination
-        if (move_uploaded_file($file_tmp, $destination)) {
-            // Prepare SQL statement for insertion
-            $sql = "INSERT INTO outdocument (CodeId, Type, OutDepartment, NameOfgive, Typedocument, NameOFReceive, FromDepartment, Date, user_id, Department)
-                VALUES (:code, :type, :outdepartment, :nameofgive, :file_name, :nameofreceive, :fromdepartment, :date, :userid, :department)";
-            $query = $dbh->prepare($sql);
+    // Upload file and insert data into database
+    if (move_uploaded_file($file_tmp, $destination)) {
+        // Database insertion query
+        $sql = "INSERT INTO indocument (CodeId, Type, DepartmentName, NameOfgive, NameOFReceive, Typedocument, Date, user_id, office, permissions)
+                VALUES (:code, :type, :echonomic, :give, :recrived, :file_name, :date, :userid ,:office, :permissions)";
+        $query = $dbh->prepare($sql);
 
-            // Execute SQL query with data array
-            try {
-                $query->execute($data);
-                $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
-                header("Location: outiau.php?msg=" . urlencode($msg) . "&status=success");
-                exit();
-            } catch (PDOException $e) {
-                $error = "Error: " . $e->getMessage();
-                header("Location: outiau.php?msg=" . urlencode($error) . "&status=error");
-                exit();
-            }
-        } else {
-            $error = "Error uploading file.";
-            header("Location: outiau.php?msg=" . urlencode($error) . "&status=error");
+        try {
+            $query->execute($data);
+            $msg = $query->rowCount() ? "Successfully submitted!" : "Error inserting data into the database.";
+            // Redirect with success message
+            header("Location: inofaudit2.php?msg=" . urlencode($msg) . "&status=success");
+            exit();
+        } catch (PDOException $e) {
+            $error = "Error: " . $e->getMessage();
+            // Redirect with error message
+            header("Location: inofaudit2.php?msg=" . urlencode($error) . "&status=error");
             exit();
         }
+    } else {
+        $error = "Error uploading file.";
+        // Redirect with error message
+        header("Location: inofaudit2.php?msg=" . urlencode($error) . "&status=error");
+        exit();
     }
 }
-
 // Handle document deletion
 if (isset($_GET['delete'])) {
-    $sql = "UPDATE outdocument SET isdelete = 1 WHERE ID = :documentID";
+    $sql = "UPDATE indocument SET isdelete = 1 WHERE ID = :documentID";
     $query = $dbh->prepare($sql);
     $query->bindParam(':documentID', $_GET['delete'], PDO::PARAM_INT);
+    $query->execute();
 
-    // Execute deletion query
-    try {
-        $query->execute();
-        if ($query->rowCount()) {
-            $msg = "Document deleted successfully!";
-            header("Location: outiau.php?msg=" . urlencode($msg) . "&status=success");
-            exit();
-        } else {
-            $error = "Failed to delete document.";
-            header("Location: outiau.php?msg=" . urlencode($error) . "&status=error");
-            exit();
-        }
-    } catch (PDOException $e) {
-        $error = "Error: " . $e->getMessage();
-        header("Location: outiau.php?msg=" . urlencode($error) . "&status=error");
+    if ($query->rowCount()) {
+        $msg = "Document deleted successfully!";
+        // Redirect with success message
+        header("Location: inofaudit2.php?msg=" . urlencode($msg) . "&status=success");
+        exit();
+    } else {
+        $error = "Failed to delete document.";
+        // Redirect with error message
+        header("Location: inofaudit2.php?msg=" . urlencode($error) . "&status=error");
         exit();
     }
 }
 
-// Handle search functionality and fetch records
-$sql = "SELECT * FROM outdocument 
-        JOIN tbluser ON outdocument.user_id = tbluser.id 
+// Construct base SQL query for fetching documents
+$sql = "SELECT * FROM indocument 
+        JOIN tbluser ON indocument.user_id = tbluser.id 
         WHERE tbluser.id = :userid 
-        AND outdocument.isdelete = 0
-        AND outdocument.Department = 1";
+        AND indocument.isdelete = 0
+        AND indocument.office = 1";
+
 $params = [':userid' => $userId];
 
-// Handle search query
+// Handle search functionality
 if (isset($_GET['search'])) {
     $searchKeyword = '%' . $_GET['search'] . '%';
     $sql .= " AND (CodeId LIKE :searchKeyword OR Type LIKE :searchKeyword OR DepartmentName LIKE :searchKeyword)";
@@ -124,49 +102,75 @@ if (isset($_GET['search'])) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fromDate'], $_POST['toDate'])) {
     $fromDate = date('Y-m-d 00:00:00', strtotime($_POST['fromDate']));
     $toDate = date('Y-m-d 23:59:59', strtotime($_POST['toDate']));
-    $sql .= " AND outdocument.Date BETWEEN :fromDate AND :toDate";
+    $sql .= " AND indocument.Date BETWEEN :fromDate AND :toDate";
     $params[':fromDate'] = $fromDate;
     $params[':toDate'] = $toDate;
 }
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $id = $_POST['id'];
-    date_default_timezone_set('Asia/Bangkok');
-    $update = date('Y-m-d H:i:s');
-    $uploadedFile = $_POST['current_file'];
 
+if (isset($_POST['edit'])) {
+    $id = $_POST['id'];
+    // Correctly format the date
+    date_default_timezone_set('Asia/Bangkok');
+    $date = date('Y-m-d H:i:s');
     if (isset($_FILES['files']) && $_FILES['files']['error'] == UPLOAD_ERR_OK) {
         $fileTmpPath = $_FILES['files']['tmp_name'];
         $fileName = $_FILES['files']['name'];
-        $newFileName = basename($fileName);
-        $dest_path = '../../uploads/file/out-doc/' . $newFileName;
+
+        $fileNameCmps = explode(".", $fileName);
+        $fileExtension = strtolower(end($fileNameCmps));
+
+        // Sanitize file name
+        $newFileName = ($fileName) . '.' . $fileExtension;
+
+        // Directory where you want to save the uploaded file
+        $uploadFileDir = '../../uploads/file/in-doc/';
+        $dest_path = $uploadFileDir . $newFileName;
+
         if (move_uploaded_file($fileTmpPath, $dest_path)) {
+            $msg = "File is successfully uploaded.";
             $uploadedFile = $newFileName;
         } else {
-            $error = 'Error moving the uploaded file.';
+            $error = 'There was an error moving the uploaded file.';
         }
+    } else {
+        // No new file uploaded, use the existing file
+        $uploadedFile = $_POST['current_file'];
     }
 
-    if (isset($_POST['edit'])) {
-        $query = $dbh->prepare("UPDATE outdocument SET
-    CodeId = ?, Type = ?, FromDepartment = ?, NameOfgive = ?,
-    OutDepartment = ?, NameOFReceive = ?, Typedocument = ?, `update` = ?
-    WHERE ID = ?");
-        $query->execute([
-            $_POST['code'], $_POST['type'], $_POST['fromdepartment'], $_POST['nameofgive'],
-            $_POST['outdepartment'], $_POST['nameofreceive'], $uploadedFile, $update, $id
-        ]);
-        if ($query->rowCount() > 0) {
-            header("Location: outiau.php?ID=" . urlencode($id) . "&msg=Successfully+Edited&status=success");
-            exit();
-        } else {
-            header("Location: outiau.php?ID=" . urlencode($id) . "&msg=Error+Edited&status=failed");
-            exit();
-        }
+    $edit = "UPDATE indocument SET
+            CodeId = ?,
+            Type = ?,
+            NameOfgive = ?,
+            DepartmentName = ?,
+            NameOFReceive = ?,  
+            Typedocument = ?,
+            `update` = ?  -- Backticks added to escape reserved keyword
+        WHERE ID = ?";
+
+    $query = $dbh->prepare($edit);
+
+    // Bind parameters using positional placeholders
+    $query->execute([
+        $_POST['code'],
+        $_POST['type'],
+        $_POST['give'],
+        $_POST['echonomic'],
+        $_POST['recrived'],
+        $uploadedFile,  // Use the file name (new or existing)
+        $date,  // Use the formatted date
+        $id
+    ]);
+
+    if ($query->rowCount() > 0) {
+        header("Location: inofaudit2.php?ID=" . urlencode($id) . "&msg=Successfully+Edited&status=success");
+        exit();
+    } else {
+        header("Location: inofaudit2.php?ID=" . urlencode($id) . "&msg=Error+Edited&status=failed");
+        exit();
     }
 }
-
 // Finalize SQL query with ORDER BY
-$sql .= " ORDER BY outdocument.id DESC";
+$sql .= " ORDER BY indocument.id DESC";
 
 // Prepare and execute the SQL query
 $query = $dbh->prepare($sql);
@@ -175,36 +179,37 @@ $query->execute($params);
 // Fetch all results into $searchResults
 $searchResults = $query->fetchAll(PDO::FETCH_ASSOC);
 
-// Start buffering output
+// Example usage of $searchResults
 ob_start();
 ?>
+
+
 <div class="row">
     <div class="col-md-12">
         <div class="container-xl flex-grow-1">
             <div class="d-flex align-items-center justify-content-between">
                 <div class="card-header">
-                    <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">អង្គភាពសវនកម្មផ្ទៃក្នុង/</span>ឯកសារចេញ</h4>
+                    <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">ការិយាល័យសវនកម្មទី២/</span>ឯកសារចូល</h4>
                 </div>
                 <div class="dt-action-buttons pt-md-0">
                     <div class="dt-buttons btn-group flex-wrap ">
-                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>បញ្ជូលឯកសារចេញ</span></button>
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal"><span>បញ្ជូលឯកសារចូល</span></button>
                     </div>
                     <div class="row row-bordered g-0">
                         <div class="modal animate__animated animate__bounceIn" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                             <div class="modal-dialog modal-xl modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5 mef2" id="exampleModalLabel">ការដាក់បញ្ជូលឯកសារចេញ</h1>
+                                        <h1 class="modal-title fs-5 mef2" id="exampleModalLabel">ការដាក់បញ្ជូលឯកសារចូល</h1>
                                     </div>
                                     <div class="modal-body">
-                                        <form method="POST" class="row g-3 needs-validation" name="example1" enctype="multipart/form-data" novalidate>
+                                        <form method="POST" class="row g-3 needs-validation" name="example" enctype="multipart/form-data" novalidate>
                                             <div class="row">
                                                 <div class="mb-3 col-md-6">
                                                     <label for="code" class="form-label">លេខឯកសារ</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-book'></i></span>
                                                         <input class="form-control" type="text" id="code" name="code" autocomplete="on" placeholder="បំពេញលេខឯកសារ..." onBlur="checkAvailabilityCodeId()" required>
-
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
@@ -215,31 +220,35 @@ ob_start();
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                                    <label for="echonomic" class="form-label">មកពីនាយកដ្ឋាន</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                                                        <input class="form-control" type="text" id="outdepartment" name="outdepartment" placeholder="បំពេញឈ្មោះស្ថាប័នឬក្រសួង..." required>
+                                                        <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
+                                                            <option value="">ជ្រើសរើស...</option>
+                                                            <?php
+                                                            $sql = "SELECT * FROM tbldepartments";
+                                                            $query = $dbh->prepare($sql);
+                                                            $query->execute();
+                                                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                            if ($query->rowCount() > 0) {
+                                                                foreach ($results as $result) { ?>
+                                                                    <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                                            <?php }
+                                                            } ?>
+                                                        </select>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                                    <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                                                     <div class="input-group input-group-merge">
                                                         <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                                        <input type="text" id="nameofreceive" name="nameofreceive" class="form-control" placeholder="បំពេញឈ្មោះមន្រ្តីទទួល..." required>
-                                                    </div>
-                                                </div>
-                                                <div class="mb-3 col-md-6">
-                                                    <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
-                                                    <div class="input-group input-group-merge">
-                                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                                        <select name="nameofgive" id="nameofgive" class="form-select form-control " required>
+                                                        <select name="give" id="give" class="form-select form-control" required>
                                                             <option value="">ជ្រើសរើស...</option>
                                                             <?php
                                                             $sql = "SELECT * FROM tbluser";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
-                                                            $cnt = 1;
                                                             if ($query->rowCount() > 0) {
                                                                 foreach ($results as $result) {
                                                             ?>
@@ -252,27 +261,29 @@ ob_start();
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
+                                                    <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
                                                     <div class="input-group input-group-merge">
-                                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                                                        <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
+                                                        <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                                                        <select name="recrived" id="recrived" class="form-select form-control" required>
                                                             <option value="">ជ្រើសរើស...</option>
                                                             <?php
-                                                            $sql = "SELECT * FROM tbldepartments";
+                                                            $sql = "SELECT * FROM tbluser";
                                                             $query = $dbh->prepare($sql);
                                                             $query->execute();
                                                             $results = $query->fetchAll(PDO::FETCH_OBJ);
                                                             if ($query->rowCount() > 0) {
-                                                                foreach ($results as $result) { ?>
-                                                                    <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                                                foreach ($results as $result) {
+                                                            ?>
+                                                                    <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                        <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                    </option>
                                                             <?php }
                                                             } ?>
-
                                                         </select>
                                                     </div>
                                                 </div>
                                                 <div class="mb-3 col-md-6">
-                                                    <label for="document" class="form-label">ប្រភេទឯកសារចេញ</label>
+                                                    <label for="document" class="form-label">ប្រភេទឯកសារចូល</label>
                                                     <input type="file" class="form-control" id="files" accept=".xlsx,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" name="files" required>
                                                 </div>
                                             </div>
@@ -299,21 +310,17 @@ ob_start();
                         <div class="col-md-4 mb-1">
                             <form action="" method="post" class="d-flex" id="filterForm">
                                 <div class="form-group me-1">
-                                    <input type="text" id="dates" name="fromDate" class="form-control" placeholder="ចាប់ពីថ្ងៃខែឆ្នាំ" value="<?php echo isset($_POST['fromDate']) ? htmlspecialchars($_POST['fromDate']) : ''; ?>">
+                                    <input type="text" id="fromDate" name="fromDate" class="form-control" placeholder="ចាប់ពីថ្ងៃខែឆ្នាំ" value="<?php echo isset($_POST['fromDate']) ? htmlspecialchars($_POST['fromDate']) : ''; ?>">
                                 </div>
                                 <div class="form-group me-1">
-                                    <input type="text" id="dates" name="toDate" class="form-control" placeholder="ដល់ថ្ងៃទីខែឆ្នាំ" value="<?php echo isset($_POST['toDate']) ? htmlspecialchars($_POST['toDate']) : ''; ?>">
+                                    <input type="text" id="toDate" name="toDate" class="form-control" placeholder="ដល់ថ្ងៃទីខែឆ្នាំ" value="<?php echo isset($_POST['toDate']) ? htmlspecialchars($_POST['toDate']) : ''; ?>">
                                 </div>
                                 <div class="form-group me-1">
                                     <button type="submit" class="btn btn-icon btn-secondary"><i class='bx bx-search'></i></button>
                                 </div>
-                                <!-- <div class="form-group me-1 fw-medium">
-                                    <button type="button" class="btn btn-icon btn-label-danger btn-reset" id="resetButton">
-                                        <span><i class='bx bx-refresh'></i></span>
-                                    </button>
-                                </div> -->
                             </form>
                         </div>
+
                         <!-- Export button -->
                         <?php
                         // Define $fromDate and $toDate variables here
@@ -321,8 +328,8 @@ ob_start();
                         $toDate = isset($_POST['toDate']) ? $_POST['toDate'] : ''; // Example, replace with your actual value
                         ?>
                         <div class="col-md-4 mb-1 text-end">
-                            <form method="POST" action="export_script.php" id="filterOutdocument">
-                                <input type="hidden" name="documentType" value="outdocument">
+                            <form method="POST" action="export_scriptin.php" id="filterIndocument">
+                                <input type="hidden" name="documentType" value="indocument">
                                 <input type="hidden" name="fromDate" value="<?php echo $fromDate; ?>">
                                 <input type="hidden" name="toDate" value="<?php echo $toDate; ?>">
                                 <button id="exportButton" type="sumbit" class="btn btn-primary">
@@ -333,6 +340,7 @@ ob_start();
                     </div>
                 </div>
             </div>
+            <!-- show datatable -->
             <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
                 <div class="card">
                     <div class="card-datatable dataTable_select text-nowrap pb-2">
@@ -344,9 +352,9 @@ ob_start();
                                             <th>ល.រ</th>
                                             <th>លេខឯកសារ</th>
                                             <th>កម្មវត្តុ</th>
-                                            <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
-                                            <th>ឈ្មោះមន្រ្តីទទួល</th>
-                                            <th>ប្រភេទឯកសារចេញ</th>
+                                            <th>មកពីស្ថាប័នឬក្រសួង</th>
+                                            <th>ឈ្មោះមន្រ្តីប្រគល់</th>
+                                            <th>ប្រភេទឯកសារចូល</th>
                                             <th>កាលបរិច្ឆេទ</th>
                                             <th>សកម្មភាព</th>
                                         </tr>
@@ -365,9 +373,11 @@ ob_start();
                                                     <td>
                                                         <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                                                     </td>
-                                                    <td><?php echo $row['OutDepartment'] ?></td>
-                                                    <td><?php echo $row['NameOFReceive'] ?></td>
-                                                    <td><a href="../../uploads/file/out-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
+                                                    <td>
+                                                        <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo $row['DepartmentName'] ?></div>
+                                                    </td>
+                                                    <td><?php echo $row['NameOfgive'] ?></td>
+                                                    <td><a href="../../uploads/file/in-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 text-primary ">
                                                             ពិនិត្យមើលឯកសារ
                                                         </a></td>
                                                     <td><?php echo $row['Date'] ?></td>
@@ -385,68 +395,8 @@ ob_start();
                                                         </div>
                                                     </td>
                                                 </tr>
-                                                <!-- Modal view -->
-                                                <div class="modal animate__animated animate__bounceIn" id="viewModal<?php echo $row['ID']; ?>" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-                                                        <div class="modal-content ">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title" id="exampleModalLabel4">ពិនិត្យមើលឯកសារ</h5>
-                                                            </div>
-                                                            <div class="modal-body">
-                                                                <form id="formAccountSettings" method="post">
-                                                                    <div class="row">
-
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="code" class="form-label">លេខឯកសារ</label>
-                                                                            <input class="form-control" type="text" id="code" name="code" value="<?php echo htmlentities($row['CodeId']); ?>" disabled>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="type" class="form-label">កម្មវត្តុ</label>
-                                                                            <input class="form-control" type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']); ?>" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>" disabled>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
-                                                                            <input class="form-control" type="text" id="outdepartment" name="outdepartment" value="<?php echo htmlentities($row['OutDepartment']); ?>" disabled>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
-                                                                            <input class="form-control" type="text" id="nameofreceive" name="nameofreceive" value="<?php echo htmlentities($row['NameOFReceive']); ?>" disabled>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
-                                                                            <input class="form-control" type="text" id="nameofgive" name="nameofgive" value="<?php echo htmlentities($row['NameOfgive']); ?>" disabled>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
-                                                                            <input class="form-control" type="text" id="fromdepartment" name="fromdepartment" value="<?php echo htmlentities($row['FromDepartment']); ?>" disabled>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="files" class="form-label">ប្រភេទឯកសារចេញ</label>
-                                                                            <div class="input-group">
-                                                                                <div class="input-group-append">
-
-                                                                                    <div class="d-flex justify-content-between p-2 rounded-3">
-                                                                                        <a href="../../uploads/file/out-doc/<?php echo $row['Typedocument']; ?>" target="blank_" class="btn-sm btn-link h6 mb-0 ">
-                                                                                            <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
-                                                                                        </a>
-                                                                                    </div>
-
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-
-                                                                    </div>
-                                                                    <div class="col-md-12 text-end">
-                                                                        <!-- Buttons for editing and deleting -->
-                                                                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
-                                                                    </div>
-                                                                </form>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                                <!-- Modal edit -->
-                                                <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>"" tabindex=" -1" aria-hidden="true">
+                                                <!-- Edit -->
+                                                <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>" tabindex="-1" aria-hidden="true">
                                                     <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
                                                         <div class="modal-content">
                                                             <div class="modal-header">
@@ -455,11 +405,11 @@ ob_start();
                                                             <div class="modal-body">
                                                                 <form id="formAccountSettings" method="post" enctype="multipart/form-data">
                                                                     <div class="row">
-
                                                                         <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>"> <!-- Hidden input for ID -->
-                                                                        <input type="hidden" name="nameofgive" value="<?php echo htmlentities($row['NameOfgive']); ?>"> <!-- Hidden input for ID -->
-                                                                        <input type="hidden" name="fromdepartment" value="<?php echo htmlentities($row['FromDepartment']); ?>">
                                                                         <input type="hidden" name="current_file" value="<?php echo htmlentities($row['Typedocument']); ?>"> <!-- Hidden input for current file -->
+                                                                        <input type="hidden" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']); ?>"> <!-- Hidden input for received -->
+                                                                        <input type="hidden" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']); ?>"> <!-- Hidden input for Department Name -->
+                                                                        <input type="hidden" name="give" value="<?php echo htmlentities($row['NameOfgive']); ?>"> <!-- Hidden input for NameOfgive -->
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="code" class="form-label">លេខឯកសារ</label>
                                                                             <div class="input-group input-group-merge">
@@ -475,24 +425,29 @@ ob_start();
                                                                             </div>
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
-                                                                            <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                                                            <label for="echonomic" class="form-label">ឈ្មោះនាយកដ្ឋាន</label>
                                                                             <div class="input-group input-group-merge">
                                                                                 <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                                                                                <input class="form-control" type="text" id="outdepartment" name="outdepartment" value="<?php echo htmlentities($row['OutDepartment']); ?>">
+                                                                                <select class="custom-select form-control form-select rounded-2" name="echonomic" required>
+                                                                                    <option value="<?php echo htmlentities($row['DepartmentName']); ?>"><?php echo htmlentities($row['DepartmentName']); ?></option>
+                                                                                    <?php
+                                                                                    $sql = "SELECT * FROM tbldepartments";
+                                                                                    $query = $dbh->prepare($sql);
+                                                                                    $query->execute();
+                                                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                                                    if ($query->rowCount() > 0) {
+                                                                                        foreach ($results as $result) { ?>
+                                                                                            <option value="<?php echo htmlentities($result->DepartmentName); ?>"><?php echo htmlentities($result->DepartmentName); ?></option>
+                                                                                    <?php }
+                                                                                    } ?>
+                                                                                </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
-                                                                            <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                                                            <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
                                                                             <div class="input-group input-group-merge">
                                                                                 <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                                                                <input class="form-control" type="text" id="nameofreceive" name="nameofreceive" value="<?php echo htmlentities($row['NameOFReceive']); ?>">
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
-                                                                            <div class="input-group input-group-merge">
-                                                                                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
-                                                                                <select name="nameofgive" id="nameofgive" class="form-select form-control">
+                                                                                <select name="give" id="give" class="form-select form-control">
                                                                                     <option value="<?php echo htmlentities($row['NameOfgive']); ?>"><?php echo htmlentities($row['NameOfgive']); ?></option>
                                                                                     <?php
                                                                                     $sql = "SELECT * FROM tbluser";
@@ -502,37 +457,106 @@ ob_start();
                                                                                     if ($query->rowCount() > 0) {
                                                                                         foreach ($results as $result) {
                                                                                     ?>
-                                                                                            <option value="<?php echo htmlentities($result->UserName); ?>"><?php echo htmlentities($result->UserName); ?></option>
+                                                                                            <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                                            </option>
                                                                                     <?php }
                                                                                     } ?>
                                                                                 </select>
                                                                             </div>
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
-                                                                            <label for="fromdepartment" class="form-label">មកពីនាយកដ្ឋាន</label>
-                                                                            <div class="input-group input-group-merge">
-                                                                                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bxs-business'></i></span>
-                                                                                <select class="custom-select form-control form-select rounded-2" name="fromdepartment" required>
-                                                                                    <option value="<?php echo htmlentities($row['FromDepartment']); ?>"><?php echo htmlentities($row['FromDepartment']); ?></option>
-                                                                                    <option value="អង្គភាពសវនកម្មផ្ទៃក្នុង">អង្គភាពសវនកម្មផ្ទៃក្នុង</option>
-                                                                                    <option value="នាយកដ្ឋានកិច្ចការទូទៅ">នាយកដ្ឋានកិច្ចការទូទៅ</option>
-                                                                                    <option value="នាយកដ្ឋានសវនកម្មទី១">នាយកដ្ឋានសវនកម្មទី១</option>
-                                                                                    <option value="នាយកដ្ឋានសវនកម្មទី២">នាយកដ្ឋានសវនកម្មទី២</option>
-                                                                                </select>
-                                                                            </div>
-                                                                        </div>
-                                                                        <div class="mb-3 col-md-6">
-                                                                            <label for="files" class="form-label">ប្រភេទឯកសារចេញ</label>
+                                                                            <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
                                                                             <div class="input-group">
                                                                                 <input type="file" class="form-control" id="files" name="files">
                                                                                 <input type="text" class="form-control" value="<?php echo htmlentities($row['Typedocument']); ?>" readonly>
                                                                             </div>
                                                                         </div>
-
+                                                                        <div class="mb-3 col-md-6">
+                                                                            <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                                                            <div class="input-group input-group-merge">
+                                                                                <span id="basic-icon-default-company2" class="input-group-text"><i class='bx bx-user'></i></span>
+                                                                                <select name="recrived" id="recrived" class="form-select form-control">
+                                                                                    <option value="<?php echo htmlentities($row['NameOFReceive']); ?>"><?php echo htmlentities($row['NameOFReceive']); ?></option>
+                                                                                    <?php
+                                                                                    $sql = "SELECT * FROM tbluser";
+                                                                                    $query = $dbh->prepare($sql);
+                                                                                    $query->execute();
+                                                                                    $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                                                                    if ($query->rowCount() > 0) {
+                                                                                        foreach ($results as $result) {
+                                                                                    ?>
+                                                                                            <option value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                                                                            </option>
+                                                                                    <?php }
+                                                                                    } ?>
+                                                                                </select>
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                     <div class="modal-footer">
                                                                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
                                                                         <button type="submit" name="edit" class="btn btn-primary">យល់ព្រម</button>
+                                                                    </div>
+                                                                </form>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- view -->
+                                                <div class="modal animate__animated animate__bounceIn" id="viewModal<?php echo $row['ID']; ?>" tabindex="-1" aria-hidden="true">
+                                                    <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                                                        <div class="modal-content ">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title" id="exampleModalLabel4">ពិនិត្យមើលឯកសារ</h5>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <form id="formAccountSettings" method="post">
+                                                                    <div class="row">
+
+                                                                        <div class="mb-3 col-md-6">
+                                                                            <label for="code" class="form-label">លេខឯកសារ</label>
+                                                                            <input class="form-control" type="text" id="code" name="code" value="<?php echo htmlentities($row['CodeId']) ?>" disabled>
+                                                                        </div>
+                                                                        <div class="mb-3 col-md-6">
+                                                                            <label for="type" class="form-label">កម្មវត្តុ</label>
+                                                                            <input class="form-control " type="text" id="type" name="type" value="<?php echo htmlentities($row['Type']) ?>" data-bs-toggle="tooltip" title="<?php echo htmlentities($row['Type']); ?>" disabled>
+                                                                        </div>
+                                                                        <div class="mb-3 col-md-6">
+                                                                            <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                                                                            <input class="form-control" type="text" id="echonomic" name="echonomic" value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
+                                                                        </div>
+                                                                        <div class="mb-3 col-md-6">
+                                                                            <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                                                            <input class="form-control" type="text" id="give" name="give" value="<?php echo htmlentities($row['NameOfgive']) ?>" disabled>
+                                                                        </div>
+                                                                        <div class="mb-3 col-md-6">
+                                                                            <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
+                                                                            <div class="input-group ">
+                                                                                <div class="input-group-append">
+                                                                                    <div class="d-flex justify-content-between  p-2 rounded-3">
+                                                                                        <a href="../../uploads/file/in-doc/<?php echo htmlentities($row['Typedocument']) ?>" target="blank_" class="btn-sm btn-link h6 mb-0">
+                                                                                            <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                                                                                        </a>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="mb-3 col-md-6">
+                                                                            <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                                                            <input class="form-control" type="text" id="recrived" name="recrived" value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
+                                                                        </div>
+                                                                        <!-- Repeat for other input fields -->
+
+                                                                    </div>
+                                                                    <div class="mt-2">
+                                                                        <!-- Button trigger modal -->
+                                                                        <div class="col-md-12 text-end">
+                                                                            <!-- Buttons for editing and deleting -->
+                                                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">បោះបង់</button>
+                                                                        </div>
                                                                     </div>
                                                                 </form>
                                                             </div>
@@ -554,6 +578,7 @@ ob_start();
         </div>
     </div>
 </div>
+<!-- Modal delete -->
 <div id="deleteConfirmationModal" class="modal animate__animated animate__bounceIn" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -574,9 +599,8 @@ ob_start();
     </div>
 </div>
 
-<!-- Input field for search -->
 
-<!-- HTML code for displaying completed and rejected requests -->
+
 
 <?php
 // Get the content from output buffer

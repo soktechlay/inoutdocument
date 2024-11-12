@@ -12,16 +12,16 @@ if (!isset($_SESSION['userid'])) {
 include('../../includes/translate.php');
 
 // Page variables
-$pageTitle = "ឯកសារចេញនាយកដ្ឋានកិច្ចការទូទៅ";
-$sidebar = "general";
+$pageTitle = "ឯកសារចេញនាយកដ្ឋានសវនកម្មទី២";
+$sidebar = "audit2";
 $userId = $_SESSION['userid'];
 date_default_timezone_set('Asia/Bangkok');
 $date = date('Y-m-d H:i:s');
-// Start building the SQL query
+// Handle form submission
 $sql = "SELECT * FROM outdocument o
         JOIN tbluser u ON o.user_id = u.ID
         WHERE o.isdelete = 0 
-        AND o.permissions = 2"; // Corrected the table alias and permissions field
+        AND o.permissions = 3"; // Corrected the table alias and permissions field
 
 // Initialize an array for the query parameters
 $params = [];
@@ -62,10 +62,8 @@ ob_start();
     <div class="container-xl flex-grow-1">
       <div class="d-flex align-items-center justify-content-between">
         <div class="card-header">
-          <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">នាយកដ្ឋានកិច្ចការទូទៅ/</span>ឯកសារចេញ
-          </h4>
+          <h4 class="py-3 mb-1 text-primary"><span class="text-muted fw-light ">នាយកដ្ឋានសវនកម្មទី២/</span>ឯកសារចេញ</h4>
         </div>
-
       </div>
       <div class="card mb-4">
         <div class="card-body">
@@ -143,11 +141,17 @@ ob_start();
                             <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip"
                               title="<?php echo htmlentities($row['Type']); ?>"><?php echo $row['Type'] ?></div>
                           </td>
-                          <td><?php echo $row['OutDepartment'] ?></td>
+                          <td>
+                            <div class=" d-inline-block text-truncate" style="max-width:180px;" data-bs-toggle="tooltip"
+                              title="<?php echo htmlentities($row['OutDepartment']); ?>"><?php echo $row['OutDepartment'] ?>
+                            </div>
+                          </td>
                           <td><?php echo $row['NameOFReceive'] ?></td>
+
                           <td><?php echo $row['Date'] ?></td>
                           <td>
                             <div class="d-flex ">
+
                               <button type="button"
                                 style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;"
                                 data-bs-toggle="modal" data-bs-target="#viewModal<?php echo $row['ID']; ?>"
@@ -208,7 +212,7 @@ ob_start();
 
                                           <div class="d-flex justify-content-between p-2 rounded-3">
                                             <a href="../../uploads/file/out-doc/<?php echo $row['Typedocument']; ?>"
-                                              target="blank_" class="btn-sm btn-link h6 mb-0 ">
+                                              target="blank_" class="btn-sm btn-link h6 mb-0 text-primary">
                                               <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
                                             </a>
                                           </div>
@@ -220,6 +224,176 @@ ob_start();
                                     <!-- Buttons for editing and deleting -->
                                     <button type="button" class="btn btn-outline-secondary"
                                       data-bs-dismiss="modal">បោះបង់</button>
+                                  </div>
+                                </form>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- Modal edit -->
+                        <div class="modal animate__animated animate__bounceIn" id="editModal<?php echo $row['ID']; ?>"
+                          tabindex="-1" aria-hidden="true">
+                          <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                              <div class="modal-header">
+                                <h5 class="modal-title mef2" id="exampleModalLabel4">ក្រែប្រែឯកសារ</h5>
+                              </div>
+                              <div class="modal-body">
+                                <form id="formAccountSettings" method="post" enctype="multipart/form-data">
+                                  <div class="row">
+
+                                    <input type="hidden" name="id" value="<?php echo htmlentities($row['ID']); ?>">
+                                    <!-- Hidden input for ID -->
+                                    <input type="hidden" name="nameofgive"
+                                      value="<?php echo htmlentities($row['NameOfgive']); ?>">
+                                    <!-- Hidden input for NameOfgive -->
+                                    <input type="hidden" name="fromdepartment"
+                                      value="<?php echo htmlentities($row['FromDepartment']); ?>">
+                                    <!-- Hidden input for FromDepartment -->
+                                    <input type="hidden" name="current_file"
+                                      value="<?php echo htmlentities($row['Typedocument']); ?>">
+                                    <!-- Hidden input for current file -->
+                                    <input type="hidden" name="outdepartment"
+                                      value="<?php echo htmlentities($row['OutDepartment']); ?>">
+                                    <!-- Hidden input for OutDepartment -->
+                                    <input type="hidden" name="nameofreceive"
+                                      value="<?php echo htmlentities($row['NameOFReceive']); ?>">
+                                    <!-- Hidden input for NameOFReceive -->
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="code" class="form-label">លេខឯកសារ</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i
+                                            class='bx bx-book'></i></span>
+                                        <input class="form-control" type="text" id="code" name="code"
+                                          value="<?php echo htmlentities($row['CodeId']); ?>">
+                                      </div>
+                                    </div>
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="type" class="form-label">កម្មវត្តុ</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i
+                                            class='bx bx-detail'></i></span>
+                                        <input class="form-control" type="text" id="type" name="type"
+                                          value="<?php echo htmlentities($row['Type']); ?>">
+                                      </div>
+                                    </div>
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i
+                                            class='bx bxs-business'></i></span>
+                                        <select class="custom-select form-control form-select rounded-2"
+                                          name="outdepartment" required>
+                                          <option value="<?php echo htmlentities($row['OutDepartment']); ?>">
+                                            <?php echo htmlentities($row['OutDepartment']); ?></option>
+                                          <?php
+                                          $sql = "SELECT * FROM tbldepartments";
+                                          $query = $dbh->prepare($sql);
+                                          $query->execute();
+                                          $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                          if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) { ?>
+                                              <option value="<?php echo htmlentities($result->DepartmentName); ?>">
+                                                <?php echo htmlentities($result->DepartmentName); ?></option>
+                                            <?php }
+                                          } ?>
+                                        </select>
+                                      </div>
+                                    </div>
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i
+                                            class='bx bx-user'></i></span>
+                                        <select name="nameofreceive" id="nameofreceive" class="form-select form-control">
+                                          <option value="<?php echo htmlentities($row['NameOFReceive']); ?>">
+                                            <?php echo htmlentities($row['NameOFReceive']); ?></option>
+                                          <?php
+                                          $sql = "SELECT * FROM tbluser";
+                                          $query = $dbh->prepare($sql);
+                                          $query->execute();
+                                          $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                          if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) {
+                                              ?>
+                                              <option
+                                                value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                              </option>
+                                            <?php }
+                                          } ?>
+                                        </select>
+                                      </div>
+                                    </div>
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i
+                                            class='bx bx-user'></i></span>
+                                        <select name="nameofgive" id="nameofgive" class="form-select form-control">
+                                          <option value="<?php echo htmlentities($row['NameOfgive']); ?>">
+                                            <?php echo htmlentities($row['NameOfgive']); ?></option>
+                                          <?php
+                                          $sql = "SELECT * FROM tbluser";
+                                          $query = $dbh->prepare($sql);
+                                          $query->execute();
+                                          $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                          if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) {
+                                              ?>
+                                              <option
+                                                value="<?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>">
+                                                <?php echo htmlentities($result->FirstName . ' ' . $result->LastName); ?>
+                                              </option>
+                                            <?php }
+                                          } ?>
+                                        </select>
+                                      </div>
+                                    </div>
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="fromdepartment" class="form-label">មកពីការិយាល័យ</label>
+                                      <div class="input-group input-group-merge">
+                                        <span id="basic-icon-default-company2" class="input-group-text"><i
+                                            class='bx bxs-business'></i></span>
+                                        <select class="custom-select form-control form-select rounded-2"
+                                          name="fromdepartment" required>
+                                          <option value="<?php echo htmlentities($row['FromDepartment']); ?>">
+                                            <?php echo htmlentities($row['FromDepartment']); ?></option>
+                                          <?php
+                                          $sql = "SELECT * FROM tbloffices";
+                                          $query = $dbh->prepare($sql);
+                                          $query->execute();
+                                          $results = $query->fetchAll(PDO::FETCH_OBJ);
+                                          if ($query->rowCount() > 0) {
+                                            foreach ($results as $result) { ?>
+                                              <option value="<?php echo htmlentities($result->OfficeName); ?>">
+                                                <?php echo htmlentities($result->OfficeName); ?></option>
+                                            <?php }
+                                          } ?>
+                                        </select>
+                                      </div>
+                                    </div>
+
+                                    <div class="mb-3 col-md-6">
+                                      <label for="files" class="form-label">ប្រភេទឯកសារចេញ</label>
+                                      <div class="input-group">
+                                        <input type="file" class="form-control" id="files" name="files">
+                                        <input type="text" class="form-control"
+                                          value="<?php echo htmlentities($row['Typedocument']); ?>" readonly>
+                                      </div>
+                                    </div>
+
+                                  </div>
+                                  <div class="modal-footer">
+                                    <button type="button" class="btn btn-outline-secondary"
+                                      data-bs-dismiss="modal">បោះបង់</button>
+                                    <button type="submit" name="edit" class="btn btn-primary">យល់ព្រម</button>
                                   </div>
                                 </form>
                               </div>
@@ -241,6 +415,30 @@ ob_start();
     </div>
   </div>
 </div>
+<div id="deleteConfirmationModal" class="modal animate__animated animate__bounceIn" tabindex="-1"
+  aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <!-- Modal Header -->
+      <div class="modal-header">
+        <h1 class="modal-title fs-3 text-center mef2" id="exampleModalLabel">លុបឯកសារ</h1>
+      </div>
+      <!-- Modal body -->
+      <div class="modal-body">
+        តើអ្នកយល់ព្រមលុបឯកសារដែរ​ ឬ​ ទេ?
+      </div>
+      <!-- Modal footer -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">មិនយល់ព្រម</button>
+        <a id="confirmDeleteButton" href="#" class="btn btn-danger">យល់ព្រម</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Input field for search -->
+
+<!-- HTML code for displaying completed and rejected requests -->
 
 <?php
 // Get the content from output buffer

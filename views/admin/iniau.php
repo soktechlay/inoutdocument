@@ -1,0 +1,345 @@
+<?php
+session_start();
+include('../../config/dbconn.php');
+
+// Redirect if user is not logged in
+if (!isset($_SESSION['userid'])) {
+  header('Location: ../../index.php');
+  exit();
+}
+
+// Include translation functionality
+include('../../includes/translate.php');
+
+$pageTitle = "ឯកសារចូលអង្គភាពសវនកម្មផ្ទៃក្នុង";
+$sidebar = "iau";
+$userId = $_SESSION['userid'];
+date_default_timezone_set('Asia/Bangkok');
+$date = date('Y-m-d H:i:s');
+
+// Handle search functionality
+if (isset($_GET['search'])) {
+  $searchKeyword = '%' . $_GET['search'] . '%';
+  $searchCondition = " AND (i.CodeId LIKE '$searchKeyword' OR i.Type LIKE '$searchKeyword' OR i.DepartmentName LIKE '$searchKeyword')";
+} else {
+  $searchCondition = "";
+}
+
+// Handle form filters and date range
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['fromDate'], $_POST['toDate'])) {
+  $fromDate = date('Y-m-d 00:00:00', strtotime($_POST['fromDate']));
+  $toDate = date('Y-m-d 23:59:59', strtotime($_POST['toDate']));
+  $dateCondition = " AND i.Date BETWEEN '$fromDate' AND '$toDate'";
+} else {
+  $dateCondition = "";
+}
+
+// Finalize SQL query with ORDER BY
+// Corrected SQL query to include JOIN and WHERE conditions
+// Assuming $userId is already defined
+$sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname, i.NameRecipient AS username
+        FROM indocument i
+        JOIN tbluser u ON i.user_id = u.ID
+        WHERE i.isdelete = 0
+        AND i.permissions = 1
+        -- AND i.permissions = 1
+        "
+  . $searchCondition
+  . $dateCondition
+  . " ORDER BY i.Date DESC";
+
+
+// Prepare and execute the SQL query
+$query = $dbh->prepare($sql);
+
+$query->execute();
+
+
+// Fetch all results into $searchResults
+$searchResults = $query->fetchAll(PDO::FETCH_ASSOC);
+
+ob_start();
+?>
+
+
+<div class="row">
+  <div class="col-md-12">
+    <div class="container-xl flex-grow-1">
+      <div class="card-header">
+        <h4 class="py-3 mb-1 text-primary">
+          <span class="text-muted fw-light">អង្គភាពសវនកម្មផ្ទៃក្នុង/</span>ឯកសារចូល
+        </h4>
+      </div>
+      <div class="card mb-4">
+        <div class="card-body">
+          <div class="row">
+            <!-- Search input -->
+            <div class="col-md-4 mb-1">
+              <input type="text" id="search" onkeyup="filterTable()" placeholder="ស្វែងរក..." class="form-control">
+            </div>
+            <!-- Date range form -->
+            <div class="col-md-4 mb-1">
+              <form action="" method="post" class="d-flex" id="filterForm">
+                <div class="form-group me-1">
+                  <input type="text" id="fromDate" name="fromDate" class="form-control" placeholder="ចាប់ពីថ្ងៃខែឆ្នាំ"
+                    value="<?= isset($_POST['fromDate']) ? htmlspecialchars($_POST['fromDate']) : ''; ?>">
+                </div>
+                <div class="form-group me-1">
+                  <input type="text" id="toDate" name="toDate" class="form-control" placeholder="ដល់ថ្ងៃទីខែឆ្នាំ"
+                    value="<?= isset($_POST['toDate']) ? htmlspecialchars($_POST['toDate']) : ''; ?>">
+                </div>
+                <button type="submit" class="btn btn-secondary">
+                  <i class='bx bx-search'></i>
+                </button>
+              </form>
+            </div>
+            <!-- Export button -->
+            <div class="col-md-4 mb-1 text-end">
+              <form method="POST" action="export_script.php" id="filterIndocument">
+                <input type="hidden" name="documentType" value="indocument">
+                <input type="hidden" name="fromDate" value="<?= $fromDate ?? ''; ?>">
+                <input type="hidden" name="toDate" value="<?= $toDate ?? ''; ?>">
+                <button id="exportButton" type="submit" class="btn btn-primary">
+                  <i class="bx bx-export me-1"></i> Export
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Data Table -->
+      <div class="col-12 col-lg-12 order-2 order-md-3 order-lg-2 mb-4">
+        <div class="card">
+          <div class="card-datatable text-nowrap pb-2">
+            <div class="table-responsive">
+              <table class="table dataTable no-footer" id="example">
+                <thead>
+                  <tr>
+                    <th>ល.រ</th>
+                    <th>លេខឯកសារ</th>
+                    <th>កម្មវត្តុ</th>
+                    <th>មកពីស្ថាប័នឬក្រសួង</th>
+                    <th>ឈ្មោះមន្រ្តីប្រគល់</th>
+                    <th>កាលបរិច្ឆេទ</th>
+                    <th>សកម្មភាព</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php if (!empty($searchResults)): ?>
+                    <?php $cnt = 1;
+                    foreach ($searchResults as $row): ?>
+                      <tr>
+                        <td class="text-center"><b><?= htmlentities($cnt); ?></b></td>
+                        <td class="text-truncate" style="max-width:150px;">
+                          <?= htmlentities($row['CodeId']); ?>
+                        </td>
+                        <td class="text-truncate" style="max-width:150px;" title="<?= htmlentities($row['Type']); ?>">
+                          <?= htmlentities($row['Type']); ?>
+                        </td>
+                        <td class="text-truncate" style="max-width:150px;"
+                          title="<?= htmlentities($row['DepartmentName']); ?>">
+                          <?= htmlentities($row['DepartmentName']); ?>
+                        </td>
+                        <td><?= htmlentities($row['NameOfgive']); ?></td>
+                        <td><?= htmlentities($row['Date']); ?></td>
+                        <td>
+                          <button type="button" class="btn btn-icon" style="background-color: transparent; border: none;"
+                            data-bs-toggle="modal" data-bs-target="#viewModal<?= $row['ID']; ?>"
+                            data-id="<?= $row['ID']; ?>">
+                            <i class='bx bx-show text-success'></i>
+                          </button>
+                        </td>
+                      </tr>
+                      <!-- Modal view -->
+                      <div class="modal animate__animated animate__bounceIn" id="viewModal<?php echo $row['ID']; ?>"
+                        tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
+                          <div class="modal-content ">
+                            <div class="modal-header">
+                              <h5 class="modal-title" id="exampleModalLabel4">ពិនិត្យមើលឯកសារ</h5>
+                            </div>
+                            <div class="modal-body">
+                              <form id="formAccountSettings" method="post">
+                                <div class="row">
+                                  <div class="mb-3 col-md-6">
+                                    <label for="code" class="form-label">លេខឯកសារ</label>
+                                    <input class="form-control" type="text" id="code" name="code"
+                                      value="<?php echo htmlentities($row['CodeId']) ?>" disabled>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="type" class="form-label">កម្មវត្តុ</label>
+                                    <input class="form-control " type="text" id="type" name="type"
+                                      value="<?php echo htmlentities($row['Type']) ?>" data-bs-toggle="tooltip"
+                                      title="<?php echo htmlentities($row['Type']); ?>" disabled>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                                    <input class="form-control" type="text" id="echonomic" name="echonomic"
+                                      value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="give" class="form-label">ឈ្មោះមន្រ្ទី​ប្រគល់</label>
+                                    <input class="form-control" type="text" id="give" name="give"
+                                      value="<?php echo htmlentities($row['NameOfgive']) ?>" disabled>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="recrived" class="form-label">ឈ្មោះមន្រ្ទីទទួល</label>
+                                    <input class="form-control" type="text" id="recrived" name="recrived"
+                                      value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
+                                    <div class="input-group ">
+                                      <div class="input-group-append">
+                                        <div class="d-flex  justify-content-between  p-2 rounded-3">
+                                          <a href="../../uploads/file/in-doc/<?php echo $row['Typedocument']; ?>"
+                                            target="blank_" class="btn-sm btn-link h6 mb-0 text-primary">
+                                            <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                                          </a>
+                                        </div>
+
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="files" class="form-label">ប្រភេទឯកសារចំណារ</label>
+                                    <div class="input-group">
+                                      <div class="input-group-append">
+                                        <div class="d-flex justify-content-between p-2 rounded-3">
+                                          <?php if (!empty($row['document'])): ?>
+                                            <a href="../../uploads/file/note-doc/<?php echo htmlentities($row['document']); ?>"
+                                              target="_blank" class="btn-sm btn-link h6 mb-0 text-primary">
+                                              <i class='bx bx-file me-2'></i>ពិនិត្យមើលឯកសារ
+                                            </a>
+                                          <?php else: ?>
+                                            <span class="text-muted h6 mb-0">មិនទាន់មានឯកសារ</span>
+                                          <?php endif; ?>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="department" class="form-label">នាយកដ្ឋានទទួលបន្ទុក</label>
+
+                                    <?php if (!empty($row['DepartmentReceive'])): ?>
+                                      <input class="form-control" type="text" id="department" name="department"
+                                        value="<?php echo htmlentities($row['DepartmentReceive']); ?>" disabled>
+                                    <?php else: ?>
+                                      <input class="form-control" type="text" value="មិនទាន់មាន" disabled>
+                                    <?php endif; ?>
+                                  </div>
+                                  <div class="mb-3 col-md-6">
+                                    <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
+
+                                    <?php if (!empty($row['username'])): ?>
+                                      <input class="form-control" type="text" id="burden" name="burden"
+                                        value="<?= htmlspecialchars($row['username']); ?>" disabled>
+                                    <?php else: ?>
+                                      <input class="form-control" type="text" value="មិនទាន់មាន" disabled>
+                                    <?php endif; ?>
+                                  </div>
+                                </div>
+                                <div class="mt-2">
+                                  <!-- Button trigger modal -->
+                                  <div class="col-md-12 text-end">
+                                    <!-- Buttons for editing and deleting -->
+                                    <button type="button" class="btn btn-outline-secondary"
+                                      data-bs-dismiss="modal">បោះបង់</button>
+                                  </div>
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <!-- Add modal content here -->
+                      <?php $cnt++; endforeach; ?>
+                  <?php else: ?>
+                    <tr id="noDataMessageRow">
+                      <td colspan="7" class="text-center text-muted">
+                        <strong>No data available in table</strong>
+                      </td>
+                    </tr>
+                  <?php endif; ?>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<?php
+// Get the content from output buffer
+$content = ob_get_clean();
+
+// Include layout or template file
+include('../../layouts/user_layout.php');
+?>
+<script>
+  // Automatically close toast notifications after 5 seconds
+  setTimeout(() => {
+    $('.toast').fadeTo("slow", 0.1, () => {
+      $('.toast').alert('close');
+    });
+  }, 5000);
+
+  // Bootstrap form validation
+  (() => {
+    const forms = document.querySelectorAll('.needs-validation');
+    forms.forEach(form => {
+      form.addEventListener('submit', event => {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        form.classList.add('was-validated');
+      });
+    });
+  })();
+
+  // Table filter
+  const filterTable = () => {
+    const filter = document.getElementById("search").value.toUpperCase();
+    const table = document.getElementById("example");
+    const rows = table.getElementsByTagName("tr");
+    let visibleRows = 0;
+
+    Array.from(rows).forEach((row, index) => {
+      // Skip the header row (index 0 in most cases)
+      if (index === 0) return;
+
+      const cells = row.getElementsByTagName("td");
+      const isVisible = Array.from(cells).some(cell =>
+        cell.textContent.toUpperCase().includes(filter));
+
+      row.style.display = isVisible ? "" : "none";
+      if (isVisible) visibleRows++;
+    });
+
+    // Show or hide the "No recent activities found" message
+    let noDataMessage = document.getElementById("no-data-message");
+    if (!noDataMessage) {
+      noDataMessage = document.createElement("div");
+      noDataMessage.id = "no-data-message";
+      noDataMessage.textContent = "មិនមានទិន្នន័យទេ។";
+      noDataMessage.style.textAlign = "center";
+      noDataMessage.style.marginTop = "10px";
+      noDataMessage.style.color = "blue";
+      table.parentNode.appendChild(noDataMessage); // Place message below the table
+    }
+
+    noDataMessage.style.display = visibleRows === 0 ? "block" : "none";
+  };
+
+  document.addEventListener('DOMContentLoaded', () => {
+    // Initialize Flatpickr for date inputs
+    flatpickr("#fromDate, #toDate", { enableTime: false, dateFormat: "Y-m-d" });
+
+    // Initialize DataTable
+    $('#example').DataTable({ "searching": false, "paging": true, "info": true, "lengthChange": true });
+  });
+</script>
