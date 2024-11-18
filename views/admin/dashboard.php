@@ -8,19 +8,14 @@ if (!isset($_SESSION['userid'])) {
     header('Location: ../../index.php');
     exit();
 }
-
 // Set page-specific variables
 $pageTitle = "ទំព័រដើម";
 $sidebar = "dashboard";
 $userId = $_SESSION['userid']; // Assuming the user ID is stored in the session
 $_SESSION['prevPageTitle'] = $pageTitle;
 ob_start();
-
 // Fetch user activities from the database
-
 ?>
-
-
 <div class="col-12 d-flex align-items-center justify-content-between mb-3">
     <div class="dropdown">
         <?php
@@ -116,7 +111,7 @@ ob_start();
                                 <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
                                 <th>ឈ្មោះមន្រ្តីទទួល</th>
                                 <th>កាលបរិច្ឆេទ</th>
-                                <th >ឯកសារ</th>
+                                <th>ឯកសារ</th>
                             </tr>
                         </thead>
                         <tbody id="outdocumentRows"></tbody>
@@ -128,6 +123,15 @@ ob_start();
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+        // HTML escape function to prevent XSS
+        function htmlspecialchars(string) {
+            return string.replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
         function fetchDocuments() {
             // Fetch incoming documents
             $.ajax({
@@ -136,44 +140,45 @@ ob_start();
                 dataType: 'json',
                 success: function (data) {
                     if (data.error) {
-                        console.error(data.error);
+                        console.error('Error fetching incoming documents:', data.error);
                         return;
                     }
+
                     $('#documentCount').text('សកម្មភាពឯកសារចូលថ្ងៃនេះ (' + (data.count || 0) + ')');
 
                     let rows = '';
                     if (data.documents && data.documents.length > 0) {
                         data.documents.forEach(function (doc) {
                             rows += `<tr>
-                            <td class="truncate-cell">
-                                ${htmlspecialchars(doc.CodeId)}</a>
-                            </td>
-                            <td class="truncate-cell" >${htmlspecialchars(doc.DepartmentName)}</td>
-                            <td class="truncate-cell >${htmlspecialchars(doc.NameOfgive)}</td>
-                            <td>${doc.formattedDate}</td>
-                            <td>
-                                <a href="../../uploads/file/in-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye text-success">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                                                <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-                                                </svg></a>
-                            </td>
-                        </tr>`;
+                                <td class="truncate-cell">${htmlspecialchars(doc.CodeId)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.DepartmentName)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.NameOfgive)}</td>
+                                <td>${htmlspecialchars(doc.formattedDate)}</td>
+                                <td>
+                                    <a href="../../uploads/file/in-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-eye text-success">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                            <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>`;
                         });
                     } else {
                         rows = `<tr>
-                        <td colspan='5'>
-                            <div class='text-center'>
-                                <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
-                                <h5 class='text-muted mt-3'>No recent activities found.</h5>
-                            </div>
-                        </td>
-                    </tr>`;
+                            <td colspan="5">
+                                <div class="text-center">
+                                    <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
+                                    <h5 class='text-muted mt-3'>No recent activities found.</h5>
+                                </div>
+                            </td>
+                        </tr>`;
                     }
                     $('#documentRows').html(rows);
                 },
                 error: function (xhr, status, error) {
-                    console.error('AJAX error: ', status, error);
+                    console.error('Error fetching incoming documents:', error);
                 }
             });
 
@@ -184,42 +189,45 @@ ob_start();
                 dataType: 'json',
                 success: function (data) {
                     if (data.error) {
-                        console.error(data.error);
+                        console.error('Error fetching outgoing documents:', data.error);
                         return;
                     }
+
                     $('#outdocumentCount').text('សកម្មភាពឯកសារចេញថ្ងៃនេះ (' + (data.count || 0) + ')');
 
                     let rows = '';
                     if (data.documents && data.documents.length > 0) {
                         data.documents.forEach(function (doc) {
                             rows += `<tr>
-                            <td class="truncate-cell">${htmlspecialchars(doc.CodeId)}</td>
-                            <td class="truncate-cell">${htmlspecialchars(doc.OutDepartment)}</td>
-                            <td class="truncate-cell">${htmlspecialchars(doc.NameOFReceive)}</td>
-                            <td>${doc.formattedDate}</td>
-                            <td>
-                                <a href="../../uploads/file/in-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye text-success">
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                                                <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-                                                </svg></a>
-                            </td>
-                        </tr>`;
+                                <td class="truncate-cell">${htmlspecialchars(doc.CodeId)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.OutDepartment)}</td>
+                                <td class="truncate-cell">${htmlspecialchars(doc.NameOFReceive)}</td>
+                                <td>${htmlspecialchars(doc.formattedDate)}</td>
+                                <td>
+                                    <a href="../../uploads/file/out-doc/${htmlspecialchars(doc.Typedocument)}" target="_blank">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-eye text-success">
+                                            <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                            <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                            <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                                        </svg>
+                                    </a>
+                                </td>
+                            </tr>`;
                         });
                     } else {
                         rows = `<tr>
-                        <td colspan='5'>
-                            <div class='text-center'>
-                                <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
-                                <h5 class='text-muted mt-3'>No recent activities found.</h5>
-                            </div>
-                        </td>
-                    </tr>`;
+                            <td colspan="5">
+                                <div class="text-center">
+                                    <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
+                                    <h5 class='text-muted mt-3'>No recent activities found.</h5>
+                                </div>
+                            </td>
+                        </tr>`;
                     }
                     $('#outdocumentRows').html(rows);
                 },
                 error: function (xhr, status, error) {
-                    console.error('AJAX error: ', status, error);
+                    console.error('Error fetching outgoing documents:', error);
                 }
             });
         }
@@ -228,15 +236,6 @@ ob_start();
         fetchDocuments();
         // Set interval to fetch documents every 5 seconds
         setInterval(fetchDocuments, 5000);
-
-        // HTML escape function to prevent XSS
-        function htmlspecialchars(string) {
-            return string.replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
     </script>
 </div>
 
