@@ -430,11 +430,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $dob = !empty($_POST['dob']) ? date('Y-m-d', strtotime(str_replace('/', '-', $_POST['dob']))) : null;
     $department = $_POST['department'] ?? '';
     $office = $_POST['office'] ?? '';
-    $permission = $_POST['permission'] ?? '';
+
+    $permissionIds = $_POST['permissions']; // This will be an array
+    $permissionIdsStr = implode(',', $permissionIds); // Convert array to comma-separated string
 
     // Handle profile image upload
     $profileImage = $_FILES['profile']['name'] ?? '';
-    $targetDir = "uploads/profiles/";
+    $targetDir = "../../assets/img/avatars/";
     $profilePath = !empty($profileImage) ? $targetDir . basename($profileImage) : $_POST['existingProfileImage'] ?? '';
 
     if (!empty($profileImage)) {
@@ -449,7 +451,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     try {
       $sql = "UPDATE tbluser SET Honorific = :honorific, FirstName = :firstname, LastName = :lastname, 
-                Email = :email, Contact = :contact, Status = :status, DateofBirth = :dob, PermissionId = :permission ,
+                Email = :email, Contact = :contact, Status = :status, DateofBirth = :dob, PermissionId = :permissionId,
                 Department = :department, Office = :office, Profile = :profile WHERE id = :userId";
 
       $query = $dbh->prepare($sql);
@@ -463,7 +465,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       $query->bindParam(':department', $department);
       $query->bindParam(':office', $office);
       $query->bindParam(':profile', $profilePath);
-      $query->bindParam(':permission', $permission);
+      $query->bindParam(':permissionId', $permissionIdsStr);
       $query->bindParam(':userId', $userId);
 
       if ($query->execute()) {

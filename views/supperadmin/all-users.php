@@ -362,31 +362,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         </div>
                       </div>
                       <div class="row mb-3">
-                        <div class="mb-3 col-md-6">
-                          <label for="permission" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
-                          <div class="input-group input-group-merge">
-                            <span id="basic-icon-default-company2" class="input-group-text"><i
-                                class='bx bx-user'></i></span>
-                            <select name="permission" id="permission" class="form-select form-control">
-                              <option value="<?php echo htmlentities($result->PermissionId ?? ''); ?>">
-                                <?php echo htmlentities($result->PermissionId ?? ''); ?>
-                              </option>
-                              <?php
-                              $sql = "SELECT * FROM permissions";
-                              $query = $dbh->prepare($sql);
-                              $query->execute();
-                              $permissions = $query->fetchAll(PDO::FETCH_OBJ);
-                              if ($query->rowCount() > 0) {
-                                foreach ($permissions as $permission) {
-                                  ?>
-                                  <option value="<?php echo htmlentities($permission->id); ?>">
-                                    <?php echo htmlentities($permission->name); ?>
-                                  </option>
-                                <?php }
-                              } ?>
-                            </select>
-                          </div>
-                        </div>
+  <div class="mb-3 ">
+    <label for="permission" class="form-label">Permission</label>
+    <div id="permission-group" class="d-flex flex-wrap">
+      <?php
+      $sql = "SELECT * FROM permissions";
+      $query = $dbh->prepare($sql);
+      $query->execute();
+      $permissions = $query->fetchAll(PDO::FETCH_OBJ);
+
+      if ($query->rowCount() > 0) {
+        foreach ($permissions as $permission) {
+          // Check if the permission should be pre-checked
+          $isChecked = isset($result) && in_array($permission->id, explode(',', $result->PermissionId)) ? 'checked' : '';
+          ?>
+          <div class="form-check me-3">
+            <input type="checkbox" class="form-check-input" id="permission-<?php echo $permission->id; ?>" 
+                   name="permissions[]" 
+                   value="<?php echo htmlentities($permission->id); ?>" 
+                   <?php echo $isChecked; ?>>
+            <label class="form-check-label" for="permission-<?php echo $permission->id; ?>">
+              <?php echo htmlentities($permission->name); ?>
+            </label>
+          </div>
+      <?php }
+      } ?>
+    </div>
+  </div>
                       </div>
 
                       <div class="modal-footer">

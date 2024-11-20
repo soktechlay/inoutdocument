@@ -29,65 +29,65 @@ if (isset($_POST["submit"])) {
 
         // Allow certain file formats
         $allowTypes = array('docx', 'pdf', 'pptx');
-        
-            
-            if (move_uploaded_file($_FILES["file2"]["tmp_name"], $targetFilePath)) {
-                $userId = $_SESSION['userid'];
-                $notificationMessage = "ឯកសារចូលនាយកដ្ឋាន";
-                
-                // Collect the recipient names
-                $recipientNames = [];
-                foreach ($burdenArray as $burdenId) {
-                    // Fetch the UserName from tbluser based on User ID (burdenId)
-                    $sqlUser = "SELECT CONCAT(FirstName, ' ', LastName) AS FullName FROM tbluser WHERE ID = :userId";
-                    $stmtUser = $dbh->prepare($sqlUser);
-                    $stmtUser->bindParam(':userId', $burdenId, PDO::PARAM_INT);
-                    $stmtUser->execute();
-                    $userRow = $stmtUser->fetch(PDO::FETCH_ASSOC);
 
-                    if ($userRow) {
-                        $recipientNames[] = $userRow['FullName'];
-                    } else {
-                        $error2 = "User not found.";
-                    }
-                }
-                
-                // Make sure $id is defined and safe
-                if (isset($id)) {
-                    // Update the document record with recipient names
-                    $sql2 = "UPDATE indocument SET document = ?, NameRecipient = ?, DepartmentReceive = ? WHERE ID = ?";
-                    $stmt2 = $dbh->prepare($sql2);
-                    $stmt2->execute([$fileName, implode(', ', $recipientNames), implode(', ', $departmentArray), $id]);
-                    $success2 = $fileName . " បានរក្សាទុករួចរាល់។";
 
-                    // Loop through each selected burden (User ID) again to send notifications
-                    foreach ($burdenArray as $burdenId) {
-                        // Insert into notifications table
-                        $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document)";
-                        $queryNotification = $dbh->prepare($sqlNotification);
-                        $queryNotification->bindParam(':user_id', $userId, PDO::PARAM_INT);
-                        $queryNotification->bindParam(':message', $notificationMessage, PDO::PARAM_STR);
-                        $queryNotification->bindParam(':sendid', $burdenId, PDO::PARAM_INT);
-                        $queryNotification->bindParam(':document', $fileName, PDO::PARAM_STR);
+        if (move_uploaded_file($_FILES["file2"]["tmp_name"], $targetFilePath)) {
+            $userId = $_SESSION['userid'];
+            $notificationMessage = "ឯកសារចូលនាយកដ្ឋាន";
 
-                        if ($queryNotification->execute()) {
-                            $success2 .= " Notification sent successfully.";
-                        } else {
-                            $error2 = "Error sending notification.";
-                        }
-                    }
+            // Collect the recipient names
+            $recipientNames = [];
+            foreach ($burdenArray as $burdenId) {
+                // Fetch the UserName from tbluser based on User ID (burdenId)
+                $sqlUser = "SELECT CONCAT(FirstName, ' ', LastName) AS FullName FROM tbluser WHERE ID = :userId";
+                $stmtUser = $dbh->prepare($sqlUser);
+                $stmtUser->bindParam(':userId', $burdenId, PDO::PARAM_INT);
+                $stmtUser->execute();
+                $userRow = $stmtUser->fetch(PDO::FETCH_ASSOC);
+
+                if ($userRow) {
+                    $recipientNames[] = $userRow['FullName'];
                 } else {
-                    $error2 = "Invalid document ID.";
+                    $error2 = "User not found.";
+                }
+            }
+
+            // Make sure $id is defined and safe
+            if (isset($id)) {
+                // Update the document record with recipient names
+                $sql2 = "UPDATE indocument SET document = ?, NameRecipient = ?, DepartmentReceive = ? WHERE ID = ?";
+                $stmt2 = $dbh->prepare($sql2);
+                $stmt2->execute([$fileName, implode(', ', $recipientNames), implode(', ', $departmentArray), $id]);
+                $success2 = $fileName . " បានរក្សាទុករួចរាល់។";
+
+                // Loop through each selected burden (User ID) again to send notifications
+                foreach ($burdenArray as $burdenId) {
+                    // Insert into notifications table
+                    $sqlNotification = "INSERT INTO notifications (user_id, message, sendid, document) VALUES (:user_id, :message, :sendid, :document)";
+                    $queryNotification = $dbh->prepare($sqlNotification);
+                    $queryNotification->bindParam(':user_id', $userId, PDO::PARAM_INT);
+                    $queryNotification->bindParam(':message', $notificationMessage, PDO::PARAM_STR);
+                    $queryNotification->bindParam(':sendid', $burdenId, PDO::PARAM_INT);
+                    $queryNotification->bindParam(':document', $fileName, PDO::PARAM_STR);
+
+                    if ($queryNotification->execute()) {
+                        $success2 .= " Notification sent successfully.";
+                    } else {
+                        $error2 = "Error sending notification.";
+                    }
                 }
             } else {
-                $error2 = "Error uploading file.";
+                $error2 = "Invalid document ID.";
             }
         } else {
-            $error2 = "File type not allowed.";
+            $error2 = "Error uploading file.";
         }
+    } else {
+        $error2 = "File type not allowed.";
+    }
     // } else {
     //     $error2 = "Please select a file.";
-    }
+}
 
 
 
@@ -118,7 +118,7 @@ ob_start();
         <div class="card-body mb-3">
             <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['userid']); ?>">
             <div class="row mt-2">
-            <div class="col mb-3">
+                <div class="col mb-3">
                     <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
                     <select name="burden[]" id="burden" class="form-select select2 form-control" multiple required>
                         <option value="">ជ្រើសរើស...</option>
@@ -143,7 +143,8 @@ ob_start();
 
                 <div class="col mb-3">
                     <label class="form-label">នាយកដ្ឋានទទួលបន្ទុក</label>
-                    <select class="custom-select form-control select2 form-select " name="department[]" multiple required>
+                    <select class="custom-select form-control select2 form-select " name="department[]" multiple
+                        required>
                         <option value="">ជ្រើសរើស...</option>
                         <?php
                         $sql = "SELECT DepartmentName FROM tbldepartments";
@@ -155,7 +156,7 @@ ob_start();
                                 <option value="<?php echo htmlspecialchars($result->DepartmentName); ?>">
                                     <?php echo htmlspecialchars($result->DepartmentName); ?>
                                 </option>
-                        <?php }
+                            <?php }
                         } ?>
                     </select>
                 </div>
@@ -176,18 +177,19 @@ ob_start();
                 <?php } ?>
             </div>
 
-            <?php if (!empty($documents)) : ?>
+            <?php if (!empty($documents)): ?>
                 <div class="h6 mt-4">ឯកសារចំណារ ថ្មីៗ</div>
-                <?php foreach ($documents as $document) : ?>
-                    <?php if (!empty($document['document'])) : ?>
+                <?php foreach ($documents as $document): ?>
+                    <?php if (!empty($document['document'])): ?>
                         <div class="d-flex align-items-center justify-content-between bg-label-success p-2 rounded-3">
-                            <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($document['document']); ?>" target="_blank" class="btn-sm btn-link h6 mb-0">
+                            <a href="../../uploads/file/note-doc/<?php echo htmlspecialchars($document['document']); ?>"
+                                target="_blank" class="btn-sm btn-link h6 mb-0">
                                 <?php echo htmlspecialchars($document['document']); ?>
                             </a>
                         </div>
                     <?php endif; ?>
                 <?php endforeach; ?>
-            <?php else : ?>
+            <?php else: ?>
                 <p>No documents found.</p>
             <?php endif; ?>
 

@@ -1,65 +1,90 @@
 <?php
-// realtime.php
 include('../../config/dbconn.php');
+session_start();
 
-// Set the header to return JSON
 header('Content-Type: application/json');
 
 try {
-    // Get the document type from the query parameter, default to 'incoming'
+    // Check if user is logged in
+    $userId = $_SESSION['userid'] ?? null;
+    if (!$userId) {
+        echo json_encode(['error' => 'User not logged in or user ID not set.']);
+        exit;
+    }
+
+    // Fetch user's permissions
+    $stmt = $dbh->prepare("SELECT PermissionId FROM tbluser WHERE id = ?");
+    $stmt->execute([$userId]);
+    $data = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($data && isset($data['PermissionId'])) {
+        $permissions = explode(',', $data['PermissionId']); // Convert permissions to array
+        $permissions = array_filter(array_map('intval', $permissions)); // Ensure clean integer array
+    } else {
+        echo json_encode(['error' => 'No permission data found for the user.']);
+        exit;
+    }
+
+    if (empty($permissions)) {
+        echo json_encode(['count' => 0, 'documents' => []]);
+        exit;
+    }
+
+    // Determine type (incoming or outgoing documents)
     $type = $_GET['type'] ?? 'incoming';
 
+    // Build SQL for FIND_IN_SET dynamically
+    $findInSetConditions = implode(' OR ', array_fill(0, count($permissions), "FIND_IN_SET(?, permissions) > 0"));
+
     if ($type === 'incoming' || $type === 'in') {
-        // SQL query for incoming documents
         $countSql = "SELECT COUNT(*) as document_count 
                      FROM indocument 
                      WHERE isdelete = 0 
-                     AND permissions = 1 
+                     AND ($findInSetConditions)
                      AND DATE(Date) = CURDATE()";
 
         $sql = "SELECT CodeId, DepartmentName, NameOfgive, Typedocument, DATE_FORMAT(Date, '%d/%m/%y') as formattedDate
                 FROM indocument 
                 WHERE isdelete = 0 
-                AND permissions = 1 
+                AND ($findInSetConditions)
                 AND DATE(Date) = CURDATE() 
                 ORDER BY Date DESC 
                 LIMIT 20";
     } else {
-        // SQL query for outgoing documents
         $countSql = "SELECT COUNT(*) as document_count 
                      FROM outdocument 
                      WHERE isdelete = 0 
-                     AND permissions = 1 
+                     AND ($findInSetConditions)
                      AND DATE(Date) = CURDATE()";
 
         $sql = "SELECT CodeId, OutDepartment, Typedocument, NameOFReceive, DATE_FORMAT(Date, '%d/%m/%y') as formattedDate
                 FROM outdocument 
                 WHERE isdelete = 0 
-                AND permissions = 1 
+                AND ($findInSetConditions)
                 AND DATE(Date) = CURDATE() 
                 ORDER BY Date DESC 
                 LIMIT 20";
     }
 
-    // Execute the count query
+    // Execute count query
     $stmt = $dbh->prepare($countSql);
-    $stmt->execute();
+    $stmt->execute($permissions);
     $countResult = $stmt->fetch(PDO::FETCH_ASSOC);
     $documentCount = $countResult['document_count'] ?? 0;
 
-    // Execute the document query
+    // Execute main query for documents
     $stmt = $dbh->prepare($sql);
-    $stmt->execute();
+    $stmt->execute($permissions);
     $documents = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Return the result as JSON
+    // Return result as JSON
     echo json_encode([
         'count' => $documentCount,
         'documents' => $documents
     ]);
 
 } catch (PDOException $e) {
-    // Return the error in JSON format
     echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+} catch (Exception $e) {
+    echo json_encode(['error' => 'General error: ' . $e->getMessage()]);
 }
-?>
