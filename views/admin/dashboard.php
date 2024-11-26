@@ -92,54 +92,57 @@ $userPermissions = array_map('trim', $userPermissions);
 $allowed = !empty(array_intersect($departmentIds, $userPermissions));
 
 if ($allowed):
-?>
+    ?>
 
-<div class="row row-cols-1 row-cols-md-2 row-cols-xl-2 g-4">
-    <!-- Incoming Documents Card -->
-    <div class="col">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center mb-3">
-                <h5 class="card-title me-2 mb-0" id="documentCount">សកម្មភាពឯកសារចូលថ្ងៃនេះ (0)</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table border-top mb-1 table-striped" id="documentsTable">
-                        <thead>
-                            <tr>
-                                <th>លេខឯកសារ</th>
-                                <th>មកពីស្ថាប័នឬក្រសួង</th>
-                                <th>ឈ្មោះមន្រ្តីប្រគល់</th>
-                                <th>កាលបរិច្ឆេទ</th>
-                                <th>ឯកសារ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="documentRows"></tbody>
-                    </table>
+    <div class="row row-cols-1 row-cols-md-2 row-cols-xl-2 g-4">
+        <!-- Incoming Documents Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title me-2 mb-0" id="documentCount">សកម្មភាពឯកសារចូលថ្ងៃនេះ (0)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table border-top mb-1 table-striped" id="documentsTable">
+                            <thead>
+                                <tr>
+                                    <th>លេខឯកសារ</th>
+                                    <th>មកពីស្ថាប័នឬក្រសួង</th>
+                                    <th>ឈ្មោះមន្រ្តីប្រគល់</th>
+                                    <th>នាយកដ្ឋានទទួលបន្ទុក</th> <!-- New Column -->
+                                    <th>កាលបរិច្ឆេទ</th>
+                                    <th>ឯកសារ</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="documentRows"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Outgoing Documents Card -->
-    <div class="col">
-        <div class="card h-100">
-            <div class="card-header d-flex justify-content-between align-items-center mb-3">
-                <h5 class="card-title me-2 mb-0" id="outdocumentCount">សកម្មភាពឯកសារចេញថ្ងៃនេះ (0)</h5>
-            </div>
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table border-top mb-1 table-striped" id="outdocumentsTable">
-                        <thead>
-                            <tr>
-                                <th>លេខឯកសារ</th>
-                                <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
-                                <th>ឈ្មោះមន្រ្តីទទួល</th>
-                                <th>កាលបរិច្ឆេទ</th>
-                                <th>ឯកសារ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="outdocumentRows"></tbody>
-                    </table>
+        <!-- Outgoing Documents Card -->
+        <div class="col">
+            <div class="card h-100">
+                <div class="card-header d-flex justify-content-between align-items-center mb-3">
+                    <h5 class="card-title me-2 mb-0" id="outdocumentCount">សកម្មភាពឯកសារចេញថ្ងៃនេះ (0)</h5>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table class="table border-top mb-1 table-striped" id="outdocumentsTable">
+                            <thead>
+                                <tr>
+                                    <th>លេខឯកសារ</th>
+                                    <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
+                                    <th>ឈ្មោះមន្រ្តីទទួល</th>
+                                    <th>កាលបរិច្ឆេទ</th>
+                                    <th>ឯកសារ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="outdocumentRows"></tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -148,90 +151,82 @@ if ($allowed):
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
-    const permissions = <?= json_encode($departmentIds); ?>; // Correctly fetch PHP permissions array
+            const permissions = <?= json_encode($departmentIds, JSON_HEX_TAG | JSON_HEX_QUOT); ?>; // Safely encode PHP data
 
-    function fetchDocuments() {
-        // Fetch incoming documents
-        $.ajax({
-            url: 'realtime.php?type=in',
-            type: 'POST',
-            data: { permissions: permissions },
-            dataType: 'json',
-            success: function (data) {
-                $('#documentCount').text(`សកម្មភាពឯកសារចូលថ្ងៃនេះ (${data.count || 0})`);
-                updateTable(data.documents, '#documentRows', 'in-doc');
-            },
-            error: function (xhr, status, error) {
-                console.error('Incoming documents fetch error:', error);
-            }
-        });
+            function fetchDocuments(type) {
+                $.ajax({
+                    url: `realtime.php?type=${type}`,
+                    type: 'POST',
+                    data: { permissions: permissions },
+                    dataType: 'json',
+                    success: function (data) {
+                        const countId = type === 'in' ? '#documentCount' : '#outdocumentCount';
+                        const tableBody = type === 'in' ? '#documentRows' : '#outdocumentRows';
+                        const folder = type === 'in' ? 'in-doc' : 'out-doc';
 
-        // Fetch outgoing documents
-        $.ajax({
-            url: 'realtime.php?type=out',
-            type: 'POST',
-            data: { permissions: permissions },
-            dataType: 'json',
-            success: function (data) {
-                $('#outdocumentCount').text(`សកម្មភាពឯកសារចេញថ្ងៃនេះ (${data.count || 0})`);
-                updateTable(data.documents, '#outdocumentRows', 'out-doc');
-            },
-            error: function (xhr, status, error) {
-                console.error('Outgoing documents fetch error:', error);
+                        $(countId).text(`សកម្មភាពឯកសារ${type === 'in' ? 'ចូល' : 'ចេញ'}ថ្ងៃនេះ (${data.count || 0})`);
+                        updateTable(data.documents, tableBody, folder);
+                    },
+                    error: function (xhr, status, error) {
+                        console.error(`${type} documents fetch error:`, error);
+                    }
+                });
             }
-        });
-    }
 
             function updateTable(documents, tableBodySelector, folder) {
                 let rows = '';
                 if (documents && documents.length > 0) {
                     documents.forEach(function (doc) {
                         rows += `<tr>
-                            <td class="truncate-cell">${htmlspecialchars(doc.CodeId)}</td>
-                            <td class="truncate-cell">${htmlspecialchars(doc.DepartmentName || doc.OutDepartment)}</td>
-                            <td class="truncate-cell">${htmlspecialchars(doc.NameOfgive || doc.NameOFReceive)}</td>
-                            <td>${doc.formattedDate}</td>
-                            <td class="truncate-cell">
-                                <a href="../../uploads/file/${folder}/${htmlspecialchars(doc.Typedocument)}" target="_blank">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-eye text-success">
-                                        <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-                                        <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
-                                        <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
-                                    </svg>
-                                </a>
-                            </td>
-                        </tr>`;
+                    <td>${htmlspecialchars(doc.CodeId)}</td>
+                    <td>${htmlspecialchars(doc.DepartmentName || doc.OutDepartment)}</td>
+                    <td>${htmlspecialchars(doc.NameOfgive || doc.NameOFReceive)}</td>
+                    ${folder === 'in-doc' ? `<td>${htmlspecialchars(doc.DepartmentReceive || 'N/A')}</td>` : ''} <!-- New Column -->
+                    <td>${htmlspecialchars(doc.formattedDate)}</td>
+                    <td>
+                        <a href="../../uploads/file/${folder}/${htmlspecialchars(doc.Typedocument)}" target="_blank">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icon-tabler-eye text-success">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
+                                <path d="M10 12a2 2 0 1 0 4 0a2 2 0 0 0 -4 0" />
+                                <path d="M21 12c-2.4 4 -5.4 6 -9 6c-3.6 0 -6.6 -2 -9 -6c2.4 -4 5.4 -6 9 -6c3.6 0 6.6 2 9 6" />
+                            </svg>
+                        </a>
+                    </td>
+                </tr>`;
                     });
                 } else {
                     rows = `<tr>
-                        <td colspan='5'>
-                            <div class='text-center'>
-                                <img src='../../assets/img/illustrations/empty-box.png' alt='No Requests Found' style='max-width: 15%; height: auto;' />
-                                <h5 class='text-muted mt-3'>No recent activities found.</h5>
-                            </div>
-                        </td>
-                    </tr>`;
+                <td colspan="6">
+                    <div class="text-center">
+                        <img src="../../assets/img/illustrations/empty-box.png" alt="No Requests Found" style="max-width: 15%; height: auto;" />
+                        <h5 class="text-muted mt-3">No recent activities found.</h5>
+                    </div>
+                </td>
+            </tr>`;
                 }
                 $(tableBodySelector).html(rows);
             }
 
             function htmlspecialchars(string) {
-                return string.replace(/&/g, "&amp;")
+                return String(string).replace(/&/g, "&amp;")
                     .replace(/</g, "&lt;")
                     .replace(/>/g, "&gt;")
                     .replace(/"/g, "&quot;")
                     .replace(/'/g, "&#039;");
             }
 
-            // Fetch documents initially and set interval for updates
-            fetchDocuments();
-            setInterval(fetchDocuments, 5000);
+            // Fetch both incoming and outgoing documents periodically
+            function refreshDocuments() {
+                fetchDocuments('in');
+                fetchDocuments('out');
+            }
+
+            refreshDocuments();
+            setInterval(refreshDocuments, 5000);
         });
     </script>
-</div>
 
 
-        
 <?php endif; ?>
 
 <?php $content = ob_get_clean(); ?>

@@ -43,7 +43,7 @@ try {
                      AND ($findInSetConditions)
                      AND DATE(Date) = CURDATE()";
 
-        $sql = "SELECT CodeId, DepartmentName, NameOfgive, Typedocument, DATE_FORMAT(Date, '%d/%m/%y') as formattedDate
+        $sql = "SELECT CodeId, DepartmentName, NameOfgive, Typedocument, DepartmentReceive,DATE_FORMAT(Date, '%d/%m/%y') as formattedDate
                 FROM indocument 
                 WHERE isdelete = 0 
                 AND ($findInSetConditions)

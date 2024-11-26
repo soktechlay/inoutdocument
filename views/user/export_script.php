@@ -33,7 +33,11 @@ $params = [
 ];
 
 if ($documentType === 'outdocument') {
-    $sql = "SELECT * FROM outdocument 
+    $sql = "SELECT 
+                outdocument.CodeId, outdocument.Type, outdocument.OutDepartment, 
+                outdocument.NameOFReceive, outdocument.NameOfgive, outdocument.FromDepartment, 
+                outdocument.Typedocument, outdocument.Date
+            FROM outdocument
             INNER JOIN tbluser ON outdocument.user_id = tbluser.id 
             WHERE tbluser.id = :userid
             AND outdocument.isdelete = 0 
@@ -54,7 +58,7 @@ if ($documentType === 'outdocument') {
         foreach ($searchResults as $row) {
             $data[] = [
                 $cnt,
-                $row['CodeId'],
+                $row['CodeId'], // Use meaningful data instead of raw ID
                 $row['Type'],
                 $row['OutDepartment'],
                 $row['NameOFReceive'],
@@ -76,11 +80,19 @@ if ($documentType === 'outdocument') {
         $xlsx->downloadAs($fileName);
         exit;
     } else {
-        echo "No data found in outdocument.";
+        // No display or error message here
+        exit;
     }
 } elseif ($documentType === 'indocument') {
-    $sql = "SELECT * FROM indocument 
+    // Corrected query for indocument
+    $sql = "SELECT 
+                indocument.CodeId, indocument.Type, indocument.DepartmentName, 
+                indocument.NameOfgive, indocument.NameOFReceive, indocument.Typedocument, 
+                indocument.document, indocument.DepartmentReceive, indocument.NameRecipient, 
+                indocument.Date, COALESCE(d.DepartmentName, indocument.DepartmentReceive) AS department_display_name
+            FROM indocument 
             INNER JOIN tbluser ON indocument.user_id = tbluser.id 
+            LEFT JOIN tbldepartments d ON indocument.DepartmentReceive = d.id
             WHERE tbluser.id = :userid
             AND indocument.isdelete = 0 
             AND indocument.Department = 1 
@@ -100,14 +112,14 @@ if ($documentType === 'outdocument') {
         foreach ($searchResults as $row) {
             $data[] = [
                 $cnt,
-                $row['CodeId'],
+                $row['CodeId'], // Use meaningful data instead of raw ID
                 $row['Type'],
-                $row['DepartmentName'],
+                $row['DepartmentName'],  // This will display the department name, not an ID
                 $row['NameOfgive'],
                 $row['NameOFReceive'],
                 $row['Typedocument'],
                 $row['document'],
-                $row['DepartmentReceive'],
+                $row['department_display_name'], // This will show the department name (either from indocument or tbldepartments)
                 $row['NameRecipient'],
                 $row['Date']
             ];
@@ -124,9 +136,11 @@ if ($documentType === 'outdocument') {
         $xlsx->downloadAs($fileName);
         exit;
     } else {
-        echo "No data found in indocument.";
+        // No display or error message here
+        exit;
     }
 } else {
-    echo "Invalid document type.";
+    // No display or error message here for invalid document type
+    exit;
 }
 ?>

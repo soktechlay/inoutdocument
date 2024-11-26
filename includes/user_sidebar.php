@@ -18,7 +18,9 @@ if (!$userPermissions) {
 $activePage = basename($_SERVER['PHP_SELF']);
 ?>
 
-<aside id="layout-menu" class="layout-menu-horizontal menu menu-horizontal container-fluid flex-grow-0 bg-menu-theme" data-bg-class="bg-menu-theme" style="touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+<aside id="layout-menu" class="layout-menu-horizontal menu menu-horizontal container-fluid flex-grow-0 bg-menu-theme"
+  data-bg-class="bg-menu-theme"
+  style="touch-action: none; user-select: none; -webkit-user-drag: none; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
   <div class="container-xxl d-flex h-100">
     <ul class="menu-inner">
       <!-- Dashboard Menu Item -->
@@ -30,13 +32,14 @@ $activePage = basename($_SERVER['PHP_SELF']);
       </li>
 
       <!-- Dynamic Menu Items based on User Permissions -->
-      <?php if ($userPermissions['iau'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['iau'] == 1): ?>
+        <li
+          class="menu-item <?php echo ($activePage === 'iniau.php' || $activePage === 'outiau.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលអង្គភាព</div>
           </a>
-          <ul class="menu-sub">
+          <ul class="menu-sub <?php echo ($activePage === 'iniau.php' || $activePage === 'outiau.php') ? 'show' : ''; ?>">
             <!-- Submenu Items for iau -->
             <li class="menu-item <?php echo ($activePage === 'iniau.php') ? 'active' : ''; ?>">
               <a href="iniau.php" class="menu-link">
@@ -54,8 +57,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['general'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['general'] == 1): ?>
+        <li class="menu-item menu-item <?php echo ($activePage === 'ingeneral.php' || $activePage === 'outgeneral.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានកិច្ចការទូទៅ</div>
@@ -78,8 +81,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['audit1'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['audit1'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'inaudit1.php' || $activePage === 'outaudit1.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី១</div>
@@ -102,8 +105,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['audit2'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['audit2'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'inaudit2.php' || $activePage === 'outaudit2.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី២</div>
@@ -126,8 +129,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['hr'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['hr'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'inhr.php' || $activePage === 'outhr.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យធនធានមនុស្ស</div>
@@ -150,8 +153,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['training'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['training'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'intraining.php' || $activePage === 'outtraining.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យបណ្តុះបណ្តាល</div>
@@ -175,8 +178,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
       <?php endif; ?>
 
 
-      <?php if ($userPermissions['it'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['it'] == 1): ?>
+        <li class=menu-item <?php echo ($activePage === 'init.php' || $activePage === 'outit.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យគ្រប់គ្រងព័ត៌មានវិទ្យា</div>
@@ -199,8 +202,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['ofaudit1'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['ofaudit1'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'inofaudit1.php' || $activePage === 'outofaudit1.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី១</div>
@@ -223,8 +226,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['ofaudit2'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['ofaudit2'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'inofaudit2.php' || $activePage === 'outofaudit2.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី២</div>
@@ -247,8 +250,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['ofaudit3'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['ofaudit3'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'inofaudit3.php' || $activePage === 'outofaudit3.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី៣</div>
@@ -271,8 +274,8 @@ $activePage = basename($_SERVER['PHP_SELF']);
         </li>
       <?php endif; ?>
 
-      <?php if ($userPermissions['ofaudit4'] == 1) : ?>
-        <li class="menu-item">
+      <?php if ($userPermissions['ofaudit4'] == 1): ?>
+        <li class="menu-item <?php echo ($activePage === 'inofaudit4.php' || $activePage === 'outofaudit4.php') ? 'active open' : ''; ?>">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
             <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យសវនកម្មទី៤</div>
