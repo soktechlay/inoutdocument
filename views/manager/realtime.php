@@ -47,7 +47,8 @@ try {
                      AND permissions IN ($permissionsPlaceholders)
                      AND DATE(Date) = CURDATE()";
 
-        $sql = "SELECT CodeId, DepartmentName, NameOfgive, Typedocument, DATE_FORMAT(Date, '%d/%m/%y') as formattedDate
+        $sql = "SELECT CodeId, Type, DepartmentName, NameOfgive, Typedocument, DepartmentReceive,DATE_FORMAT(Date, '%d/%m/%y %H:%i:%s')
+ as formattedDate
                 FROM indocument 
                 WHERE isdelete = 0 
                 AND permissions IN ($permissionsPlaceholders)
@@ -61,7 +62,8 @@ try {
                      AND permissions IN ($permissionsPlaceholders)
                      AND DATE(Date) = CURDATE()";
 
-        $sql = "SELECT CodeId, OutDepartment, Typedocument, NameOFReceive, DATE_FORMAT(Date, '%d/%m/%y') as formattedDate
+        $sql = "SELECT CodeId, Type, OutDepartment, Typedocument, NameOFReceive, DATE_FORMAT(Date, '%d/%m/%y %H:%i:%s')
+ as formattedDate
                 FROM outdocument 
                 WHERE isdelete = 0 
                 AND permissions IN ($permissionsPlaceholders)

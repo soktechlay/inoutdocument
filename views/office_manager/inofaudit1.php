@@ -121,8 +121,8 @@ ob_start();
                                             <th>ល.រ</th>
                                             <th>លេខឯកសារ</th>
                                             <th>កម្មវត្តុ</th>
-                                            <th>មកពីស្ថាប័នឬក្រសួង</th>
-                                            <th>ឈ្មោះមន្រ្តីប្រគល់</th>                                            
+                                            <th>ទទួលពីនាយកដ្ឋាន</th>
+                                            <th>មន្រ្តីប្រគល់</th>                                            
                                             <th>កាលបរិច្ឆេទ</th>
                                             <th>សកម្មភាព</th>
                                         </tr>
@@ -199,7 +199,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="echonomic"
-                                                                                class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                                                                                class="form-label">ទទួលពីនាយកដ្ឋាន</label>
                                                                             <input class="form-control" type="text"
                                                                                 id="echonomic" name="echonomic"
                                                                                 value="<?php echo htmlentities($row['DepartmentName']) ?>"
@@ -207,7 +207,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="give"
-                                                                                class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                                                                class="form-label">មន្រ្តី​ប្រគល់</label>
                                                                             <input class="form-control" type="text" id="give"
                                                                                 name="give"
                                                                                 value="<?php echo htmlentities($row['NameOfgive']) ?>"
@@ -215,7 +215,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="files"
-                                                                                class="form-label">ប្រភេទឯកសារចូល</label>
+                                                                                class="form-label">ភ្ជាប់ឯកសារចូល</label>
                                                                             <div class="input-group ">
                                                                                 <div class="input-group-append">
                                                                                     <div
@@ -232,7 +232,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="recrived"
-                                                                                class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                                                                class="form-label">មន្រ្តីទទួល</label>
                                                                             <input class="form-control" type="text"
                                                                                 id="recrived" name="recrived"
                                                                                 value="<?php echo htmlentities($row['NameOFReceive']) ?>"

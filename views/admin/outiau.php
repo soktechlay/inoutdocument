@@ -127,7 +127,7 @@ ob_start();
                                             <th>ល.រ</th>
                                             <th>លេខឯកសារ</th>
                                             <th>កម្មវត្តុ</th>
-                                            <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
+                                            <th>បញ្ចួនទៅក្រសួង/ស្ថាប័ន</th>
                                             <th>ឈ្មោះមន្រ្តីទទួល</th>
                                             <th>កាលបរិច្ឆេទ</th>
                                             <th>សកម្មភាព</th>
@@ -209,7 +209,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="outdepartment"
-                                                                                class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                                                                class="form-label">បញ្ចួនទៅក្រសួង/ស្ថាប័ន</label>
                                                                             <input class="form-control" type="text"
                                                                                 id="outdepartment" name="outdepartment"
                                                                                 value="<?php echo htmlentities($row['OutDepartment']); ?>"
@@ -233,7 +233,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="fromdepartment"
-                                                                                class="form-label">មកពីនាយកដ្ឋាន</label>
+                                                                                class="form-label">ទទួលពីនាយកដ្ឋាន</label>
                                                                             <input class="form-control" type="text"
                                                                                 id="fromdepartment" name="fromdepartment"
                                                                                 value="<?php echo htmlentities($row['FromDepartment']); ?>"
@@ -241,7 +241,7 @@ ob_start();
                                                                         </div>
                                                                         <div class="mb-3 col-md-6">
                                                                             <label for="files"
-                                                                                class="form-label">ប្រភេទឯកសារចេញ</label>
+                                                                                class="form-label">ភ្ជាប់ឯកសារចេញ</label>
                                                                             <div class="input-group">
                                                                                 <div class="input-group-append">
                                                                                     <div

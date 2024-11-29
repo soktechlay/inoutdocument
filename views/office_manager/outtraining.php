@@ -122,8 +122,8 @@ ob_start();
                       <th>ល.រ</th>
                       <th>លេខឯកសារ</th>
                       <th>កម្មវត្តុ</th>
-                      <th>ចេញទៅស្ថាប័នឬក្រសួង</th>
-                      <th>ឈ្មោះមន្រ្តីទទួល</th>
+                      <th>បញ្ចូនទៅនាយកដ្ឋាន</th>
+                      <th>មន្រ្តីទទួល</th>
                       <th>កាលបរិច្ឆេទ</th>
                       <th>សកម្មភាព</th>
                     </tr>
@@ -186,27 +186,27 @@ ob_start();
                                         title="<?php echo htmlentities($row['Type']); ?>">
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="outdepartment" class="form-label">ចេញទៅស្ថាប័នឬក្រសួង</label>
+                                      <label for="outdepartment" class="form-label">បញ្ចូនទៅនាយកដ្ឋាន</label>
                                       <input class="form-control" type="text" id="outdepartment" name="outdepartment"
                                         value="<?php echo htmlentities($row['OutDepartment']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="nameofreceive" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                      <label for="nameofreceive" class="form-label">មន្រ្តីទទួល</label>
                                       <input class="form-control" type="text" id="nameofreceive" name="nameofreceive"
                                         value="<?php echo htmlentities($row['NameOFReceive']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="nameofgive" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                      <label for="nameofgive" class="form-label">មន្រ្តី​ប្រគល់</label>
                                       <input class="form-control" type="text" id="nameofgive" name="nameofgive"
                                         value="<?php echo htmlentities($row['NameOfgive']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="fromdepartment" class="form-label">ចេញពីការិយាល័យ</label>
+                                      <label for="fromdepartment" class="form-label">បញ្ចូនពីការិយាល័យ</label>
                                       <input class="form-control" type="text" id="fromdepartment" name="fromdepartment"
                                         value="<?php echo htmlentities($row['FromDepartment']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="files" class="form-label">ប្រភេទឯកសារចេញ</label>
+                                      <label for="files" class="form-label">ភ្ជាប់ឯកសារចេញ</label>
                                       <div class="input-group">
                                         <div class="input-group-append">
                                           <div class="d-flex justify-content-between p-2 rounded-3">

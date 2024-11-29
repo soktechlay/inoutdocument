@@ -34,7 +34,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលអង្គភាព</div>
+            <div data-i18n="Tables">ការកត់ត្រាឯកសារចេញចូលអង្គភាព</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for iau -->
@@ -58,7 +58,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានកិច្ចការទូទៅ</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលនាយកដ្ឋានកិច្ចការទូទៅ</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for general -->
@@ -82,7 +82,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី១</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី១</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for audit1 -->
@@ -106,7 +106,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី២</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលនាយកដ្ឋានសវនកម្មទី២</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for audit2 -->
@@ -130,7 +130,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យធនធានមនុស្ស</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលការិយាល័យធនធានមនុស្ស</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for hr -->
@@ -154,7 +154,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យបណ្តុះបណ្តាល</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលការិយាល័យបណ្តុះបណ្តាល</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for training -->
@@ -179,7 +179,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">គ្រប់គ្រងបញ្ចីឯកសារចេញចូលការិយាល័យគ្រប់គ្រងព័ត៌មានវិទ្យា</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលការិយាល័យការគ្រប់គ្រងព័ត៌មានវិទ្យា</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for traning -->

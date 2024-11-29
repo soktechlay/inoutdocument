@@ -119,8 +119,8 @@ ob_start();
                     <th>ល.រ</th>
                     <th>លេខឯកសារ</th>
                     <th>កម្មវត្តុ</th>
-                    <th>មកពីស្ថាប័នឬក្រសួង</th>
-                    <th>ឈ្មោះមន្រ្តីប្រគល់</th>
+                    <th>ទទួលពីក្រសួង/ស្ថាប័ន</th>
+                    <th>មន្រ្តីប្រគល់</th>
                     <th>កាលបរិច្ឆេទ</th>
                     <th>សកម្មភាព</th>
                   </tr>
@@ -174,22 +174,22 @@ ob_start();
                                       title="<?php echo htmlentities($row['Type']); ?>" disabled>
                                   </div>
                                   <div class="mb-3 col-md-6">
-                                    <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                                    <label for="echonomic" class="form-label">ទទួលពីក្រសួង/ស្ថាប័ន</label>
                                     <input class="form-control" type="text" id="echonomic" name="echonomic"
                                       value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
                                   </div>
                                   <div class="mb-3 col-md-6">
-                                    <label for="give" class="form-label">ឈ្មោះមន្រ្ទី​ប្រគល់</label>
+                                    <label for="give" class="form-label">មន្រ្ទី​ប្រគល់</label>
                                     <input class="form-control" type="text" id="give" name="give"
                                       value="<?php echo htmlentities($row['NameOfgive']) ?>" disabled>
                                   </div>
                                   <div class="mb-3 col-md-6">
-                                    <label for="recrived" class="form-label">ឈ្មោះមន្រ្ទីទទួល</label>
+                                    <label for="recrived" class="form-label">មន្រ្ទីទទួល</label>
                                     <input class="form-control" type="text" id="recrived" name="recrived"
                                       value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
                                   </div>
                                   <div class="mb-3 col-md-6">
-                                    <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
+                                    <label for="files" class="form-label">ភ្ជាប់ឯកសារចូល</label>
                                     <div class="input-group ">
                                       <div class="input-group-append">
                                         <div class="d-flex  justify-content-between  p-2 rounded-3">
@@ -203,7 +203,7 @@ ob_start();
                                     </div>
                                   </div>
                                   <div class="mb-3 col-md-6">
-                                    <label for="files" class="form-label">ប្រភេទឯកសារចំណារ</label>
+                                    <label for="files" class="form-label">ភ្ជាប់ឯកសារចំណារ</label>
                                     <div class="input-group">
                                       <div class="input-group-append">
                                         <div class="d-flex justify-content-between p-2 rounded-3">
@@ -230,7 +230,7 @@ ob_start();
                                     <?php endif; ?>
                                   </div>
                                   <div class="mb-3 col-md-6">
-                                    <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
+                                    <label for="burden" class="form-label">មន្រ្តីទទួលបន្ទុកបន្ត</label>
 
                                     <?php if (!empty($row['username'])): ?>
                                       <input class="form-control" type="text" id="burden" name="burden"

@@ -117,6 +117,20 @@ ob_start();
     <form method="POST" enctype="multipart/form-data">
         <div class="card-body mb-3">
             <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['userid']); ?>">
+            <div class="form-group mt-2">
+                <div class="input-group input-file">
+                    <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
+                </div>
+                <?php if (isset($error2)) { ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?php echo htmlspecialchars($error2); ?>
+                    </div>
+                <?php } elseif (isset($success2)) { ?>
+                    <div class="alert alert-success" role="alert">
+                        <?php echo htmlspecialchars($success2); ?>
+                    </div>
+                <?php } ?>
+            </div>
             <div class="row mt-2">
                 <div class="col mb-3">
                     <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
@@ -160,22 +174,7 @@ ob_start();
                         } ?>
                     </select>
                 </div>
-            </div>
-
-            <div class="form-group mt-2">
-                <div class="input-group input-file">
-                    <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
-                </div>
-                <?php if (isset($error2)) { ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo htmlspecialchars($error2); ?>
-                    </div>
-                <?php } elseif (isset($success2)) { ?>
-                    <div class="alert alert-success" role="alert">
-                        <?php echo htmlspecialchars($success2); ?>
-                    </div>
-                <?php } ?>
-            </div>
+            </div>           
 
             <?php if (!empty($documents)): ?>
                 <div class="h6 mt-4">ឯកសារចំណារ ថ្មីៗ</div>

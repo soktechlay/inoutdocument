@@ -339,7 +339,7 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                          <label for="echonomic" class="form-label">ទទួលពីក្រសួង/ស្ថាប័ន</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i
                                 class='bx bxs-business'></i></span>
@@ -348,16 +348,16 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="give" class="form-label">ឈ្មោះមន្រ្តីប្រគល់</label>
+                          <label for="give" class="form-label">មន្រ្តីប្រគល់</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i
                                 class='bx bx-user'></i></span>
                             <input type="text" class="form-control" id="give" name="give"
-                              placeholder="បំពេញឈ្មោះមន្រ្តី​ប្រគល់..." required>
+                              placeholder="បំពេញឈ្មោះមន្រ្តី​ប្រគល់..." >
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                          <label for="recrived" class="form-label">មន្រ្តីទទួល</label>
                           <div class="input-group input-group-merge">
                             <span id="basic-icon-default-company2" class="input-group-text"><i
                                 class='bx bx-user'></i></span>
@@ -380,7 +380,7 @@ ob_start();
                           </div>
                         </div>
                         <div class="mb-3 col-md-6">
-                          <label for="document" class="form-label">ប្រភេទឯកសារចូល</label>
+                          <label for="document" class="form-label">ភ្ជាប់ឯកសារចូល</label>
                           <input type="file" class="form-control" id="files"
                             accept=".xlsx,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                             name="files" required>
@@ -460,9 +460,9 @@ ob_start();
                       <th>ល.រ</th>
                       <th>លេខឯកសារ</th>
                       <th>កម្មវត្តុ</th>
-                      <th>មកពីស្ថាប័នឬក្រសួង</th>
-                      <th>ឈ្មោះមន្រ្តីប្រគល់</th>
-                      <th>ប្រភេទឯកសារចំណារ</th>
+                      <th>ទទួលពីក្រសួង/ស្ថាប័ន</th>
+                      <th>មន្រ្តីប្រគល់</th>
+                      <th>ឯកសារចំណារ</th>
                       <th>កាលបរិច្ឆេទ</th>
                       <th>សកម្មភាព</th>
                     </tr>
@@ -542,22 +542,22 @@ ob_start();
                                         title="<?php echo htmlentities($row['Type']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                                      <label for="echonomic" class="form-label">ទទួលពីក្រសួង/ស្ថាប័ន</label>
                                       <input class="form-control" type="text" id="echonomic" name="echonomic"
                                         value="<?php echo htmlentities($row['DepartmentName']) ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="give" class="form-label">ឈ្មោះមន្រ្ទី​ប្រគល់</label>
+                                      <label for="give" class="form-label">មន្រ្ទី​ប្រគល់</label>
                                       <input class="form-control" type="text" id="give" name="give"
                                         value="<?php echo htmlentities($row['NameOfgive']) ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="recrived" class="form-label">ឈ្មោះមន្រ្ទីទទួល</label>
+                                      <label for="recrived" class="form-label">មន្រ្ទីទទួល</label>
                                       <input class="form-control" type="text" id="recrived" name="recrived"
                                         value="<?php echo htmlentities($row['NameOFReceive']) ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
+                                      <label for="files" class="form-label">ភ្ជាប់ឯកសារចូល</label>
                                       <div class="input-group ">
                                         <div class="input-group-append">
 
@@ -572,7 +572,7 @@ ob_start();
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="files" class="form-label">ប្រភេទឯកសារចំណារ</label>
+                                      <label for="files" class="form-label">ភ្ជាប់ឯកសារចំណារ</label>
                                       <div class="input-group">
                                         <div class="input-group-append">
                                           <div class="d-flex justify-content-between p-2 rounded-3">
@@ -594,7 +594,7 @@ ob_start();
                                         value="<?php echo htmlentities($row['DepartmentReceive']); ?>" disabled>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="burden" class="form-label">ឈ្មោះមន្រ្តីទទួលបន្ទុកបន្ត</label>
+                                      <label for="burden" class="form-label">មន្រ្តីទទួលបន្ទុកបន្ត</label>
                                       <input class="form-control" type="text" id="burden" name="burden"
                                         value="<?= htmlspecialchars($row['username']); ?>" disabled>
                                     </div>
@@ -656,7 +656,7 @@ ob_start();
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="echonomic" class="form-label">មកពីស្ថាប័នឬក្រសួង</label>
+                                      <label for="echonomic" class="form-label">ទទួលពីក្រសួង/ស្ថាប័ន</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i
                                             class='bx bxs-business'></i></span>
@@ -665,7 +665,7 @@ ob_start();
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="give" class="form-label">ឈ្មោះមន្រ្តី​ប្រគល់</label>
+                                      <label for="give" class="form-label">មន្រ្តី​ប្រគល់</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i
                                             class='bx bx-user'></i></span>
@@ -674,7 +674,7 @@ ob_start();
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="files" class="form-label">ប្រភេទឯកសារចូល</label>
+                                      <label for="files" class="form-label">ភ្ជាប់ឯកសារចូល</label>
                                       <div class="input-group">
                                         <input type="file" class="form-control" id="files" name="files">
                                         <input type="text" class="form-control"
@@ -682,7 +682,7 @@ ob_start();
                                       </div>
                                     </div>
                                     <div class="mb-3 col-md-6">
-                                      <label for="recrived" class="form-label">ឈ្មោះមន្រ្តីទទួល</label>
+                                      <label for="recrived" class="form-label">មន្រ្តីទទួល</label>
                                       <div class="input-group input-group-merge">
                                         <span id="basic-icon-default-company2" class="input-group-text"><i
                                             class='bx bx-user'></i></span>
