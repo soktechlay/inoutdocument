@@ -255,35 +255,34 @@ if (isset($_POST['edit'])) {
     exit();
   }
 }
-$sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname, i.NameRecipient AS username
-FROM indocument i
-JOIN tbluser u ON i.user_id = u.ID
-WHERE i.isdelete = 0
-AND i.permissions = 1
-AND i.Department = 1
- AND i.user_id = :userId
--- AND i.permissions = 1
-"
-  . $searchCondition
-  . $dateCondition
-  . " ORDER BY i.Date DESC";
-// $sql = "SELECT 
-//             i.*, 
-//             u.FirstName AS firstname, 
-//             u.LastName AS lastname, 
-//             i.NameRecipient AS username, 
-//             COALESCE(d.DepartmentName, i.DepartmentReceive) AS department_display_name, -- Use text if no match
-//             i.DepartmentReceive,
-//             d.id AS department_id
-//         FROM indocument i
-//         JOIN tbluser u ON i.user_id = u.ID
-//         LEFT JOIN tbldepartments d ON i.DepartmentReceive = d.id
-//         WHERE i.isdelete = 0
-//           AND i.Department = 1
-//           AND i.user_id = :userId"
-//           . $searchCondition
-//           . $dateCondition
-//           . " ORDER BY i.Date DESC";
+// $sql = "SELECT i.*, u.FirstName AS firstname, u.LastName AS lastname, i.NameRecipient AS username
+// FROM indocument i
+// JOIN tbluser u ON i.user_id = u.ID
+// WHERE i.isdelete = 0
+// AND i.permissions = 1
+//  AND i.user_id = :userId
+// -- AND i.permissions = 1
+// "
+//   . $searchCondition
+//   . $dateCondition
+//   . " ORDER BY i.Date DESC";
+$sql = "SELECT 
+            i.*, 
+            u.FirstName AS firstname, 
+            u.LastName AS lastname, 
+            i.NameRecipient AS username, 
+            COALESCE(d.DepartmentName, i.DepartmentReceive) AS department_display_name, -- Use text if no match
+            i.DepartmentReceive,
+            d.id AS department_id
+        FROM indocument i
+        JOIN tbluser u ON i.user_id = u.ID
+        LEFT JOIN tbldepartments d ON i.DepartmentReceive = d.id
+        WHERE i.isdelete = 0
+          AND i.Department = 1
+          AND i.user_id = :userId"
+          . $searchCondition
+          . $dateCondition
+          . " ORDER BY i.Date DESC";
 
 // Prepare and execute the SQL query
 $query = $dbh->prepare($sql);
@@ -757,14 +756,6 @@ ob_start();
     </div>
   </div>
 </div>
-
-
-
-
-
-
-
-
 <?php
 // Get the content from output buffer
 $content = ob_get_clean();
@@ -800,12 +791,35 @@ include('../../layouts/user_layout.php');
 
   const filterTable = () => {
     const filter = document.getElementById("search").value.toUpperCase();
-    const tr = document.getElementById("example").getElementsByTagName("tr");
-    Array.from(tr).forEach(row => {
-      const td = row.getElementsByTagName("td");
-      row.style.display = Array.from(td).some(cell =>
-        cell.textContent.toUpperCase().includes(filter)) ? "" : "none";
+    const table = document.getElementById("example");
+    const rows = table.getElementsByTagName("tr");
+    let visibleRows = 0;
+
+    Array.from(rows).forEach((row, index) => {
+      // Skip the header row (index 0 in most cases)
+      if (index === 0) return;
+
+      const cells = row.getElementsByTagName("td");
+      const isVisible = Array.from(cells).some(cell =>
+        cell.textContent.toUpperCase().includes(filter));
+
+      row.style.display = isVisible ? "" : "none";
+      if (isVisible) visibleRows++;
     });
+
+    // Show or hide the "No recent activities found" message
+    let noDataMessage = document.getElementById("no-data-message");
+    if (!noDataMessage) {
+      noDataMessage = document.createElement("div");
+      noDataMessage.id = "no-data-message";
+      noDataMessage.textContent = "មិនមានទិន្នន័យទេ។";
+      noDataMessage.style.textAlign = "center";
+      noDataMessage.style.marginTop = "10px";
+      noDataMessage.style.color = "blue";
+      table.parentNode.appendChild(noDataMessage); // Place message below the table
+    }
+
+    noDataMessage.style.display = visibleRows === 0 ? "block" : "none";
   };
 
 

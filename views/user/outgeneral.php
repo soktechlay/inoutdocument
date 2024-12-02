@@ -686,14 +686,36 @@ include('../../layouts/user_layout.php');
 
   const filterTable = () => {
     const filter = document.getElementById("search").value.toUpperCase();
-    const tr = document.getElementById("example").getElementsByTagName("tr");
-    Array.from(tr).forEach(row => {
-      const td = row.getElementsByTagName("td");
-      row.style.display = Array.from(td).some(cell =>
-        cell.textContent.toUpperCase().includes(filter)) ? "" : "none";
-    });
-  };
+    const table = document.getElementById("example");
+    const rows = table.getElementsByTagName("tr");
+    let visibleRows = 0;
 
+    Array.from(rows).forEach((row, index) => {
+      // Skip the header row (index 0 in most cases)
+      if (index === 0) return;
+
+      const cells = row.getElementsByTagName("td");
+      const isVisible = Array.from(cells).some(cell =>
+        cell.textContent.toUpperCase().includes(filter));
+
+      row.style.display = isVisible ? "" : "none";
+      if (isVisible) visibleRows++;
+    });
+
+    // Show or hide the "No recent activities found" message
+    let noDataMessage = document.getElementById("no-data-message");
+    if (!noDataMessage) {
+      noDataMessage = document.createElement("div");
+      noDataMessage.id = "no-data-message";
+      noDataMessage.textContent = "មិនមានទិន្នន័យទេ។";
+      noDataMessage.style.textAlign = "center";
+      noDataMessage.style.marginTop = "10px";
+      noDataMessage.style.color = "blue";
+      table.parentNode.appendChild(noDataMessage); // Place message below the table
+    }
+
+    noDataMessage.style.display = visibleRows === 0 ? "block" : "none";
+  };
 
   document.addEventListener('DOMContentLoaded', function() {
     // Initialize Flatpickr for fromDate
