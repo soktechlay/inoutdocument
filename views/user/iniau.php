@@ -260,7 +260,7 @@ FROM indocument i
 JOIN tbluser u ON i.user_id = u.ID
 WHERE i.isdelete = 0
 AND i.permissions = 1
-AND indocument.Department = 1
+AND i.Department = 1
  AND i.user_id = :userId
 -- AND i.permissions = 1
 "
