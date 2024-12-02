@@ -98,26 +98,30 @@ ob_start();
     </div>
     <form method="POST" enctype="multipart/form-data">
         <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['userid']); ?>">
-        <div class="form-group mt-2">
-            <div class="input-group input-file" name="Fichier2">
-                <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
-                <div class="form-group ml-1">
-                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូនឯកសារ</button>
-                </div>
-            </div>
-            <?php if (isset($error2)) { ?>
-                <div class="alert alert-danger" role="alert">
-                    <?php echo $error2; ?>
-                </div>
-            <?php } elseif (isset($success2)) { ?>
-                <div class="alert alert-success" role="alert">
-                    <?php echo $success2; ?>
-                </div>
-            <?php } ?>
-        </div>
         <div class="row mt-2">
             <div class="mb-3 col-md-6">
                 <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
+                <div class="mb-3 col-md-6">
+                    <label class="form-label">ការិយាល័យទទួលបន្ទុក</label>
+                    <div class="input-group input-group-merge">
+
+                        <select class="custom-select form-control form-select rounded-2" name="department" required>
+                            <option value="">ជ្រើសរើស......</option>
+                            <?php
+                            $sql = "SELECT OfficeName FROM tbloffices";
+                            $query = $dbh->prepare($sql);
+                            $query->execute();
+                            $results = $query->fetchAll(PDO::FETCH_OBJ);
+                            if ($query->rowCount() > 0) {
+                                foreach ($results as $result) { ?>
+                                    <option value="<?php echo htmlentities($result->OfficeName); ?>">
+                                        <?php echo htmlentities($result->OfficeName); ?>
+                                    </option>
+                                <?php }
+                            } ?>
+                        </select>
+                    </div>
+                </div>
                 <div class="input-group input-group-merge">
 
                     <select name="burden" id="burden" class="form-select form-control" required>
@@ -143,28 +147,25 @@ ob_start();
                     </select>
                 </div>
             </div>
-            <div class="mb-3 col-md-6">
-                <label class="form-label">ការិយាល័យទទួលបន្ទុក</label>
-                <div class="input-group input-group-merge">
-
-                    <select class="custom-select form-control form-select rounded-2" name="department" required>
-                        <option value="">ជ្រើសរើស......</option>
-                        <?php
-                        $sql = "SELECT OfficeName FROM tbloffices";
-                        $query = $dbh->prepare($sql);
-                        $query->execute();
-                        $results = $query->fetchAll(PDO::FETCH_OBJ);
-                        if ($query->rowCount() > 0) {
-                            foreach ($results as $result) { ?>
-                                <option value="<?php echo htmlentities($result->OfficeName); ?>">
-                                    <?php echo htmlentities($result->OfficeName); ?>
-                                </option>
-                            <?php }
-                        } ?>
-                    </select>
+        </div>
+        <div class="form-group mt-2">
+            <div class="input-group input-file" name="Fichier2">
+                <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
+                <div class="form-group ml-1">
+                    <button type="submit" name="submit" class="btn btn-primary me-2 pull-right">បញ្ជូនឯកសារ</button>
                 </div>
             </div>
+            <?php if (isset($error2)) { ?>
+                <div class="alert alert-danger" role="alert">
+                    <?php echo $error2; ?>
+                </div>
+            <?php } elseif (isset($success2)) { ?>
+                <div class="alert alert-success" role="alert">
+                    <?php echo $success2; ?>
+                </div>
+            <?php } ?>
         </div>
+
 
         <div class="h6 mt-4">ឯកសារចំណារ ថ្មីៗ</div>
         <?php

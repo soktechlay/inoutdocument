@@ -117,21 +117,26 @@ ob_start();
     <form method="POST" enctype="multipart/form-data">
         <div class="card-body mb-3">
             <input type="hidden" name="userid" value="<?php echo htmlspecialchars($_SESSION['userid']); ?>">
-            <div class="form-group mt-2">
-                <div class="input-group input-file">
-                    <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
-                </div>
-                <?php if (isset($error2)) { ?>
-                    <div class="alert alert-danger" role="alert">
-                        <?php echo htmlspecialchars($error2); ?>
-                    </div>
-                <?php } elseif (isset($success2)) { ?>
-                    <div class="alert alert-success" role="alert">
-                        <?php echo htmlspecialchars($success2); ?>
-                    </div>
-                <?php } ?>
-            </div>
             <div class="row mt-2">
+            <div class="col mb-3">
+                    <label class="form-label">នាយកដ្ឋានទទួលបន្ទុក</label>
+                    <select class="custom-select form-control select2 form-select " name="department[]" multiple
+                        required>
+                        <option value="">ជ្រើសរើស...</option>
+                        <?php
+                        $sql = "SELECT DepartmentName FROM tbldepartments";
+                        $query = $dbh->prepare($sql);
+                        $query->execute();
+                        $results = $query->fetchAll(PDO::FETCH_OBJ);
+                        if ($query->rowCount() > 0) {
+                            foreach ($results as $result) { ?>
+                                <option value="<?php echo htmlspecialchars($result->DepartmentName); ?>">
+                                    <?php echo htmlspecialchars($result->DepartmentName); ?>
+                                </option>
+                            <?php }
+                        } ?>
+                    </select>
+                </div>
                 <div class="col mb-3">
                     <label for="burden" class="form-label">បញ្ជូនទៅមន្រ្តីទទួលបន្ទុកបន្ត</label>
                     <select name="burden[]" id="burden" class="form-select select2 form-control" multiple required>
@@ -155,26 +160,23 @@ ob_start();
                     </select>
                 </div>
 
-                <div class="col mb-3">
-                    <label class="form-label">នាយកដ្ឋានទទួលបន្ទុក</label>
-                    <select class="custom-select form-control select2 form-select " name="department[]" multiple
-                        required>
-                        <option value="">ជ្រើសរើស...</option>
-                        <?php
-                        $sql = "SELECT DepartmentName FROM tbldepartments";
-                        $query = $dbh->prepare($sql);
-                        $query->execute();
-                        $results = $query->fetchAll(PDO::FETCH_OBJ);
-                        if ($query->rowCount() > 0) {
-                            foreach ($results as $result) { ?>
-                                <option value="<?php echo htmlspecialchars($result->DepartmentName); ?>">
-                                    <?php echo htmlspecialchars($result->DepartmentName); ?>
-                                </option>
-                            <?php }
-                        } ?>
-                    </select>
+                
+            </div>
+
+            <div class="form-group mt-2">
+                <div class="input-group input-file">
+                    <input type="file" name="file2" class="form-control rounded-2" placeholder="Choose document..." />
                 </div>
-            </div>           
+                <?php if (isset($error2)) { ?>
+                    <div class="alert alert-danger" role="alert">
+                        <?php echo htmlspecialchars($error2); ?>
+                    </div>
+                <?php } elseif (isset($success2)) { ?>
+                    <div class="alert alert-success" role="alert">
+                        <?php echo htmlspecialchars($success2); ?>
+                    </div>
+                <?php } ?>
+            </div>
 
             <?php if (!empty($documents)): ?>
                 <div class="h6 mt-4">ឯកសារចំណារ ថ្មីៗ</div>
