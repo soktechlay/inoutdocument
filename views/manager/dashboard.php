@@ -232,7 +232,7 @@ if (in_array($_SESSION['permission'], $departmentIds)):
                 // Render table rows or show empty state
                 $(tableBodySelector).html(rows || `
                         <tr>
-                            <td colspan="6">
+                            <td colspan="7">
                                 <div class="text-center">
                                     <img src="../../assets/img/illustrations/empty-box.png" alt="No Requests Found" style="max-width: 15%; height: auto;" />
                                     <h5 class="text-muted mt-3">មិនមានទិន្នន័យ</h5>
