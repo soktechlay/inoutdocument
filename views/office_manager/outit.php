@@ -157,16 +157,46 @@ ob_start();
                                                     <td><?php echo $row['Date'] ?></td>
                                                     <td>
                                                         <div class="d-flex ">
-                                                            <button type="button"
+                                                            <a href="#" class="me-2"
                                                                 style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#viewModal<?php echo $row['ID']; ?>"
                                                                 data-id="<?php echo $row['ID']; ?>">
                                                                 <i class='bx bx-show text-success'></i>
-                                                            </button>
+                                                            </a>
+                                                            <a href="#" class=" me-2" data-bs-toggle="modal" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; margin: 0 4px; background-color: transparent; border: none;"
+                                                                data-bs-target="#documentModal-<?php echo htmlentities($row['ID']); ?>">
+                                                                <i class='bx bx-file'></i>
+                                                            </a>
                                                         </div>
+                                                        
                                                     </td>
                                                 </tr>
+                                                <!-- Modal file -->
+                                                <div class="modal fade modal-blur"
+                                                    id="documentModal-<?php echo htmlentities($row['ID']); ?>" tabindex="-1"
+                                                    aria-labelledby="documentModalLabel-<?php echo htmlentities($row['ID']); ?>"
+                                                    aria-hidden="true">
+                                                    <div class="modal-dialog modal-dialog-centered modal-xl">
+                                                        <div class="modal-content">
+                                                            <div class="modal-header">
+                                                                <h5 class="modal-title text-primary"
+                                                                    id="documentModalLabel-<?php echo htmlentities($row['ID']); ?>">
+                                                                    ពិនិត្យមើលឯកសារ
+                                                                </h5>
+                                                            </div>
+                                                            <div class="modal-body">
+                                                                <iframe
+                                                                    src="../../uploads/file/out-doc/<?php echo htmlentities($row['Typedocument']); ?>"
+                                                                    width="100%" height="600px"></iframe>
+                                                            </div>
+                                                            <div class="modal-footer bg-light">
+                                                                <button type="button" class="btn btn-danger"
+                                                                    data-bs-dismiss="modal">បោះបង់</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 <!-- Modal view -->
                                                 <div class="modal animate__animated animate__bounceIn"
                                                     id="viewModal<?php echo $row['ID']; ?>" tabindex="-1" aria-hidden="true">
@@ -228,7 +258,7 @@ ob_start();
                                                                                 value="<?php echo htmlentities($row['FromDepartment']); ?>"
                                                                                 disabled>
                                                                         </div>
-                                                                        <div class="mb-3 col-md-6">
+                                                                        <!-- <div class="mb-3 col-md-6">
                                                                             <label for="files"
                                                                                 class="form-label">ភ្ជាប់ឯកសារចេញ</label>
                                                                             <div class="input-group">
@@ -244,7 +274,7 @@ ob_start();
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
+                                                                        </div> -->
                                                                     </div>
                                                                     <div class="col-md-12 text-end">
                                                                         <!-- Buttons for editing and deleting -->

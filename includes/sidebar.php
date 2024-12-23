@@ -130,7 +130,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលការិយាល័យធនធានមនុស្ស</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលការិយាល័យរដ្ឋបាលនិងហិរញ្ញវត្ថុ</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for hr -->
