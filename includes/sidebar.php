@@ -154,7 +154,7 @@ $activePage = basename($_SERVER['PHP_SELF']);
         <li class="menu-item">
           <a href="javascript:void(0)" class="menu-link menu-toggle">
             <i class="menu-icon tf-icons bx bx-grid-alt"></i>
-            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលការិយាល័យបណ្តុះបណ្តាល</div>
+            <div data-i18n="Tables">ការកត់ត្រាបញ្ចីឯកសារចេញចូលការិយាល័យផែនការនិងបណ្តុះបណ្តាល</div>
           </a>
           <ul class="menu-sub">
             <!-- Submenu Items for training -->

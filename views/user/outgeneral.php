@@ -307,7 +307,7 @@ ob_start();
 
                         <div class="mb-3 col-md-6">
                           <label for="document" class="form-label">ភ្ជាប់ឯកសារចេញ</label>
-                          <input type="file" class="form-control" id="files" accept=".xlsx,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" name="files" required>
+                          <input type="file" class="form-control" id="files" accept=".xlsx,.pdf,.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" name="files" >
                         </div>
                       </div>
                       <div class="modal-footer border-0">
